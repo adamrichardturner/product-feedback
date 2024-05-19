@@ -21,7 +21,7 @@ const config = {
       colors: {
         border: "hsl(var(--border))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
+        background: "var(--background)",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -120,6 +120,10 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      backgroundImage: {
+        "radial-gradient":
+          "radial-gradient(circle at bottom right, #FBB57A, #E84D70, #A337F6, #28A7ED)",
       },
     },
   },
