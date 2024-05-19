@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "title-gradient": "var(--title-gradient)",
         txt: {
           primary: {
             default: "var(--txt-primary)"
