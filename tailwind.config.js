@@ -9,6 +9,11 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        txt: {
+          primary: {
+            default: "var(--txt-primary)"
+          }
+        },
         btn: {
           primary: {
             background: "var(--btn-primary-background)",
