@@ -4,25 +4,40 @@
 
 @layer base {
   :root {
-    --background: 200 20% 98%;
-    --btn-background: 200 10% 91%;
-    --btn-background-hover: 200 10% 89%;
-    --foreground: 200 50% 3%;
-  }
+    --background: #f7f8fd;
+    --foreground: #f2f4ff;
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: 200 50% 3%;
-      --btn-background: 200 10% 9%;
-      --btn-background-hover: 200 10% 12%;
-      --foreground: 200 20% 96%;
-    }
-  }
-}
+    --btn-primary-background: #ad1fea;
+    --btn-primary-hover: #c75af6;
 
-@layer base {
-  * {
-    @apply border-foreground/20;
+    --btn-secondary-background: #4661e6;
+    --btn-secondary-hover: #7c91f9;
+
+    --btn-tertiary-background: #3a4374;
+    --btn-tertiary-hover: #656ea3;
+
+    --btn-danger-background: #d73737;
+    --btn-danger-hover: #e98888;
+
+    --btn-back-background: #373f68;
+
+    --btn-upvote-background: #f2f4fe;
+    --btn-upvote-hover: #cfd7ff;
+    --btn-upvote-active: #4661e6;
+
+    --btn-sort-background: #373f68;
+
+    --input-default-background: #f7f8fd;
+    --input-filled-background: #f7f8fd;
+    --input-active-background: #f7f8fd;
+    --input-active-border: #f7f8fd;
+    --input-error-border: #d73737;
+
+    --dropdown-default-background: #f7f8fd;
+    --dropdown-active-border: #4661e6;
+
+    --btn-border-radius: 10px;
+    --primary-shadow: 0px 10px 40px -7px rgba(55, 63, 104, 0.35);
   }
 }
 
