@@ -12,21 +12,21 @@ function RoadmapWidget() {
       <div className='flex pt-5 justify-between'>
         <div className='flex space-x-3 items-center'>
           <div className='rounded-full w-2 h-2 bg-[#F49F85]'></div>
-          <span>Planned</span>
+          <span className='text-base'>Planned</span>
         </div>
         <div className='font-bold'>2</div>
       </div>
       <div className='flex pt-2 justify-between'>
         <div className='flex space-x-3 items-center'>
           <div className='rounded-full w-2 h-2 bg-[#AD1FEA]'></div>
-          <span>In-Progress</span>
+          <span className='text-base'>In-Progress</span>
         </div>
         <div className='font-bold'>3</div>
       </div>
       <div className='flex pt-2 justify-between'>
         <div className='flex space-x-3 items-center'>
           <div className='rounded-full w-2 h-2 bg-[#62BCFA]'></div>
-          <span>Live</span>
+          <span className='text-base'>Live</span>
         </div>
         <div className='font-bold'>1</div>
       </div>
