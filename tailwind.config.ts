@@ -56,6 +56,9 @@ const config = {
           primary: {
             DEFAULT: "var(--txt-primary)",
           },
+          secondary: {
+            DEFAULT: "var(--txt-secondary)",
+          },
         },
         btn: {
           primary: {

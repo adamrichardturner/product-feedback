@@ -3,6 +3,7 @@ import AuthButton from "../components/AuthButton"
 import Navigation from "@/components/Navigation"
 // import { createClient } from "@/utils/supabase/server"
 import CategoryWidget from "@/components/widgets/CategoryWidget"
+import RoadmapWidget from "@/components/widgets/RoadmapWidget"
 
 export default async function Index() {
   // const canInitSupabaseClient = () => {
@@ -21,6 +22,7 @@ export default async function Index() {
       <div className='w-[255px] flex flex-col gap-6'>
         <TitleWidget />
         <CategoryWidget active='all' />
+        <RoadmapWidget />
       </div>
       <div className='flex-grow'>
         <Navigation />
