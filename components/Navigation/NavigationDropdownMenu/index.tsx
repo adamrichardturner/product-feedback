@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import ArrowUp from "@/assets/shared/icon-arrow-up.svg"
+import ArrowUp from "@/assets/shared/icon-arrow-up-white.svg"
 import ArrowDown from "@/assets/shared/icon-arrow-down.svg"
 
 import {

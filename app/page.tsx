@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation"
 // import { createClient } from "@/utils/supabase/server"
 import CategoryWidget from "@/components/widgets/CategoryWidget"
 import RoadmapWidget from "@/components/widgets/RoadmapWidget"
+import FeedbackCard from "@/components/FeedbackCard"
 
 export default async function Index() {
   // const canInitSupabaseClient = () => {
@@ -26,6 +27,9 @@ export default async function Index() {
       </div>
       <div className='flex-grow'>
         <Navigation />
+        <main className='pt-8'>
+          <FeedbackCard />
+        </main>
       </div>
     </div>
   )

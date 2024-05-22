@@ -18,6 +18,30 @@ const config = {
       },
     },
     extend: {
+      fontSize: {
+        sm: "14px",
+        md: "18px",
+        lg: "20px",
+        xl: "24px",
+        body1: "16px",
+        body2: "15px",
+        body3: "13px",
+      },
+      lineHeight: {
+        sm: "20px",
+        md: "26px",
+        lg: "29px",
+        xl: "35px",
+        body1: "23px",
+        body2: "22px",
+        body3: "19px",
+      },
+      letterSpacing: {
+        sm: "-0.2px",
+        md: "-0.25px",
+        lg: "-0.25px",
+        xl: "-0.33px",
+      },
       colors: {
         border: "hsl(var(--border))",
         ring: "hsl(var(--ring))",
