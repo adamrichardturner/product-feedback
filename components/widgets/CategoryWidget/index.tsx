@@ -1,8 +1,13 @@
+"use client"
+
+import useCategories from "@/app/hooks/categories/useCategories"
 interface CategoryWidgetProps {
   active: string
 }
 
 function CategoryWidget({ active }: CategoryWidgetProps) {
+  const { categories } = useCategories()
+  console.log("CATEGORIES: ", categories)
   return (
     <ul className='w-full gap-x-2.5 gap-y-4 rounded-btn flex flex-row flex-wrap p-6 bg-white'>
       <li
