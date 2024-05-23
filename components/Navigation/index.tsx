@@ -14,7 +14,7 @@ function Navigation() {
           </h3>
         </div>
         <div>
-          <NavigationDropdownMenu />
+          <NavigationDropdownMenu options={options} />
         </div>
       </div>
       <div>
@@ -28,3 +28,10 @@ function Navigation() {
 }
 
 export default Navigation
+
+const options = [
+  { value: "mostUpvotes", label: "Most Upvotes" },
+  { value: "leastUpvotes", label: "Least Upvotes" },
+  { value: "mostComments", label: "Most Comments" },
+  { value: "leastComments", label: "Least Comments" },
+]

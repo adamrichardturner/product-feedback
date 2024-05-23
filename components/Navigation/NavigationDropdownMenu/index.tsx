@@ -13,24 +13,26 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
-const formatChoice = (itemName: string | null) => {
-  switch (itemName) {
-    case "mostUpvotes":
-      return "Most Upvotes"
-    case "leastUpvotes":
-      return "Least Upvotes"
-    case "mostComments":
-      return "Most Comments"
-    case "leastComments":
-      return "Least Comments"
-  }
+interface SelectOption {
+  value: string
+  label: string
 }
 
-export function NavigationDropdownMenu() {
-  const [checkedItem, setCheckedItem] = React.useState<string | null>(
-    "mostUpvotes"
-  )
+interface NavigationDropdownMenuProps {
+  options: SelectOption[]
+}
 
+const formatChoice = (value: string | null, options: SelectOption[]) => {
+  const selectedOption = options.find((option) => option.value === value)
+  return selectedOption ? selectedOption.label : ""
+}
+
+export function NavigationDropdownMenu({
+  options,
+}: NavigationDropdownMenuProps) {
+  const [checkedItem, setCheckedItem] = React.useState<string | null>(
+    options[0]?.value || null
+  )
   const [open, setOpen] = React.useState(false)
 
   const handleCheckedChange = (key: string) => {
@@ -42,7 +44,9 @@ export function NavigationDropdownMenu() {
       <DropdownMenuTrigger asChild>
         <div className='text-[#F2F4FE] opacity-75 text-sm flex items-center space-x-2 cursor-pointer'>
           <span>Sort by : </span>
-          <span className='font-semibold'>{formatChoice(checkedItem)}</span>
+          <span className='font-semibold'>
+            {formatChoice(checkedItem, options)}
+          </span>
           <span>
             <Image
               src={open ? ArrowUp : ArrowDown}
@@ -55,33 +59,17 @@ export function NavigationDropdownMenu() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
-        <DropdownMenuCheckboxItem
-          checked={checkedItem === "mostUpvotes"}
-          onCheckedChange={() => handleCheckedChange("mostUpvotes")}
-        >
-          Most Upvotes
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={checkedItem === "leastUpvotes"}
-          onCheckedChange={() => handleCheckedChange("leastUpvotes")}
-        >
-          Least Upvotes
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={checkedItem === "mostComments"}
-          onCheckedChange={() => handleCheckedChange("mostComments")}
-        >
-          Most Comments
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={checkedItem === "leastComments"}
-          onCheckedChange={() => handleCheckedChange("leastComments")}
-        >
-          Least Comments
-        </DropdownMenuCheckboxItem>
+        {options.map((option, index) => (
+          <React.Fragment key={option.value}>
+            <DropdownMenuCheckboxItem
+              checked={checkedItem === option.value}
+              onCheckedChange={() => handleCheckedChange(option.value)}
+            >
+              {option.label}
+            </DropdownMenuCheckboxItem>
+            {index < options.length - 1 && <DropdownMenuSeparator />}
+          </React.Fragment>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   )
