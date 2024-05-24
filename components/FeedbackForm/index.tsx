@@ -19,6 +19,7 @@ import IconNewFeedback from "@/assets/shared/icon-new-feedback.svg"
 import { Textarea } from "../ui/textarea"
 import { BasicSelect } from "../ui/BasicSelect"
 import Image from "next/image"
+import { postFeedback } from "@/app/services/feedbackService"
 
 const formSchema = z.object({
   title: z
@@ -34,15 +35,19 @@ const formSchema = z.object({
     }),
 })
 
-export function FeedbackForm() {
+interface FeedbackFormProps {
+  isAuth: boolean
+}
+
+export function FeedbackForm({ isAuth }: FeedbackFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (isAuth) {
+      postFeedback(values)
+    }
   }
 
   return (
