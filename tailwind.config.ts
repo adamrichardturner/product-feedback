@@ -44,7 +44,7 @@ const config = {
       },
       colors: {
         border: "hsl(var(--border))",
-        ring: "hsl(var(--ring))",
+        ring: "var(--ring)",
         background: "var(--background)",
         foreground: "hsl(var(--foreground))",
         primary: {

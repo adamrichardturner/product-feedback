@@ -1,7 +1,8 @@
 import Bulb from "@/assets/suggestions/icon-suggestions.svg"
 import Image from "next/image"
-import { NavigationDropdownMenu } from "./NavigationDropdownMenu"
+import { SelectDropdownMenu } from "../ui/SelectDropdownMenu"
 import IconPlus from "@/assets/shared/icon-plus.svg"
+import Link from "next/link"
 
 function Navigation() {
   return (
@@ -14,14 +15,16 @@ function Navigation() {
           </h3>
         </div>
         <div>
-          <NavigationDropdownMenu options={options} />
+          <SelectDropdownMenu options={options} />
         </div>
       </div>
       <div>
-        <div className='flex items-center rounded-btn py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
-          <Image src={IconPlus} width={10} height={10} alt='Plus' />
-          <span className='font-semibold text-sm'>Add Feedback</span>
-        </div>
+        <Link href='/feedback/create'>
+          <div className='flex items-center rounded-btn py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
+            <Image src={IconPlus} width={10} height={10} alt='Plus' />
+            <span className='font-semibold text-sm'>Add Feedback</span>
+          </div>
+        </Link>
       </div>
     </div>
   )

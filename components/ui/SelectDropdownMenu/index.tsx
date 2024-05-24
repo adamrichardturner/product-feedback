@@ -18,7 +18,7 @@ interface SelectOption {
   label: string
 }
 
-interface NavigationDropdownMenuProps {
+interface SelectDropdownMenuProps {
   options: SelectOption[]
 }
 
@@ -27,9 +27,7 @@ const formatChoice = (value: string | null, options: SelectOption[]) => {
   return selectedOption ? selectedOption.label : ""
 }
 
-export function NavigationDropdownMenu({
-  options,
-}: NavigationDropdownMenuProps) {
+export function SelectDropdownMenu({ options }: SelectDropdownMenuProps) {
   const [checkedItem, setCheckedItem] = React.useState<string | null>(
     options[0]?.value || null
   )
