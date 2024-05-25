@@ -1,6 +1,6 @@
 "use client"
 
-import { getCategoriesList } from "@/app/services/categoriesService"
+import { getCategoriesList } from "@/services/categoriesService"
 import { useCallback, useEffect, useState } from "react"
 
 const useCategories = () => {

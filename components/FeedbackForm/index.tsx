@@ -19,7 +19,7 @@ import IconNewFeedback from "@/assets/shared/icon-new-feedback.svg"
 import { Textarea } from "../ui/textarea"
 import { BasicSelect } from "../ui/BasicSelect"
 import Image from "next/image"
-import { postFeedback } from "@/app/services/feedbackService"
+import { postFeedback } from "@/services/feedbackService"
 
 const formSchema = z.object({
   title: z
