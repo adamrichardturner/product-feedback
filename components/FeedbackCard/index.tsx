@@ -47,9 +47,7 @@ function FeedbackCard({
       </div>
       <div className='flex items-center space-x-2 -mt-7 pr-8'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
-        <span className='font-semibold text-txt-primary'>
-          {comments?.length <= 0 ? 0 : comments?.length}
-        </span>
+        <span className='font-semibold text-txt-primary'>0</span>
       </div>
     </div>
   )

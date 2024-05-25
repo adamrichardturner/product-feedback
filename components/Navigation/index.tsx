@@ -1,17 +1,21 @@
+"use client"
+
 import Bulb from "@/assets/suggestions/icon-suggestions.svg"
 import Image from "next/image"
 import { SelectDropdownMenu } from "../ui/SelectDropdownMenu"
 import IconPlus from "@/assets/shared/icon-plus.svg"
 import Link from "next/link"
+import useFeedback from "@/hooks/feedback/useFeedback"
 
 function Navigation() {
+  const { feedbackCount } = useFeedback()
   return (
     <div className='h-[72px] w-full bg-btn-back-background rounded-btn flex items-center justify-between pl-6 py-6 pr-4'>
       <div className='flex items-center space-x-8'>
         <div className='flex space-x-4'>
           <Image src={Bulb} width={23} height={24} alt='Bulb' />
           <h3 className='font-[700] text-white tracking-[-0.25px] text-md'>
-            6 Suggestions
+            {feedbackCount} Suggestions
           </h3>
         </div>
         <div>

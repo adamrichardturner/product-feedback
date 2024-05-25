@@ -19,34 +19,38 @@ interface SelectOption {
 interface SelectFormProps {
   field: ControllerRenderProps<any, any>
   options: SelectOption[]
+  disabled: boolean
 }
 
-export function BasicSelect({ field, options }: SelectFormProps) {
+export function BasicSelect({ field, options, disabled }: SelectFormProps) {
   if (options.length < 1) {
     return null
   }
 
-  const [firstOption, ...restOptions] = options
+  const [firstOption] = options
   const [isOpen, setIsOpen] = useState(false)
+  const [selectedOption, setSelectedOption] = useState(firstOption)
 
   return (
     <>
       <Select
-        onValueChange={field.onChange}
+        onValueChange={(value) => {
+          const selected = options.find((option) => option.value === value)
+          setSelectedOption(selected!)
+          field.onChange(value)
+        }}
         defaultValue={firstOption.value}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        disabled={disabled}
       >
         <FormControl>
           <SelectTrigger isOpen={isOpen}>
-            <SelectValue>{firstOption.label}</SelectValue>
+            <SelectValue>{selectedOption.label}</SelectValue>
           </SelectTrigger>
         </FormControl>
         <SelectContent>
-          <SelectItem key={firstOption.value} value={firstOption.value}>
-            {firstOption.label}
-          </SelectItem>
-          {restOptions.map((option: SelectOption) => (
+          {options.map((option: SelectOption) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
             </SelectItem>

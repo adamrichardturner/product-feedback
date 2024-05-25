@@ -2,15 +2,19 @@
 
 import useFeedback from "@/hooks/feedback/useFeedback"
 import FeedbackCard from "../FeedbackCard"
+import LoadingDots from "@/assets/shared/loading.svg"
+import Image from "next/image"
 
 const FeedbackGrid = () => {
-  const { feedbackData } = useFeedback()
+  const { feedbackData, loading } = useFeedback()
 
-  if (feedbackData.length <= 0) {
-    return <h2>No Feedback</h2>
+  if (loading) {
+    return (
+      <div className='w-full h-full flex items-center justify-center'>
+        <Image src={LoadingDots} width={60} height={60} alt='Loading Dots' />
+      </div>
+    )
   }
-
-  console.log(feedbackData)
 
   return (
     <div className='space-y-5'>

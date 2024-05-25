@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -42,11 +44,23 @@ interface FeedbackFormProps {
 export function FeedbackForm({ isAuth }: FeedbackFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      category: "feature",
+    },
   })
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (isAuth) {
-      postFeedback(values)
+      setLoading(true)
+      try {
+        await postFeedback(values)
+        router.push("/")
+      } catch (error) {
+        console.error("Error posting feedback:", error)
+        setLoading(false)
+      }
     }
   }
 
@@ -78,7 +92,7 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
                 Add a short, descriptive headline
               </FormDescription>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} disabled={loading} />
               </FormControl>
 
               <FormMessage />
@@ -97,7 +111,11 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
                 Choose a category for your feedback
               </FormDescription>
               <FormControl>
-                <BasicSelect field={field} options={options} />
+                <BasicSelect
+                  field={field}
+                  options={options}
+                  disabled={loading}
+                />
               </FormControl>
 
               <FormMessage />
@@ -117,7 +135,7 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
                 etc.
               </FormDescription>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea {...field} disabled={loading} />
               </FormControl>
 
               <FormMessage />
@@ -128,9 +146,17 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
           <div className='flex items-center rounded-btn py-2.5 text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'>
             <span className='font-semibold text-sm px-4'>Cancel</span>
           </div>
-          <Button type='submit' className='px-0'>
-            <div className='flex items-center rounded-btn py-2.5 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
-              <span className='font-semibold text-sm px-4'>Add Feedback</span>
+          <Button type='submit' className='px-0' disabled={loading}>
+            <div
+              className={`flex items-center w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
+                loading
+                  ? "bg-[#C75AF6] hover:bg-[#C75AF6]"
+                  : "bg-[#AD1FEA] hover:bg-[#C75AF6]"
+              }`}
+            >
+              <span className='font-semibold text-sm px-4'>
+                {loading ? "Posting" : "Add Feedback"}
+              </span>
             </div>
           </Button>
         </div>

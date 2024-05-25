@@ -6,7 +6,7 @@ import FeedbackGrid from "@/components/FeedbackGrid"
 
 export default async function Index() {
   return (
-    <div className='min-h-screen flex gap-[30px] flex-row w-full flex-1 max-w-full pt-[94px]'>
+    <div className='min-h-screen flex gap-[30px] flex-row w-full flex-1 max-w-full pt-[94px] pb-[130px]'>
       <div className='w-[255px] flex flex-col gap-6'>
         <TitleWidget />
         <CategoryWidget active='all' />
