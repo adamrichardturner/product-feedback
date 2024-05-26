@@ -6,7 +6,7 @@ import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 
 const FeedbackGrid = () => {
-  const { feedbackData, loading } = useFeedback()
+  const { feedbackData, filterFeedbackByCategory, loading } = useFeedback()
 
   if (loading) {
     return (
@@ -16,9 +16,11 @@ const FeedbackGrid = () => {
     )
   }
 
+  const filteredFeedback = filterFeedbackByCategory(feedbackData)
+
   return (
     <div className='space-y-5'>
-      {feedbackData.map(
+      {filteredFeedback.map(
         ({
           id,
           title,
@@ -31,6 +33,7 @@ const FeedbackGrid = () => {
         }) => {
           return (
             <FeedbackCard
+              key={id}
               id={id}
               user_id={user_id}
               title={title}

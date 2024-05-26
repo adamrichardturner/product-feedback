@@ -1,10 +1,11 @@
 import { create } from "zustand"
+import {
+  createCategoriesSlice,
+  ICategoriesSlice,
+} from "./slices/categoriesSlice"
 
-interface CategoriesState {
-  id: string
-  description: string
-}
+export type ICategoriesStore = ICategoriesSlice
 
-// const useCategoriesStore = create<CategoriesState>()((set) => ({
-
-// }))
+export const useCategoriesStore = create<ICategoriesStore>()((...a) => ({
+  ...createCategoriesSlice(...a),
+}))

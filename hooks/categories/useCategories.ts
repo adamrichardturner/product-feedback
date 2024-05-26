@@ -1,22 +1,14 @@
 "use client"
 
-import { getCategoriesList } from "@/services/categoriesService"
-import { useCallback, useEffect, useState } from "react"
+import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
 
 const useCategories = () => {
-  const [categories, setCategories] = useState([])
-
-  useEffect(() => {
-    categoriesList()
-  }, [])
-
-  const categoriesList = useCallback(async () => {
-    const list = await getCategoriesList()
-    setCategories(list)
-  }, [])
+  const selectedCategory = useCategoriesStore((state) => state.selectedCategory)
+  const setCategory = useCategoriesStore((state) => state.setCategory)
 
   return {
-    categories,
+    selectedCategory,
+    setCategory,
   }
 }
 

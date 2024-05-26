@@ -3,8 +3,30 @@ import { createClient } from "@/utils/supabase/server"
 export async function GET() {
   const supabase = createClient()
 
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    return new Response(
+      JSON.stringify({ error: "You need to be logged in to fetch feedback" }),
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+  }
+
+  const userId = user.id
+
   try {
-    const { data: feedback, error } = await supabase.from("feedback").select()
+    const { data: feedback, error } = await supabase.from("feedback").select(`
+        *,
+        votes (user_id)
+      `)
 
     if (error) {
       console.error("Error fetching feedback data", error)
@@ -16,7 +38,12 @@ export async function GET() {
       })
     }
 
-    return new Response(JSON.stringify(feedback), {
+    const processedFeedback = feedback.map((item: any) => ({
+      ...item,
+      upvotedByUser: item.votes.some((vote: any) => vote.user_id === userId),
+    }))
+
+    return new Response(JSON.stringify(processedFeedback), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
