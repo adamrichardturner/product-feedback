@@ -11,7 +11,6 @@ export default async function Index() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log("USER: ", user)
   return (
     <div className='min-h-screen flex gap-[30px] flex-row w-full flex-1 max-w-full pt-[94px] pb-[130px]'>
       <div className='w-[255px] flex flex-col gap-6'>

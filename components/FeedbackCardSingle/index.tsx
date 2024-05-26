@@ -6,9 +6,8 @@ import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
-import Link from "next/link"
 
-function FeedbackCard({
+function FeedbackCardSingle({
   id,
   user_id,
   title,
@@ -35,12 +34,9 @@ function FeedbackCard({
           <UpVoteUnauth upvotes={upvotes} />
         )}
         <article>
-          <Link href={`/feedback/${id}`}>
-            <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md hover:text-[#4661E6] transition-colors cursor-pointer'>
-              {title}
-            </h3>
-          </Link>
-
+          <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md'>
+            {title}
+          </h3>
           <p className='pt-1 text-body1 leading-body1 text-txt-secondary'>
             {detail}
           </p>
@@ -60,4 +56,4 @@ function FeedbackCard({
   )
 }
 
-export default FeedbackCard
+export default FeedbackCardSingle
