@@ -14,26 +14,21 @@ const useFeedback = () => {
   const setLoading = useFeedbackStore((state) => state.setLoading)
   const feedbackCount = feedbackData.length
 
-  const getAllFeedbackData = useCallback(
-    async (userId: string) => {
-      try {
-        setLoading(true)
-        const data = await getAllFeedback(userId)
-        addAllFeedback(data)
-      } catch (error) {
-        console.error("Error fetching feedback data:", error)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [addAllFeedback, setLoading]
-  )
+  const getAllFeedbackData = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await getAllFeedback()
+      addAllFeedback(data)
+    } catch (error) {
+      console.error("Error fetching feedback data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }, [addAllFeedback, setLoading])
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // Replace with actual method to get current user ID
-      const userId = "current-user-id"
-      await getAllFeedbackData(userId)
+      await getAllFeedbackData()
     }
     fetchUserData()
   }, [getAllFeedbackData])

@@ -1,10 +1,11 @@
-import UpVoteArrow from "@/assets/shared/icon-arrow-up-blue.svg"
+import UpVoteAuth from "../UpVote/UpVoteAuth"
+import { UpVoteUnauth } from "../UpVote/UpVoteUnauth"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
-import useVoting from "@/hooks/voting/useVoting"
 import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
+import { motion } from "framer-motion"
 
 function FeedbackCard({
   id,
@@ -15,22 +16,23 @@ function FeedbackCard({
   comments,
   status,
   upvotes,
+  authUserId,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
-  const { toggleUserUpvote } = useVoting()
 
   return (
-    <div className='h-[152px] rounded-btn bg-white pl-8 pt-7 flex justify-between'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className='h-[152px] rounded-btn bg-white pl-8 pt-7 flex justify-between'
+    >
       <div className='bg-white flex space-x-10'>
-        <div
-          className='flex flex-col items-center space-y-1 pt-3.5 pb-2 w-[40px] h-[52px] cursor-pointer transition-colors rounded-btn bg-btn-upvote-background hover:bg-btn-upvote-background-hover'
-          onClick={() => toggleUserUpvote(id)}
-        >
-          <Image src={UpVoteArrow} width={8} height={4} alt='Up Vote Arrow' />
-          <span className='font-semibold text-txt-primary text-body3'>
-            {upvotes}
-          </span>
-        </div>
+        {authUserId === "authenticated" ? (
+          <UpVoteAuth feedbackId={id} upvotes={upvotes} />
+        ) : (
+          <UpVoteUnauth upvotes={upvotes} />
+        )}
         <article>
           <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md'>
             {title}
@@ -50,7 +52,7 @@ function FeedbackCard({
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>0</span>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

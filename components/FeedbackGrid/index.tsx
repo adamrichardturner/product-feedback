@@ -5,8 +5,14 @@ import FeedbackCard from "../FeedbackCard"
 import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 
-const FeedbackGrid = () => {
+interface FeedbackGridProps {
+  userId?: string
+}
+
+const FeedbackGrid = ({ userId }: FeedbackGridProps) => {
   const { feedbackData, filterFeedbackByCategory, loading } = useFeedback()
+
+  console.log("FEEDBACK GRID USER: ", userId)
 
   if (loading) {
     return (
@@ -42,6 +48,7 @@ const FeedbackGrid = () => {
               comments={comments}
               status={status}
               upvotes={upvotes}
+              authUserId={userId}
             />
           )
         }

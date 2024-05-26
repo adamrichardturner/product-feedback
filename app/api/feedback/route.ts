@@ -8,19 +8,7 @@ export async function GET() {
     error: userError,
   } = await supabase.auth.getUser()
 
-  if (userError || !user) {
-    return new Response(
-      JSON.stringify({ error: "You need to be logged in to fetch feedback" }),
-      {
-        status: 401,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-  }
-
-  const userId = user.id
+  const userId = user?.id
 
   try {
     const { data: feedback, error } = await supabase.from("feedback").select(`

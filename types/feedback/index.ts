@@ -29,4 +29,5 @@ export interface FeedbackCardProps {
   comments: string[]
   status: string
   upvotes: number
+  authUserId?: string
 }
