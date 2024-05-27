@@ -91,7 +91,7 @@ const useUser = () => {
           await updateUserAuth()
           toast("Logged in successfully.")
         }
-        return data
+        return { data, error }
       } catch (error) {
         console.error("Login error:", error)
         toast("Could not authenticate user")

@@ -41,6 +41,14 @@ export async function GET() {
     })
   } catch (error) {
     console.error("Unexpected error fetching user data:", error)
-    return null
+    new Response(
+      JSON.stringify({ error: "Unexpected error fetching user data:" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
   }
 }

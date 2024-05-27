@@ -8,6 +8,7 @@ import {
 } from "@supabase/auth-helpers-nextjs"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
+import BackButton from "@/components/BackButton"
 import useUser from "@/hooks/user/useUser"
 
 export default function AccountForm({ session }: { session: Session | null }) {
@@ -86,8 +87,9 @@ export default function AccountForm({ session }: { session: Session | null }) {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center'>
-      <div className='bg-white rounded-lg p-8 w-full md:w-[730px]'>
+    <div className='min-h-screen flex flex-col items-start justify-center'>
+      <BackButton />
+      <div className='bg-white rounded-lg p-8 w-full mt-[68px] md:w-[540px]'>
         <div className='flex justify-center mb-6'>
           <Avatar
             uid={user!.id}
@@ -121,7 +123,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             type='text'
             value={fullname || ""}
             onChange={(e) => setFullname(e.target.value)}
-            className='w-full px-4 py-2 border rounded-md'
+            className='w-full px-4 py-2 rounded-btn'
           />
         </div>
         <div className='mb-4'>
@@ -133,7 +135,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             type='text'
             value={username || ""}
             onChange={(e) => setUsername(e.target.value)}
-            className='w-full px-4 py-2 border rounded-md'
+            className='w-full px-4 py-2 rounded-btn'
           />
         </div>
         <div className='mb-4'>
@@ -145,7 +147,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             type='url'
             value={website || ""}
             onChange={(e) => setWebsite(e.target.value)}
-            className='w-full px-4 py-2 border rounded-md'
+            className='w-full px-4 py-2 rounded-btn'
           />
         </div>
         <div className='flex row space-x-2 justify-end'>
