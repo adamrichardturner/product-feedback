@@ -1,15 +1,21 @@
 "use client"
 
 import { useEffect } from "react"
-import {
-  createClientComponentClient,
-  Session,
-} from "@supabase/auth-helpers-nextjs"
 import useUser from "@/hooks/user/useUser"
 import AvatarFallbackImage from "@/assets/shared/avatarFallback.png"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { createClient } from "@/utils/supabase/client"
 
-export default function AuthWidget({ session }: { session: Session | null }) {
+export default function AuthWidget() {
+  const router = useRouter()
+  const supabase = createClient()
   const { isAuth, updateUserAuth, fetchAndSetAvatarUrl, avatar_url, user } =
     useUser()
 
@@ -23,33 +29,84 @@ export default function AuthWidget({ session }: { session: Session | null }) {
     if (user && !avatar_url) {
       checkLoggedIn()
     }
-  }, [user, avatar_url, updateUserAuth, fetchAndSetAvatarUrl, isAuth])
+  }, [user, avatar_url, updateUserAuth, fetchAndSetAvatarUrl])
+
+  const handleAccount = () => {
+    router.push("/account")
+  }
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    updateUserAuth()
+    router.push("/")
+  }
+
+  const handleLogin = () => {
+    router.push("/login")
+  }
+
+  const handleRegister = () => {
+    router.push("/register")
+  }
 
   return (
-    <>
-      {isAuth ? (
-        <div className='avatar-container'>
-          <Image
-            width={70}
-            height={70}
-            src={avatar_url || AvatarFallbackImage}
-            alt='User Avatar'
-            className='avatar image rounded-full'
-            style={{ height: 70, width: 70 }}
-          />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className='cursor-pointer'>
+          {isAuth ? (
+            <Image
+              width={60}
+              height={60}
+              src={avatar_url || AvatarFallbackImage}
+              alt='User Avatar'
+              className='avatar image rounded-full'
+            />
+          ) : (
+            <Image
+              width={60}
+              height={60}
+              src={AvatarFallbackImage}
+              alt='Fallback Avatar'
+              className='avatar image rounded-full'
+            />
+          )}
         </div>
-      ) : (
-        <div className='avatar-container'>
-          <Image
-            width={70}
-            height={70}
-            src={AvatarFallbackImage}
-            alt='Fallback Avatar'
-            className='avatar image rounded-full'
-            style={{ height: 70, width: 70 }}
-          />
-        </div>
-      )}
-    </>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        sideOffset={10}
+        side={"bottom"}
+        align={"end"}
+        className='w-56 cursor-pointer'
+      >
+        {isAuth ? (
+          <>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={handleAccount}
+            >
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <>
+            <DropdownMenuItem className='cursor-pointer' onClick={handleLogin}>
+              Login
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={handleRegister}
+            >
+              Register
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

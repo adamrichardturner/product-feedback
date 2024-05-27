@@ -13,18 +13,24 @@ export default async function Index() {
     data: { session },
   } = await supabase.auth.getSession()
   return (
-    <div className='min-h-screen flex gap-[30px] flex-row w-full flex-1 max-w-full pt-[94px] pb-[130px]'>
-      <div className='w-[255px] flex flex-col gap-6'>
-        <TitleWidget />
-        <CategoryWidget />
-        <RoadmapWidget />
-        <AuthWidget session={session} />
-      </div>
-      <div className='flex-grow'>
-        <Navigation />
-        <main className='pt-8'>
-          <FeedbackGrid />
-        </main>
+    <div className='w-full flex flex-col items-end justify-center pt-6'>
+      <header>
+        <div>
+          <AuthWidget />
+        </div>
+      </header>
+      <div className='min-h-screen flex gap-[30px] flex-row w-full flex-1 max-w-full pt-6 pb-[130px]'>
+        <div className='w-[255px] flex flex-col gap-6'>
+          <TitleWidget />
+          <CategoryWidget />
+          <RoadmapWidget />
+        </div>
+        <div className='flex-grow'>
+          <Navigation />
+          <main className='pt-8'>
+            <FeedbackGrid />
+          </main>
+        </div>
       </div>
     </div>
   )
