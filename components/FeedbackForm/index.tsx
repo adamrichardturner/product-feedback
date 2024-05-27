@@ -22,6 +22,7 @@ import { Textarea } from "../ui/textarea"
 import { BasicSelect } from "../ui/BasicSelect"
 import Image from "next/image"
 import { postFeedback } from "@/services/feedbackService"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   title: z
@@ -57,6 +58,7 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
       try {
         await postFeedback(values)
         router.push("/")
+        toast("Feedback created.")
       } catch (error) {
         console.error("Error posting feedback:", error)
         setLoading(false)

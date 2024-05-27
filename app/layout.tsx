@@ -1,5 +1,6 @@
 import { Jost } from "next/font/google"
 import "./globals.css"
+import { Toaster } from "@/components/ui/sonner"
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -24,6 +25,7 @@ export default function RootLayout({
         <main className='min-h-screen flex flex-col items-center container'>
           {children}
         </main>
+        <Toaster />
       </body>
     </html>
   )

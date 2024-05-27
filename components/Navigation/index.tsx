@@ -3,12 +3,14 @@
 import Bulb from "@/assets/suggestions/icon-suggestions.svg"
 import Image from "next/image"
 import { SelectDropdownMenu } from "../ui/SelectDropdownMenu"
-import IconPlus from "@/assets/shared/icon-plus.svg"
-import Link from "next/link"
+import useUser from "@/hooks/user/useUser"
 import useFeedback from "@/hooks/feedback/useFeedback"
+import FeedbackButtonAuth from "./FeebackButtonAuth"
+import { FeedbackButtonUnAuth } from "./FeedbackButtonUnAuth"
 
 function Navigation() {
   const { feedbackCount } = useFeedback()
+  const { isAuth } = useUser()
   return (
     <div className='h-[72px] w-full bg-btn-back-background rounded-btn flex items-center justify-between pl-6 py-6 pr-4'>
       <div className='flex items-center space-x-8'>
@@ -22,14 +24,7 @@ function Navigation() {
           <SelectDropdownMenu options={options} />
         </div>
       </div>
-      <div>
-        <Link href='/feedback/create'>
-          <div className='flex items-center rounded-btn py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
-            <Image src={IconPlus} width={10} height={10} alt='Plus' />
-            <span className='font-semibold text-sm'>Add Feedback</span>
-          </div>
-        </Link>
-      </div>
+      <div>{isAuth ? <FeedbackButtonAuth /> : <FeedbackButtonUnAuth />}</div>
     </div>
   )
 }

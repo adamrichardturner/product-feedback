@@ -14,17 +14,13 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import UpVoteArrow from "@/assets/shared/icon-arrow-up-blue.svg"
+import IconPlus from "@/assets/shared/icon-plus.svg"
 import Image from "next/image"
 import Link from "next/link"
 import useUser from "@/hooks/user/useUser"
 import { toast } from "sonner"
 
-interface UpVoteUnauthProps {
-  upvotes: number
-}
-
-export function UpVoteUnauth({ upvotes }: UpVoteUnauthProps) {
+export function FeedbackButtonUnAuth() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -35,23 +31,21 @@ export function UpVoteUnauth({ upvotes }: UpVoteUnauthProps) {
     setLoading(true)
     try {
       await loginWithPassword(email, password)
+      setLoading(false)
       router.push("/")
     } catch (error) {
       console.error("Login error:", error)
-      router.push("/login?message=Could not authenticate user")
-    } finally {
       setLoading(false)
+      router.push("/login?message=Could not authenticate user")
     }
   }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className='flex flex-col items-center space-y-1 pt-3.5 pb-2 w-[40px] h-[52px] cursor-pointer transition-colors rounded-btn bg-btn-upvote-background hover:bg-btn-upvote-background-hover'>
-          <Image src={UpVoteArrow} width={8} height={4} alt='Up Vote Arrow' />
-          <span className='font-semibold text-txt-primary text-body3'>
-            {upvotes}
-          </span>
+        <div className='flex items-center rounded-btn py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
+          <Image src={IconPlus} width={10} height={10} alt='Plus' />
+          <span className='font-semibold text-sm'>Add Feedback</span>
         </div>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px] text-txt-primary'>
@@ -97,7 +91,7 @@ export function UpVoteUnauth({ upvotes }: UpVoteUnauthProps) {
             <span className='font-semibold text-sm px-4'>Cancel</span>
           </div>
           <Button
-            type='submit'
+            type='button'
             onClick={handleSubmit}
             className='px-0'
             disabled={loading}

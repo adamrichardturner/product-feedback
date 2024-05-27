@@ -40,7 +40,7 @@ export default function Page({ params }: { params: { id: string } }) {
     if (params.id) {
       fetchFeedback()
     }
-  }, [params.id, supabase, feedback])
+  }, [])
 
   return (
     <div className='w-[730px]'>

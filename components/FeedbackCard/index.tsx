@@ -7,6 +7,7 @@ import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import useUser from "@/hooks/user/useUser"
 
 function FeedbackCard({
   id,
@@ -17,9 +18,9 @@ function FeedbackCard({
   comments,
   status,
   upvotes,
-  authUserId,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
+  const { isAuth } = useUser()
 
   return (
     <motion.div
@@ -29,7 +30,7 @@ function FeedbackCard({
       className='h-[152px] rounded-btn bg-white pl-8 pt-7 flex justify-between'
     >
       <div className='bg-white flex space-x-10'>
-        {authUserId === "authenticated" ? (
+        {isAuth ? (
           <UpVoteAuth feedbackId={id} upvotes={upvotes} />
         ) : (
           <UpVoteUnauth upvotes={upvotes} />
