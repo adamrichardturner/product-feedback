@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='en' className={jost.className} suppressHydrationWarning>
       <body className='bg-background text-foreground overflow-y-scroll'>
-        <main className='min-h-screen flex flex-col items-center container'>
+        <main className='min-h-screen flex flex-col items-center md:container'>
           {children}
         </main>
         <Toaster />

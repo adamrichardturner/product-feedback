@@ -1,6 +1,6 @@
 function RoadmapWidget() {
   return (
-    <div className='bg-white rounded-btn p-6 text-txt-secondary'>
+    <div className='bg-white hidden md:block flex-1 lg:flex-none rounded-btn p-6 text-txt-secondary'>
       <div className='flex justify-between items-center'>
         <h2 className='text-txt-primary font-bold text-[18px] tracking-[-0.25px]'>
           Roadmap
