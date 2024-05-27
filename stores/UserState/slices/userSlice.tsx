@@ -1,4 +1,3 @@
-// stores/UserState/useUserStore.js
 import create from "zustand"
 import { StateCreator } from "zustand"
 
@@ -51,3 +50,5 @@ export const createUserSlice: StateCreator<IUserSlice> = (set) => ({
       avatar_url: newUrl,
     })),
 })
+
+export const useUserStore = create(createUserSlice)

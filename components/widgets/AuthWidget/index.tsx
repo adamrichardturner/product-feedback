@@ -1,64 +1,54 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 import {
   createClientComponentClient,
   Session,
 } from "@supabase/auth-helpers-nextjs"
 import useUser from "@/hooks/user/useUser"
-import { toast } from "sonner"
-import AuthAvatar from "./AuthAvatar"
+import AvatarFallbackImage from "@/assets/shared/avatarFallback.png"
+import Image from "next/image"
 
 export default function AuthWidget({ session }: { session: Session | null }) {
-  const supabase = createClientComponentClient<any>()
-  const { isAuth, updateUserAuth, updateUserAvatar } = useUser()
-  const [loading, setLoading] = useState(true)
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null)
-  const user = session?.user
-
-  const getProfile = useCallback(async () => {
-    if (!user) return
-
-    try {
-      setLoading(true)
-
-      const { data, error, status } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user.id)
-        .single()
-
-      if (error && status !== 406) {
-        throw error
-      }
-
-      if (data) {
-        setAvatarUrl(data.avatar_url)
-        updateUserAvatar(data.avatar_url)
-      }
-    } catch (error) {
-      toast("Error loading user data.")
-    } finally {
-      setLoading(false)
-    }
-  }, [user, supabase, updateUserAvatar])
+  const { isAuth, updateUserAuth, fetchAndSetAvatarUrl, avatar_url, user } =
+    useUser()
 
   useEffect(() => {
     const checkLoggedIn = async () => {
       await updateUserAuth()
       if (user) {
-        await getProfile()
+        await fetchAndSetAvatarUrl()
       }
     }
-    checkLoggedIn()
-  }, [user, updateUserAuth, getProfile])
+    if (user && !avatar_url) {
+      checkLoggedIn()
+    }
+  }, [user, avatar_url, updateUserAuth, fetchAndSetAvatarUrl, isAuth])
 
   return (
     <>
       {isAuth ? (
-        <AuthAvatar uid={user?.id || ""} url={avatar_url} size={70} />
+        <div className='avatar-container'>
+          <Image
+            width={70}
+            height={70}
+            src={avatar_url || AvatarFallbackImage}
+            alt='User Avatar'
+            className='avatar image rounded-full'
+            style={{ height: 70, width: 70 }}
+          />
+        </div>
       ) : (
-        <h2>Null</h2>
+        <div className='avatar-container'>
+          <Image
+            width={70}
+            height={70}
+            src={AvatarFallbackImage}
+            alt='Fallback Avatar'
+            className='avatar image rounded-full'
+            style={{ height: 70, width: 70 }}
+          />
+        </div>
       )}
     </>
   )

@@ -49,7 +49,7 @@ export default function AuthAvatar({
     if (url && isAuth) {
       downloadImage(url)
     }
-  }, [url, supabase, updateUserAvatar, isAuth])
+  }, [url, supabase, isAuth])
 
   const handleAccount = () => {
     router.push("/account")

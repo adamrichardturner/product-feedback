@@ -11,10 +11,10 @@ const useUser = () => {
   const user = useUserStore((state) => state.user)
   const isLoggedIn = useUserStore((state) => state.isLoggedIn)
   const isAuth = useUserStore((state) => state.isAuth)
+  const avatar_url = useUserStore((state) => state.avatar_url)
   const setUser = useUserStore((state) => state.setUser)
   const setAuth = useUserStore((state) => state.setAuth)
   const setAvatarUrl = useUserStore((state) => state.setAvatarUrl)
-  const avatar_url = useUserStore((state) => state.avatar_url)
 
   const updateUser = useCallback(
     (newUser: any) => {
@@ -47,7 +47,7 @@ const useUser = () => {
   )
 
   const fetchAndSetAvatarUrl = useCallback(async () => {
-    if (!user) return
+    if (!user.id) return
 
     try {
       const { data, error } = await supabase
@@ -105,8 +105,8 @@ const useUser = () => {
     user,
     isLoggedIn,
     isAuth,
-    updateUserAuth,
     avatar_url,
+    updateUserAuth,
     updateUser,
     updateUserAvatar,
     fetchAndSetAvatarUrl,

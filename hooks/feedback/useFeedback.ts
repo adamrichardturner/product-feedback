@@ -31,7 +31,7 @@ const useFeedback = () => {
       await getAllFeedbackData()
     }
     fetchUserData()
-  }, [getAllFeedbackData])
+  }, [])
 
   const filterFeedbackByCategory = useCallback(
     (feedbackData: FeedbackType[]) => {
