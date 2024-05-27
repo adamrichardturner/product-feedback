@@ -55,16 +55,16 @@ export default function AuthWidget() {
         <div className='cursor-pointer'>
           {isAuth ? (
             <Image
-              width={60}
-              height={60}
+              width={40}
+              height={40}
               src={avatar_url || AvatarFallbackImage}
               alt='User Avatar'
               className='avatar image rounded-full'
             />
           ) : (
             <Image
-              width={60}
-              height={60}
+              width={40}
+              height={40}
               src={AvatarFallbackImage}
               alt='Fallback Avatar'
               className='avatar image rounded-full'
@@ -76,18 +76,18 @@ export default function AuthWidget() {
         sideOffset={10}
         side={"bottom"}
         align={"end"}
-        className='w-56 cursor-pointer'
+        className='w-56 cursor-pointer p-2 divide-y'
       >
         {isAuth ? (
           <>
             <DropdownMenuItem
-              className='cursor-pointer'
+              className='cursor-pointer text-txt-primary hover:text-btn-primary-background'
               onClick={handleAccount}
             >
               Account
             </DropdownMenuItem>
             <DropdownMenuItem
-              className='cursor-pointer'
+              className='cursor-pointer text-txt-primary hover:text-btn-primary-background'
               onClick={handleSignOut}
             >
               Sign Out
@@ -95,11 +95,14 @@ export default function AuthWidget() {
           </>
         ) : (
           <>
-            <DropdownMenuItem className='cursor-pointer' onClick={handleLogin}>
+            <DropdownMenuItem
+              className='cursor-pointer text-txt-primary hover:text-btn-primary-background'
+              onClick={handleLogin}
+            >
               Login
             </DropdownMenuItem>
             <DropdownMenuItem
-              className='cursor-pointer'
+              className='cursor-pointer text-txt-primary hover:text-btn-primary-background'
               onClick={handleRegister}
             >
               Register

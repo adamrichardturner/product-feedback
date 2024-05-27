@@ -97,7 +97,7 @@ export default function AuthAvatar({
             )}
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-56'>
+        <DropdownMenuContent className='w-56 p-6'>
           {isAuth ? (
             <>
               <DropdownMenuItem onClick={handleAccount}>
