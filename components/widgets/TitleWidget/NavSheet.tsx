@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 import BurgerOpen from "@/assets/shared/mobile/icon-hamburger.svg"
 import BurgerClose from "@/assets/shared/mobile/icon-close.svg"
@@ -17,6 +10,7 @@ import Image from "next/image"
 
 export function NavSheet() {
   const [isOpen, setIsOpen] = useState(false)
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -30,7 +24,7 @@ export function NavSheet() {
       </SheetTrigger>
       <SheetContent>
         <div className='space-y-6'>
-          <CategoryWidget />
+          <CategoryWidget isOpen={isOpen} setIsOpen={setIsOpen} />
           <RoadmapWidget />
         </div>
       </SheetContent>

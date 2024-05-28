@@ -18,7 +18,6 @@ import UpVoteArrow from "@/assets/shared/icon-arrow-up-blue.svg"
 import Image from "next/image"
 import Link from "next/link"
 import useUser from "@/hooks/user/useUser"
-import { toast } from "sonner"
 
 interface UpVoteUnauthProps {
   upvotes: number
@@ -93,7 +92,7 @@ export function UpVoteUnauth({ upvotes }: UpVoteUnauthProps) {
           </div>
         </div>
         <DialogFooter>
-          <div className='flex items-center rounded-btn py-2.5 text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'>
+          <div className='flex items-center mt-4 md:mt-0 justify-center rounded-btn py-2.5 text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'>
             <span className='font-semibold text-sm px-4'>Cancel</span>
           </div>
           <Button
@@ -103,7 +102,7 @@ export function UpVoteUnauth({ upvotes }: UpVoteUnauthProps) {
             disabled={loading}
           >
             <div
-              className={`flex items-center w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
+              className={`flex items-center w-full md:w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
                 loading
                   ? "bg-[#C75AF6] hover:bg-[#C75AF6]"
                   : "bg-[#AD1FEA] hover:bg-[#C75AF6]"

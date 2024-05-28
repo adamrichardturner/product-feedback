@@ -1,10 +1,24 @@
 "use client"
 
 import useCategories from "@/hooks/categories/useCategories"
+import { CategoriesType } from "@/types/categories"
 
-function CategoryWidget() {
+interface CategoryWidgetProps {
+  setIsOpen?: (isOpen: boolean) => void
+  isOpen?: boolean
+}
+
+function CategoryWidget({ setIsOpen, isOpen }: CategoryWidgetProps) {
   const { setCategory, selectedCategory } = useCategories()
   const active = selectedCategory
+
+  const onClickCategory = (category: CategoriesType) => {
+    setCategory(category)
+    if (setIsOpen) {
+      setIsOpen(!isOpen)
+    }
+  }
+
   return (
     <ul className='w-full flex md:flex gap-x-2.5 flex-1 lg:flex-none gap-y-4 rounded-btn flex-row flex-wrap p-6 bg-white'>
       <li
@@ -13,7 +27,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("all")}
+        onClick={() => onClickCategory("all")}
       >
         All
       </li>
@@ -23,7 +37,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("ui")}
+        onClick={() => onClickCategory("ui")}
       >
         UI
       </li>
@@ -33,7 +47,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("ux")}
+        onClick={() => onClickCategory("ux")}
       >
         UX
       </li>
@@ -43,7 +57,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("enhancement")}
+        onClick={() => onClickCategory("enhancement")}
       >
         Enhancement
       </li>
@@ -53,7 +67,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("bug")}
+        onClick={() => onClickCategory("bug")}
       >
         Bug
       </li>
@@ -63,7 +77,7 @@ function CategoryWidget() {
             ? "bg-btn-upvote-active hover:bg-btn-upvote-active text-white font-[500]"
             : "bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover font-[500]"
         }`}
-        onClick={() => setCategory("feature")}
+        onClick={() => onClickCategory("feature")}
       >
         Feature
       </li>

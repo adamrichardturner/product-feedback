@@ -16,6 +16,7 @@ function FeedbackCardSingle({
   comments,
   status,
   upvotes,
+  upvotedByUser,
   authUserId,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
@@ -29,7 +30,11 @@ function FeedbackCardSingle({
     >
       <div className='bg-white flex space-x-10'>
         {authUserId === "authenticated" ? (
-          <UpVoteAuth feedbackId={id} upvotes={upvotes} />
+          <UpVoteAuth
+            upvotedByUser={upvotedByUser}
+            feedbackId={id}
+            upvotes={upvotes}
+          />
         ) : (
           <UpVoteUnauth upvotes={upvotes} />
         )}

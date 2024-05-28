@@ -70,14 +70,14 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8 relative w-[540px] px-[42px] py-[52px] rounded-btn shadow-sm bg-white'
+        className='space-y-8 relative w-full pt-[44px] pb-6 md:w-[540px] px-6 md:px-[42px] md:py-[52px] rounded-btn shadow-sm bg-white'
       >
         <Image
           src={IconNewFeedback}
           width={56}
           height={56}
           alt='Plus Button in a Circle'
-          className='absolute -top-7 left-10'
+          className='absolute -top-5 md:-top-7 md:left-10 w-[40px] h-[40px] md:w-[56px] md:h-[56px]'
         />
         <span className='text-txt-primary font-[700] text-[24px] tracking-[-0.333px] mt-0 pt-0'>
           Create New Feedback
@@ -144,13 +144,13 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
             </FormItem>
           )}
         />
-        <div className='flex justify-end space-x-4'>
-          <div className='flex items-center rounded-btn py-2.5 text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'>
+        <div className='flex flex-col-reverse md:flex-row justify-end md:space-y-0 md:space-x-4'>
+          <div className='flex items-center mt-4 md:mt-0 rounded-btn py-2.5 justify-center text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'>
             <span className='font-semibold text-sm px-4'>Cancel</span>
           </div>
           <Button type='submit' className='px-0' disabled={loading}>
             <div
-              className={`flex items-center w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
+              className={`flex items-center w-full md:w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
                 loading
                   ? "bg-[#C75AF6] hover:bg-[#C75AF6]"
                   : "bg-[#AD1FEA] hover:bg-[#C75AF6]"

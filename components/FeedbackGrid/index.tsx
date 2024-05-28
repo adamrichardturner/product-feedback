@@ -18,6 +18,8 @@ const FeedbackGrid = () => {
 
   const filteredFeedback = filterFeedbackByCategory(feedbackData)
 
+  console.log(filteredFeedback)
+
   return (
     <div className='space-y-5'>
       {filteredFeedback.map(
@@ -30,6 +32,7 @@ const FeedbackGrid = () => {
           comments,
           status,
           upvotes,
+          upvotedByUser,
         }) => {
           return (
             <FeedbackCard
@@ -42,6 +45,7 @@ const FeedbackGrid = () => {
               comments={comments}
               status={status}
               upvotes={upvotes}
+              upvotedByUser={upvotedByUser}
             />
           )
         }

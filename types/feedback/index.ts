@@ -30,4 +30,5 @@ export interface FeedbackCardProps {
   status: string
   upvotes: number
   authUserId?: string
+  upvotedByUser: boolean
 }

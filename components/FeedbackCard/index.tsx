@@ -17,6 +17,7 @@ function FeedbackCard({
   category_id,
   comments,
   status,
+  upvotedByUser,
   upvotes,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
@@ -32,7 +33,11 @@ function FeedbackCard({
       <div className='bg-white flex flex-1 md:flex-none items-stretch justify-between flex-col-reverse md:flex-row md:space-x-10'>
         <div className='flex items-center md:items-start justify-between flex-1 mt-4 md:mt-0 md:flex-none'>
           {isAuth ? (
-            <UpVoteAuth feedbackId={id} upvotes={upvotes} />
+            <UpVoteAuth
+              upvotedByUser={upvotedByUser}
+              feedbackId={id}
+              upvotes={upvotes}
+            />
           ) : (
             <UpVoteUnauth upvotes={upvotes} />
           )}

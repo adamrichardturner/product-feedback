@@ -12,8 +12,8 @@ export default async function Page() {
   const isAuth = !!user
 
   return (
-    <section className='min-h-screen flex flex-col justify-center'>
-      <div className='relative bottom-12'>
+    <section className='min-h-screen px-6 flex flex-col justify-center'>
+      <div className='pb-8 md:pb-12'>
         <BackButton />
       </div>
       <FeedbackForm isAuth={isAuth} />
