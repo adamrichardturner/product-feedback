@@ -137,3 +137,143 @@ export async function POST(request: Request) {
     })
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    // Check if the request method is PUT
+    if (request.method !== "PUT") {
+      return new Response(
+        JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
+        {
+          status: 405,
+          headers: {
+            "Content-Type": "application/json",
+            Allow: "PUT",
+          },
+        }
+      )
+    }
+
+    // Parse the request body
+    const requestData = await request.json()
+    const { id, title, detail, category, status } = requestData
+
+    // Validate required fields
+    if (!id || !title || !detail || !category || !status) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "All fields (id, title, detail, category, status) are required",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+    }
+
+    const supabase = createClient()
+
+    // Get the authenticated user
+    const { error: userError } = await supabase.auth.getUser()
+
+    if (userError) {
+      throw new Error(userError.message)
+    }
+
+    // Update the feedback in the database
+    const { data, error } = await supabase
+      .from("feedback")
+      .update({ title, detail, category_id: category, status })
+      .eq("id", id)
+      .select()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return new Response(JSON.stringify({ data }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  } catch (error) {
+    console.error("Error updating data", error)
+    return new Response(JSON.stringify({ error: "Error updating data" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    // Check if the request method is DELETE
+    if (request.method !== "DELETE") {
+      return new Response(
+        JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
+        {
+          status: 405,
+          headers: {
+            "Content-Type": "application/json",
+            Allow: "DELETE",
+          },
+        }
+      )
+    }
+
+    // Parse the request body
+    const requestData = await request.json()
+    const { id } = requestData
+
+    // Validate required fields
+    if (!id) {
+      return new Response(JSON.stringify({ error: "ID is required" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    }
+
+    const supabase = createClient()
+
+    // Get the authenticated user
+    const { error: userError } = await supabase.auth.getUser()
+
+    if (userError) {
+      throw new Error(userError.message)
+    }
+
+    // Delete the feedback in the database
+    const { data, error } = await supabase
+      .from("feedback")
+      .delete()
+      .eq("id", id)
+      .select()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return new Response(JSON.stringify({ data }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  } catch (error) {
+    console.error("Error deleting data", error)
+    return new Response(JSON.stringify({ error: "Error deleting data" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  }
+}

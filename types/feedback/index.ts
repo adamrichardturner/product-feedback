@@ -6,6 +6,13 @@ export interface NewFeedbackType {
   detail: string
 }
 
+export interface UpdatedFeedbackType {
+  title: string
+  category: string
+  status: string
+  detail: string
+}
+
 export interface FeedbackType {
   id: string
   user_id: string

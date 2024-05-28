@@ -49,7 +49,7 @@ export default function Page({ params }: { params: { id: string } }) {
           <BackButton />
         </div>
         <div>
-          <Link href='/feedback/edit'>
+          <Link href={`/feedback/edit/${feedback?.id}`}>
             <div className='flex items-center rounded-btn py-2 px-4 space-x-1 text-white bg-[#4661E6] hover:bg-[#7C91F9] transition-colors cursor-pointer'>
               <span className='font-semibold text-sm'>Edit Feedback</span>
             </div>
