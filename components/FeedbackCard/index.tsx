@@ -27,14 +27,26 @@ function FeedbackCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className='h-[152px] rounded-btn bg-white pl-8 pt-7 flex justify-between'
+      className='h-[200px] md:h-[152px] space-y-4 md:space-y-0 rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex md:flex-row items-center justify-between'
     >
-      <div className='bg-white flex space-x-10'>
-        {isAuth ? (
-          <UpVoteAuth feedbackId={id} upvotes={upvotes} />
-        ) : (
-          <UpVoteUnauth upvotes={upvotes} />
-        )}
+      <div className='bg-white flex flex-1 md:flex-none items-stretch justify-between flex-col-reverse md:flex-row md:space-x-10'>
+        <div className='flex items-center md:items-start justify-between flex-1 mt-4 md:mt-0 md:flex-none'>
+          {isAuth ? (
+            <UpVoteAuth feedbackId={id} upvotes={upvotes} />
+          ) : (
+            <UpVoteUnauth upvotes={upvotes} />
+          )}
+          <div className='flex md:hidden items-center space-x-2'>
+            <Image
+              src={SpeechBubble}
+              width={18}
+              height={16}
+              alt='Speech Bubble'
+            />
+            <span className='font-semibold flex text-txt-primary'>0</span>
+          </div>
+        </div>
+
         <article>
           <Link href={`/feedback/${id}`}>
             <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md hover:text-[#4661E6] transition-colors cursor-pointer'>
@@ -53,7 +65,7 @@ function FeedbackCard({
           </div>
         </article>
       </div>
-      <div className='flex items-center space-x-2 -mt-7 pr-8'>
+      <div className='hidden md:flex items-center space-x-2 -mt-7'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>0</span>
       </div>

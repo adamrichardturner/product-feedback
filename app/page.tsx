@@ -16,8 +16,12 @@ export default async function Index() {
       <div className='min-h-screen flex md:gap-[30px] flex-col lg:flex-row w-full flex-1 max-w-full md:pt-6 pb-[130px]'>
         <div className='lg:w-[255px] flex lg:flex-col gap-6'>
           <TitleWidget />
-          <CategoryWidget />
-          <RoadmapWidget />
+          <div className='hidden md:flex flex-1 lg:flex-none'>
+            <CategoryWidget />
+          </div>
+          <div className='hidden md:block flex-1 lg:flex-none'>
+            <RoadmapWidget />
+          </div>
         </div>
         <div className='flex-grow'>
           <Navigation />

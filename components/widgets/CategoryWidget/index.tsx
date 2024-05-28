@@ -6,7 +6,7 @@ function CategoryWidget() {
   const { setCategory, selectedCategory } = useCategories()
   const active = selectedCategory
   return (
-    <ul className='w-full hidden md:flex gap-x-2.5 flex-1 lg:flex-none gap-y-4 rounded-btn flex-row flex-wrap p-6 bg-white'>
+    <ul className='w-full flex md:flex gap-x-2.5 flex-1 lg:flex-none gap-y-4 rounded-btn flex-row flex-wrap p-6 bg-white'>
       <li
         className={`text-xs items-center justify-center flex transition-colors py-1.5 px-4 rounded-btn hover:cursor-pointer ${
           active === "all"
