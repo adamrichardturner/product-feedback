@@ -67,6 +67,7 @@ export default function Page({ params }: { params: { id: string } }) {
           status={feedback.status}
           upvotes={feedback.upvotes}
           authUserId={userAud}
+          upvotedByUser={feedback.upvotedByUser}
         />
       ) : (
         <div className='w-full h-full flex items-center justify-center'>
