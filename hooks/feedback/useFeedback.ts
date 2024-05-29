@@ -45,11 +45,20 @@ const useFeedback = () => {
     [selectedCategory]
   )
 
+  const getSingleFeedback = useCallback(async (feedbackId: string) => {
+    const singleFeedback = await feedbackData.find(
+      (feedback) => feedback.id === feedbackId
+    )
+    return singleFeedback
+  }, [])
+
   return {
     feedbackData,
     feedbackCount,
     loading,
     filterFeedbackByCategory,
+    getAllFeedbackData,
+    getSingleFeedback,
   }
 }
 

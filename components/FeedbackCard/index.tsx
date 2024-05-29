@@ -28,7 +28,7 @@ function FeedbackCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className='h-[200px] md:h-[152px] space-y-4 md:space-y-0 rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex md:flex-row items-center justify-between'
+      className='min-h-[200px] md:min-h-[152px] space-y-4 md:space-y-0 rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex md:flex-row items-center justify-between overflow-hidden'
     >
       <div className='bg-white flex flex-1 md:flex-none items-stretch justify-between flex-col-reverse md:flex-row md:space-x-10'>
         <div className='flex items-center md:items-start justify-between flex-1 mt-4 md:mt-0 md:flex-none'>
@@ -52,14 +52,14 @@ function FeedbackCard({
           </div>
         </div>
 
-        <article>
+        <article className='max-w-full overflow-hidden'>
           <Link href={`/feedback/${id}`}>
-            <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md hover:text-[#4661E6] transition-colors cursor-pointer'>
+            <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md hover:text-[#4661E6] transition-colors cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap'>
               {title}
             </h3>
           </Link>
 
-          <p className='pt-1 text-body1 leading-body1 text-txt-secondary'>
+          <p className='pt-1 w-full text-body1 leading-body1 text-txt-secondary overflow-hidden text-ellipsis'>
             {detail}
           </p>
           <div

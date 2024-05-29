@@ -250,6 +250,16 @@ export async function DELETE(request: Request) {
       throw new Error(userError.message)
     }
 
+    // Delete related rows in the votes table first
+    const { error: deleteVotesError } = await supabase
+      .from("votes")
+      .delete()
+      .eq("feedback_id", id)
+
+    if (deleteVotesError) {
+      throw new Error(deleteVotesError.message)
+    }
+
     // Delete the feedback in the database
     const { data, error } = await supabase
       .from("feedback")

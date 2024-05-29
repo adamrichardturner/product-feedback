@@ -18,8 +18,6 @@ const FeedbackGrid = () => {
 
   const filteredFeedback = filterFeedbackByCategory(feedbackData)
 
-  console.log(filteredFeedback)
-
   return (
     <div className='space-y-5'>
       {filteredFeedback.map(

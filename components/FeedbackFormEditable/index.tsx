@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import IconNewFeedback from "@/assets/shared/icon-new-feedback.svg"
+import IconEditFeedback from "@/assets/shared/icon-edit-feedback.svg"
 import { Textarea } from "../ui/textarea"
 import { BasicSelect } from "../ui/BasicSelect"
 import Image from "next/image"
@@ -31,14 +31,14 @@ const formSchema = z.object({
   title: z
     .string()
     .min(8, { message: "Feedback title must be at least 8 characters" })
-    .max(255, { message: "Feedback title cannot be more than 255 characters" }),
+    .max(30, { message: "Feedback title cannot be more than 30 characters" }),
   category: z.string(),
   status: z.string(),
   detail: z
     .string()
     .min(8, { message: "Feedback Detail must be at least 8 characters" })
-    .max(500, {
-      message: "Feedback detail cannot be more than 500 characters",
+    .max(72, {
+      message: "Feedback detail cannot be more than 72 characters",
     }),
 })
 
@@ -103,14 +103,14 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
         className='space-y-8 relative w-full pt-[44px] pb-6 md:w-[540px] px-6 md:px-[42px] md:py-[52px] rounded-btn shadow-sm bg-white'
       >
         <Image
-          src={IconNewFeedback}
+          src={IconEditFeedback}
           width={56}
           height={56}
           alt='Plus Button in a Circle'
           className='absolute -top-5 md:-top-7 md:left-10 w-[40px] h-[40px] md:w-[56px] md:h-[56px]'
         />
         <span className='text-txt-primary font-[700] text-[24px] tracking-[-0.333px] mt-0 pt-0'>
-          Editing
+          Editing '{feedback?.title}'
         </span>
         <FormField
           control={form.control}

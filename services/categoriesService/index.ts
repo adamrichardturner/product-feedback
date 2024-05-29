@@ -4,7 +4,6 @@ export const getCategoriesList = async () => {
       cache: "no-store",
     })
     const result = await data.json()
-    console.log(data)
     return result
   } catch (error) {
     console.error(error)

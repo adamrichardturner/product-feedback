@@ -24,7 +24,6 @@ export const postFeedback = async (feedbackData: NewFeedbackType) => {
 }
 
 export const editFeedback = async (feedbackData: UpdatedFeedbackType) => {
-  console.log("FEEDBACK DATA IN SERVICE ", feedbackData)
   try {
     await axios.put("/api/feedback", feedbackData)
   } catch (error) {

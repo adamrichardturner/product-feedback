@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [])
 
   return (
-    <div className='w-[730px]'>
+    <div className='p-4 md:w-[730px]'>
       <div className='flex items-center justify-between pb-6 pt-[80px]'>
         <div>
           <BackButton />

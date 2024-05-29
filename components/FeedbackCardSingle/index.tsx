@@ -1,3 +1,5 @@
+"use client"
+
 import UpVoteAuth from "../UpVote/UpVoteAuth"
 import { UpVoteUnauth } from "../UpVote/UpVoteUnauth"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
@@ -26,7 +28,7 @@ function FeedbackCardSingle({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className='h-[152px] rounded-btn bg-white pl-8 pt-7 flex justify-between'
+      className='h-[152px] w-full rounded-btn bg-white pl-8 pt-7 flex justify-between'
     >
       <div className='bg-white flex space-x-10'>
         {authUserId === "authenticated" ? (

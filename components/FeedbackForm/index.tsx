@@ -28,13 +28,13 @@ const formSchema = z.object({
   title: z
     .string()
     .min(8, { message: "Feedback title must be at least 8 characters" })
-    .max(255, { message: "Feedback title cannot be more than 255 characters" }),
+    .max(30, { message: "Feedback title cannot be more than 30 characters" }),
   category: z.string(),
   detail: z
     .string()
     .min(8, { message: "Feedback Detail must be at least 8 characters" })
-    .max(500, {
-      message: "Feedback detail cannot be more than 500 characters",
+    .max(72, {
+      message: "Feedback detail cannot be more than 70 characters",
     }),
 })
 

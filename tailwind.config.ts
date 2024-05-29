@@ -15,7 +15,7 @@ const config = {
       padding: {
         DEFAULT: "0rem",
         sm: "0rem",
-        lg: "4rem",
+        lg: "2rem",
         xl: "5rem",
         "2xl": "6rem",
       },
@@ -23,7 +23,7 @@ const config = {
         sm: "100%",
         md: "726px",
         lg: "984px",
-        xl: "1200px",
+        xl: "1280px",
       },
     },
     extend: {
