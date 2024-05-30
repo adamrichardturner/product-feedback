@@ -41,6 +41,23 @@ export async function GET(request: Request) {
       throw error
     }
 
+    // Fetch avatar URLs
+    for (const comment of data) {
+      if (comment.profiles && comment.profiles.avatar_url) {
+        const { data: avatarData, error: avatarError } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(comment.profiles.avatar_url)
+
+        console.log(avatarData)
+
+        if (avatarError) {
+          console.error("Error fetching avatar URL:", avatarError)
+        } else {
+          comment.profiles.avatar_url = avatarData.publicUrl
+        }
+      }
+    }
+
     // Transform data to nest replies and map profiles to user
     const commentMap: { [key: string]: CommentType } = {}
     const topLevelComments: CommentType[] = []
@@ -53,7 +70,7 @@ export async function GET(request: Request) {
         parent_comment_id: comment.parent_comment_id,
         content: comment.content,
         inserted_at: comment.inserted_at,
-        user: comment.profiles[0],
+        user: comment.profiles, // Ensure we map profiles to user
         replies: [],
       }
       commentMap[transformedComment.id] = transformedComment
