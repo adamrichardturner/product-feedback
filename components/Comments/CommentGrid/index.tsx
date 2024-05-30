@@ -19,11 +19,10 @@ interface CommentGridProps {
   feedbackId: string
 }
 
-// Define the Zod schema
 const commentSchema = z.object({
   content: z
     .string()
-    .min(8, { message: "Comment must be at least 8 characters long" })
+    .min(4, { message: "Comment must be at least 4 characters long" })
     .max(250, { message: "Comment must be at most 250 characters long" }),
 })
 
@@ -52,16 +51,12 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        console.log("Fetching comments for feedback ID:", feedbackId)
         const data = await getAllComments(feedbackId)
-        console.log("Fetched comments data:", data)
         setComments(data)
       } catch (error) {
         console.error("Error fetching comments:", error)
       }
     }
-
-    console.log("useEffect triggered for feedback ID:", feedbackId)
 
     fetchComments()
   }, [feedbackId])
@@ -99,12 +94,13 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
     }
   }
 
+  const totalCommentsCount = countCommentsAndReplies(comments)
+
   return (
-    <div className='comment-grid p-4'>
-      <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
+    <div className='comment-grid'>
+      <h3 className='font-bold text-lg mb-4'>{totalCommentsCount} Comments</h3>
       <div className='comments-list'>
         {comments.map((comment) => {
-          console.log(comment)
           return (
             <CommentCard
               key={comment.id}
@@ -149,6 +145,22 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
       </div>
     </div>
   )
+}
+
+const countCommentsAndReplies = (comments: CommentType[]): number => {
+  let count = 0
+
+  const countNestedComments = (commentList: CommentType[]) => {
+    commentList.forEach((comment) => {
+      count += 1
+      if (comment.replies && comment.replies.length > 0) {
+        countNestedComments(comment.replies)
+      }
+    })
+  }
+
+  countNestedComments(comments)
+  return count
 }
 
 export default CommentGrid

@@ -8,10 +8,11 @@ import FeedbackCardSingle from "@/components/FeedbackCardSingle"
 import { FeedbackCardProps } from "@/types/feedback"
 import BackButton from "@/components/BackButton"
 import Link from "next/link"
+import LoadingDots from "@/assets/shared/loading.svg"
 
 export default function Page({ params }: { params: { id: string } }) {
   const [feedback, setFeedback] = useState<FeedbackCardProps | null>(null)
-  const [userAud, setUserAud] = useState<string | undefined>(undefined)
+  const [userId, setUserId] = useState<string | undefined>(undefined)
   const supabase = createClient()
 
   useEffect(() => {
@@ -26,8 +27,8 @@ export default function Page({ params }: { params: { id: string } }) {
         data: { user },
       } = await supabase.auth.getUser()
 
-      if (user?.aud) {
-        setUserAud(user?.aud)
+      if (user?.id) {
+        setUserId(user?.id)
       }
 
       if (error) {
@@ -37,9 +38,7 @@ export default function Page({ params }: { params: { id: string } }) {
       }
     }
 
-    if (params.id) {
-      fetchFeedback()
-    }
+    fetchFeedback()
   }, [params.id, supabase])
 
   return (
@@ -49,7 +48,7 @@ export default function Page({ params }: { params: { id: string } }) {
           <BackButton />
         </div>
         <div>
-          {feedback?.user_id === userAud && (
+          {feedback?.user_id === userId && (
             <Link href={`/feedback/edit/${feedback?.id}`}>
               <div className='flex items-center rounded-btn py-2 px-4 space-x-1 text-white bg-[#4661E6] hover:bg-[#7C91F9] transition-colors cursor-pointer'>
                 <span className='font-semibold text-sm'>Edit Feedback</span>
@@ -68,12 +67,12 @@ export default function Page({ params }: { params: { id: string } }) {
           comments={[]}
           status={feedback.status}
           upvotes={feedback.upvotes}
-          authUserId={userAud}
+          authUserId={userId}
           upvotedByUser={feedback.upvotedByUser}
         />
       ) : (
         <div className='w-full h-full flex items-center justify-center'>
-          <Image src='/loading.svg' width={60} height={60} alt='Loading Dots' />
+          <Image src={LoadingDots} width={60} height={60} alt='Loading Dots' />
         </div>
       )}
       {feedback && (

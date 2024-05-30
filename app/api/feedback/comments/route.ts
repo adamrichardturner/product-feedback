@@ -1,4 +1,4 @@
-import { CommentType } from "@/services/commentService"
+import { CommentType, UserType } from "@/types/comments"
 import { createClient } from "@/utils/supabase/server"
 
 export async function GET(request: Request) {
@@ -42,47 +42,45 @@ export async function GET(request: Request) {
     }
 
     // Fetch avatar URLs
-    for (const comment of data) {
+    for (const comment of data as CommentType[]) {
       if (comment.profiles && comment.profiles.avatar_url) {
-        const { data: avatarData, error: avatarError } = supabase.storage
+        const { data: avatarData } = await supabase.storage
           .from("avatars")
           .getPublicUrl(comment.profiles.avatar_url)
-
-        console.log(avatarData)
-
-        if (avatarError) {
-          console.error("Error fetching avatar URL:", avatarError)
-        } else {
-          comment.profiles.avatar_url = avatarData.publicUrl
-        }
+        comment.profiles.avatar_url = avatarData.publicUrl
       }
     }
 
-    // Transform data to nest replies and map profiles to user
+    // Transform data to a flat structure with nested replies
+    const comments: CommentType[] = data.map((comment: any) => ({
+      id: comment.id,
+      feedback_id: comment.feedback_id,
+      user_id: comment.user_id,
+      parent_comment_id: comment.parent_comment_id,
+      content: comment.content,
+      inserted_at: comment.inserted_at,
+      profiles: comment.profiles as UserType,
+      replies: [],
+    }))
+
     const commentMap: { [key: string]: CommentType } = {}
-    const topLevelComments: CommentType[] = []
 
-    data.forEach((comment: any) => {
-      const transformedComment: CommentType = {
-        id: comment.id,
-        feedback_id: comment.feedback_id,
-        user_id: comment.user_id,
-        parent_comment_id: comment.parent_comment_id,
-        content: comment.content,
-        inserted_at: comment.inserted_at,
-        user: comment.profiles, // Ensure we map profiles to user
-        replies: [],
-      }
-      commentMap[transformedComment.id] = transformedComment
+    comments.forEach((comment) => {
+      commentMap[comment.id] = comment
+    })
 
-      if (transformedComment.parent_comment_id) {
-        commentMap[transformedComment.parent_comment_id]?.replies.push(
-          transformedComment
-        )
-      } else {
-        topLevelComments.push(transformedComment)
+    comments.forEach((comment) => {
+      if (comment.parent_comment_id) {
+        const parent = commentMap[comment.parent_comment_id]
+        if (parent) {
+          parent.replies.push(comment)
+        }
       }
     })
+
+    const topLevelComments = comments.filter(
+      (comment) => !comment.parent_comment_id
+    )
 
     return new Response(JSON.stringify(topLevelComments), {
       status: 200,

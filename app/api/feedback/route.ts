@@ -154,7 +154,6 @@ export async function PUT(request: Request) {
       )
     }
 
-    // Parse the request body
     const requestData = await request.json()
     const { id, title, detail, category, status } = requestData
 
