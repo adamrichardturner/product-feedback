@@ -8,7 +8,6 @@ interface CommentCardProps {
 }
 
 const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply }) => {
-  console.log("COMMENT IS: ", comment)
   const handleReplyClick = () => {
     onReply(comment.id)
   }

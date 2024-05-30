@@ -77,7 +77,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </div>
       )}
       {feedback && (
-        <div className='feedback-detail-page p-8'>
+        <div className='bg-white mt-6 mb-[110px] p-8'>
           <CommentGrid feedbackId={feedback?.id} />
         </div>
       )}
