@@ -1,6 +1,7 @@
 import axios from "axios"
 
 export interface CommentType {
+  profiles: any
   replies: CommentType[]
   id: string
   feedback_id: string
@@ -16,13 +17,13 @@ export interface CommentType {
 }
 
 export interface NewCommentType {
-  feedback_id: string
+  feedback_id?: string
   content: string
   parent_comment_id?: string | null
 }
 
 export const getAllComments = async (
-  feedback_id: string
+  feedback_id?: string
 ): Promise<CommentType[]> => {
   try {
     const response = await axios.get(`/api/feedback/comments`, {

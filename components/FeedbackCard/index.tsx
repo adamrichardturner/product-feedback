@@ -70,9 +70,20 @@ function FeedbackCard({
           </div>
         </article>
       </div>
+
       <div className='hidden md:flex items-center space-x-2 -mt-7'>
-        <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
-        <span className='font-semibold text-txt-primary'>0</span>
+        <Link
+          href={`/feedback/${id}`}
+          className='md:flex items-center space-x-2'
+        >
+          <Image
+            src={SpeechBubble}
+            width={18}
+            height={16}
+            alt='Speech Bubble'
+          />
+          <span className='font-semibold text-txt-primary'>{comments}</span>
+        </Link>
       </div>
     </motion.div>
   )

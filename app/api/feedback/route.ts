@@ -11,13 +11,29 @@ export async function GET() {
   const userId = user?.id
 
   try {
-    const { data: feedback, error } = await supabase.from("feedback").select(`
+    const { data: feedback, error: feedbackError } = await supabase.from(
+      "feedback"
+    ).select(`
         *,
         votes (user_id)
       `)
 
-    if (error) {
-      console.error("Error fetching feedback data", error)
+    if (feedbackError) {
+      console.error("Error fetching feedback data", feedbackError)
+      return new Response(JSON.stringify({ error: "Error fetching data" }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    }
+
+    const { data: comments, error: commentError } = await supabase
+      .from("comments")
+      .select("*")
+
+    if (commentError) {
+      console.error("Error fetching feedback data", commentError)
       return new Response(JSON.stringify({ error: "Error fetching data" }), {
         status: 500,
         headers: {
@@ -29,6 +45,8 @@ export async function GET() {
     const processedFeedback = feedback.map((item: any) => ({
       ...item,
       upvotedByUser: item.votes.some((vote: any) => vote.user_id === userId),
+      comments: comments.filter((comment) => comment.feedback_id === item.id)
+        .length,
     }))
 
     return new Response(JSON.stringify(processedFeedback), {

@@ -15,9 +15,10 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-
+import LoadingDots from "@/assets/shared/loading.svg"
+import Image from "next/image"
 interface CommentGridProps {
-  feedbackId: string
+  feedbackId?: string
 }
 
 const commentSchema = z.object({
@@ -108,18 +109,6 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
     setActiveReplyId(parentCommentId)
   }
 
-  const handleNestedReply = (parentReplyId: string) => {
-    setReplyToNestedId(parentReplyId)
-    setReplyToCommentId(null)
-    setActiveReplyId(parentReplyId)
-  }
-
-  const handleCancel = () => {
-    setReplyToCommentId(null)
-    setReplyToNestedId(null)
-    setActiveReplyId(null)
-  }
-
   const renderComments = (
     comments: CommentType[],
     parentId: string | null = null
@@ -149,17 +138,19 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
   }
 
   return (
-    <div className='comment-grid'>
-      <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
-      <div className='comments-list'>{renderComments(comments)}</div>
-      <div className='add-comment mt-6'>
+    <div className='rounded-btn'>
+      <div className='bg-white mt-6 p-8 rounded-btn'>
+        <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
+        <div className='comments-list'>{renderComments(comments)}</div>
+      </div>
+      <div className='bg-white p-8 mb-[110px] mt-6 rounded-btn'>
         <h4 className='font-bold text-md mb-2'>Add Comment</h4>
         <form onSubmit={handleSubmit(handleCommentSubmit)}>
           <div className='flex flex-col w-full gap-2'>
             <Textarea
               {...register("content")}
               placeholder='Type your comment here'
-              rows={4}
+              rows={2}
               maxLength={250}
             />
             {errors.content && (

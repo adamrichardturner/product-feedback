@@ -20,7 +20,7 @@ export interface FeedbackType {
   updated_at: string
   title: string
   category_id: CategoriesType
-  comments: string[]
+  comments: number
   status: string
   upvotes: number
   detail: string
@@ -33,7 +33,7 @@ export interface FeedbackCardProps {
   title: string
   detail: string
   category_id: CategoriesType
-  comments: string[]
+  comments: number
   status: string
   upvotes: number
   authUserId?: string

@@ -13,28 +13,50 @@ import LoadingDots from "@/assets/shared/loading.svg"
 export default function Page({ params }: { params: { id: string } }) {
   const [feedback, setFeedback] = useState<FeedbackCardProps | null>(null)
   const [userId, setUserId] = useState<string | undefined>(undefined)
+  const [loading, setLoading] = useState<boolean>(true)
   const supabase = createClient()
 
   useEffect(() => {
     const fetchFeedback = async () => {
-      const { data, error } = await supabase
-        .from("feedback")
-        .select("*")
-        .eq("id", params.id)
-        .single()
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from("feedback")
+          .select("*")
+          .eq("id", params.id)
+          .single()
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+        if (error) {
+          console.error("Error fetching feedback:", error)
+        } else {
+          setFeedback(data)
+        }
 
-      if (user?.id) {
-        setUserId(user?.id)
-      }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
 
-      if (error) {
-        console.error("Error fetching feedback:", error)
-      } else {
-        setFeedback(data)
+        if (user?.id) {
+          setUserId(user?.id)
+        }
+
+        const { data: comments, error: commentError } = await supabase
+          .from("comments")
+          .select("*")
+          .eq("feedback_id", params.id)
+
+        if (commentError) {
+          console.error("Error fetching comments: ", commentError)
+        } else {
+          setFeedback({
+            ...data,
+            comments: comments.length,
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching feedback or user:", error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -57,28 +79,30 @@ export default function Page({ params }: { params: { id: string } }) {
           )}
         </div>
       </div>
-      {feedback ? (
-        <FeedbackCardSingle
-          id={feedback.id}
-          user_id={feedback.user_id}
-          title={feedback.title}
-          detail={feedback.detail}
-          category_id={feedback.category_id}
-          comments={[]}
-          status={feedback.status}
-          upvotes={feedback.upvotes}
-          authUserId={userId}
-          upvotedByUser={feedback.upvotedByUser}
-        />
-      ) : (
+      {loading ? (
         <div className='w-full h-full flex items-center justify-center'>
           <Image src={LoadingDots} width={60} height={60} alt='Loading Dots' />
         </div>
-      )}
-      {feedback && (
-        <div className='bg-white mt-6 mb-[110px] p-8'>
-          <CommentGrid feedbackId={feedback?.id} />
-        </div>
+      ) : (
+        <>
+          {feedback && (
+            <FeedbackCardSingle
+              id={feedback.id}
+              user_id={feedback.user_id}
+              title={feedback.title}
+              detail={feedback.detail}
+              category_id={feedback.category_id}
+              comments={feedback.comments}
+              status={feedback.status}
+              upvotes={feedback.upvotes}
+              authUserId={userId}
+              upvotedByUser={feedback.upvotedByUser}
+            />
+          )}
+          <div className=''>
+            <CommentGrid feedbackId={feedback?.id} />
+          </div>
+        </>
       )}
     </div>
   )
