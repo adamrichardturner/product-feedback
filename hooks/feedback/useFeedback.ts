@@ -5,6 +5,7 @@ import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
 import { useCallback, useEffect } from "react"
 import { getAllFeedback } from "@/services/feedbackService"
 import { FeedbackType } from "@/types/feedback"
+import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 
 const useFeedback = () => {
   const feedbackData = useFeedbackStore((state) => state.feedbackData)
@@ -12,6 +13,10 @@ const useFeedback = () => {
   const selectedCategory = useCategoriesStore((state) => state.selectedCategory)
   const addAllFeedback = useFeedbackStore((state) => state.addAllFeedback)
   const setLoading = useFeedbackStore((state) => state.setLoading)
+  const selectedFilter = useFeedbackStore((state) => state.selectedFilter)
+  const setSelectedFeedback = useFeedbackStore(
+    (state) => state.setSelectedFilter
+  )
   const feedbackCount = feedbackData.length
 
   const getAllFeedbackData = useCallback(async () => {
@@ -52,13 +57,19 @@ const useFeedback = () => {
     return singleFeedback
   }, [])
 
+  const setFeedbackFilter = useCallback((newFilter: SelectedFilterType) => {
+    setSelectedFeedback(newFilter)
+  }, [])
+
   return {
     feedbackData,
     feedbackCount,
     loading,
+    selectedFilter,
     filterFeedbackByCategory,
     getAllFeedbackData,
     getSingleFeedback,
+    setFeedbackFilter,
   }
 }
 

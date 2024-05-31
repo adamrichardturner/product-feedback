@@ -12,9 +12,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import useFeedback from "@/hooks/feedback/useFeedback"
+import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 
 interface SelectOption {
-  value: string
+  value: any
   label: string
 }
 
@@ -28,13 +30,15 @@ const formatChoice = (value: string | null, options: SelectOption[]) => {
 }
 
 export function SelectDropdownMenu({ options }: SelectDropdownMenuProps) {
+  const { selectedFilter, setFeedbackFilter } = useFeedback()
   const [checkedItem, setCheckedItem] = React.useState<string | null>(
-    options[0]?.value || null
+    selectedFilter || options[0]?.value || null
   )
   const [open, setOpen] = React.useState(false)
 
-  const handleCheckedChange = (key: string) => {
+  const handleCheckedChange = async (key: SelectedFilterType) => {
     setCheckedItem(key)
+    await setFeedbackFilter(key)
   }
 
   return (

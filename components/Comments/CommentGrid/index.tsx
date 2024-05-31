@@ -19,6 +19,7 @@ import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 interface CommentGridProps {
   feedbackId?: string
+  totalComments?: number
 }
 
 const commentSchema = z.object({
@@ -30,7 +31,10 @@ const commentSchema = z.object({
 
 type FormInputs = z.infer<typeof commentSchema>
 
-const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
+const CommentGrid: React.FC<CommentGridProps> = ({
+  feedbackId,
+  totalComments,
+}) => {
   const [comments, setComments] = useState<CommentType[]>([])
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null)
   const [replyToNestedId, setReplyToNestedId] = useState<string | null>(null)
@@ -140,7 +144,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
   return (
     <div className='rounded-btn'>
       <div className='bg-white mt-6 p-8 rounded-btn'>
-        <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
+        <h3 className='font-bold text-lg mb-4'>{totalComments} Comments</h3>
         <div className='comments-list'>{renderComments(comments)}</div>
       </div>
       <div className='bg-white p-8 mb-[110px] mt-6 rounded-btn'>

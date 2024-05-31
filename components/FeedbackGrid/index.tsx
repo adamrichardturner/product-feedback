@@ -4,9 +4,12 @@ import useFeedback from "@/hooks/feedback/useFeedback"
 import FeedbackCard from "../FeedbackCard"
 import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
+import { FeedbackType } from "@/types/feedback"
+import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 
 const FeedbackGrid = () => {
-  const { feedbackData, filterFeedbackByCategory, loading } = useFeedback()
+  const { feedbackData, filterFeedbackByCategory, loading, selectedFilter } =
+    useFeedback()
 
   if (loading) {
     return (
@@ -18,11 +21,29 @@ const FeedbackGrid = () => {
 
   const filteredFeedback = filterFeedbackByCategory(feedbackData)
 
-  console.log(filteredFeedback)
+  const sortFeedback = (
+    feedback: FeedbackType[],
+    filter: SelectedFilterType
+  ) => {
+    switch (filter) {
+      case "mostUpvotes":
+        return feedback.sort((a, b) => b.upvotes - a.upvotes)
+      case "leastUpvotes":
+        return feedback.sort((a, b) => a.upvotes - b.upvotes)
+      case "mostComments":
+        return feedback.sort((a, b) => b.comments - a.comments)
+      case "leastComments":
+        return feedback.sort((a, b) => a.comments - b.comments)
+      default:
+        return feedback
+    }
+  }
+
+  const sortedFeedback = sortFeedback(filteredFeedback, selectedFilter)
 
   return (
     <div className='space-y-5'>
-      {filteredFeedback.map(
+      {sortedFeedback.map(
         ({
           id,
           title,

@@ -100,7 +100,10 @@ export default function Page({ params }: { params: { id: string } }) {
             />
           )}
           <div className=''>
-            <CommentGrid feedbackId={feedback?.id} />
+            <CommentGrid
+              feedbackId={feedback?.id}
+              totalComments={feedback?.comments}
+            />
           </div>
         </>
       )}

@@ -3,12 +3,20 @@ import { StateCreator } from "zustand"
 import { toggleUpvote as toggleUpvoteService } from "@/services/votingService" // Adjust the import path as necessary
 import { getAllFeedback } from "@/services/feedbackService"
 
+export type SelectedFilterType =
+  | "mostUpvotes"
+  | "leastUpvotes"
+  | "mostComments"
+  | "leastComments"
+
 export interface IFeedbackSlice {
   feedbackData: FeedbackType[]
   loading: boolean
+  selectedFilter: SelectedFilterType
   setLoading: (isLoading: boolean) => void
   addAllFeedback: (allFeedback: FeedbackType[]) => void
   addFeedback: (newFeedback: FeedbackType) => void
+  setSelectedFilter: (newFilter: SelectedFilterType) => void
   toggleUpvote: (feedbackId: string) => void
   fetchFeedback: () => void
 }
@@ -19,6 +27,7 @@ export const createFeedbackSlice: StateCreator<IFeedbackSlice> = (
 ) => ({
   feedbackData: [],
   loading: false,
+  selectedFilter: "mostUpvotes",
   setLoading: (isLoading: boolean) => set(() => ({ loading: isLoading })),
   addAllFeedback: (allFeedback: FeedbackType[]) =>
     set(() => ({
@@ -28,6 +37,8 @@ export const createFeedbackSlice: StateCreator<IFeedbackSlice> = (
     set((state) => ({
       feedbackData: [...state.feedbackData, newFeedback],
     })),
+  setSelectedFilter: (newFilter: SelectedFilterType) =>
+    set(() => ({ selectedFilter: newFilter })),
   toggleUpvote: async (feedbackId: string) => {
     try {
       // Call the service to toggle the upvote
