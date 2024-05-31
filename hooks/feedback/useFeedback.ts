@@ -3,9 +3,10 @@
 import { useFeedbackStore } from "@/stores/FeedbackState/useFeedbackStore"
 import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
 import { useCallback, useEffect } from "react"
-import { getAllFeedback } from "@/services/feedbackService"
+import { getAllFeedback, getSingleFeedback } from "@/services/feedbackService"
 import { FeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
+import { getAllComments } from "@/services/commentService"
 
 const useFeedback = () => {
   const feedbackData = useFeedbackStore((state) => state.feedbackData)
@@ -50,12 +51,18 @@ const useFeedback = () => {
     [selectedCategory]
   )
 
-  const getSingleFeedback = useCallback(async (feedbackId: string) => {
-    const singleFeedback = await feedbackData.find(
-      (feedback) => feedback.id === feedbackId
-    )
-    return singleFeedback
-  }, [])
+  const getFeedbackAndComments = useCallback(
+    async (feedbackId: string) => {
+      const singleFeedback = await getSingleFeedback(feedbackId)
+      const singleComments = await getAllComments(feedbackId)
+
+      return {
+        ...singleFeedback[0],
+        comments: [...singleComments],
+      }
+    },
+    [feedbackData]
+  )
 
   const setFeedbackFilter = useCallback((newFilter: SelectedFilterType) => {
     setSelectedFeedback(newFilter)
@@ -68,7 +75,7 @@ const useFeedback = () => {
     selectedFilter,
     filterFeedbackByCategory,
     getAllFeedbackData,
-    getSingleFeedback,
+    getFeedbackAndComments,
     setFeedbackFilter,
   }
 }

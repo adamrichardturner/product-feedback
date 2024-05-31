@@ -15,6 +15,19 @@ export const getAllFeedback = async (): Promise<FeedbackType[]> => {
   }
 }
 
+export const getSingleFeedback = async (feedbackId: string) => {
+  try {
+    const response = await axios.get("/api/feedback/single", {
+      params: {
+        feedback_id: feedbackId,
+      },
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const postFeedback = async (feedbackData: NewFeedbackType) => {
   try {
     await axios.post("/api/feedback/", feedbackData)

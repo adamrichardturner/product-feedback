@@ -15,11 +15,11 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import LoadingDots from "@/assets/shared/loading.svg"
-import Image from "next/image"
+import { motion } from "framer-motion"
+
 interface CommentGridProps {
-  feedbackId?: string
-  totalComments?: number
+  feedbackId: string
+  initialComments: CommentType[]
 }
 
 const commentSchema = z.object({
@@ -33,11 +33,10 @@ type FormInputs = z.infer<typeof commentSchema>
 
 const CommentGrid: React.FC<CommentGridProps> = ({
   feedbackId,
-  totalComments,
+  initialComments,
 }) => {
-  const [comments, setComments] = useState<CommentType[]>([])
+  const [comments, setComments] = useState<CommentType[]>(initialComments)
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null)
-  const [replyToNestedId, setReplyToNestedId] = useState<string | null>(null)
   const [activeReplyId, setActiveReplyId] = useState<string | null>(null)
 
   const {
@@ -85,13 +84,12 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   }
 
   const handleReplySubmit = async (data: FormInputs) => {
-    const parentId = replyToNestedId || replyToCommentId
-    if (!parentId) return
+    if (!replyToCommentId) return
 
     const newReply: NewCommentType = {
       feedback_id: feedbackId,
       content: data.content,
-      parent_comment_id: parentId,
+      parent_comment_id: replyToCommentId,
     }
 
     try {
@@ -99,7 +97,6 @@ const CommentGrid: React.FC<CommentGridProps> = ({
       const refreshedComments = await getAllComments(feedbackId)
       setComments(refreshedComments)
       setReplyToCommentId(null)
-      setReplyToNestedId(null)
       setActiveReplyId(null)
       reset()
     } catch (error) {
@@ -109,7 +106,6 @@ const CommentGrid: React.FC<CommentGridProps> = ({
 
   const handleReply = (parentCommentId: string) => {
     setReplyToCommentId(parentCommentId)
-    setReplyToNestedId(null)
     setActiveReplyId(parentCommentId)
   }
 
@@ -130,7 +126,6 @@ const CommentGrid: React.FC<CommentGridProps> = ({
             <ReplyField
               replyToCommentId={comment.id}
               onSubmit={handleReplySubmit}
-              level={parentId ? "8" : ""}
             />
           </div>
         )}
@@ -142,9 +137,14 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   }
 
   return (
-    <div className='rounded-btn'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className='rounded-btn'
+    >
       <div className='bg-white mt-6 p-8 rounded-btn'>
-        <h3 className='font-bold text-lg mb-4'>{totalComments} Comments</h3>
+        <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
         <div className='comments-list'>{renderComments(comments)}</div>
       </div>
       <div className='bg-white p-8 mb-[110px] mt-6 rounded-btn'>
@@ -178,7 +178,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

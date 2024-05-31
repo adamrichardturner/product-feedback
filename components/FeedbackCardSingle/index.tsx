@@ -6,7 +6,7 @@ import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
 import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
-import { FeedbackCardProps } from "@/types/feedback"
+import { FeedbackCardProps, SingleFeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
 
 function FeedbackCardSingle({
@@ -20,7 +20,7 @@ function FeedbackCardSingle({
   upvotes,
   upvotedByUser,
   authUserId,
-}: FeedbackCardProps) {
+}: SingleFeedbackCardProps) {
   const { setCategory } = useCategories()
 
   return (
@@ -57,7 +57,9 @@ function FeedbackCardSingle({
       </div>
       <div className='flex items-center space-x-2 -mt-7 pr-8'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
-        <span className='font-semibold text-txt-primary'>{comments}</span>
+        <span className='font-semibold text-txt-primary'>
+          {comments.length}
+        </span>
       </div>
     </motion.div>
   )

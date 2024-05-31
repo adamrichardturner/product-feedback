@@ -42,7 +42,7 @@ export default function AuthAvatar({
         setAvatarUrl(absoluteUrl)
         updateUserAvatar(absoluteUrl)
       } catch (error) {
-        console.log("Error downloading image: ", error)
+        console.error("Error downloading image: ", error)
       }
     }
 
@@ -58,7 +58,7 @@ export default function AuthAvatar({
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) {
-      console.log("Error signing out: ", error)
+      console.error("Error signing out: ", error)
     }
     router.push("/")
   }

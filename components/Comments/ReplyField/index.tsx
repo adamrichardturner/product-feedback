@@ -37,8 +37,6 @@ const ReplyField: FC<ReplyFieldProps> = ({
     },
   })
 
-  const content = watch("content")
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mb-8'>
       <div className={`pl-${level} flex w-full`}>

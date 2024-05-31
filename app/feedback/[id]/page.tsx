@@ -3,56 +3,27 @@
 import Image from "next/image"
 import CommentGrid from "@/components/Comments/CommentGrid"
 import { useEffect, useState } from "react"
-import { createClient } from "@/utils/supabase/client"
 import FeedbackCardSingle from "@/components/FeedbackCardSingle"
-import { FeedbackCardProps } from "@/types/feedback"
+import { FeedbackCardProps, SingleFeedbackCardProps } from "@/types/feedback"
 import BackButton from "@/components/BackButton"
 import Link from "next/link"
 import LoadingDots from "@/assets/shared/loading.svg"
+import useFeedback from "@/hooks/feedback/useFeedback"
+import useUser from "@/hooks/user/useUser"
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [feedback, setFeedback] = useState<FeedbackCardProps | null>(null)
-  const [userId, setUserId] = useState<string | undefined>(undefined)
+  const [feedback, setFeedback] = useState<SingleFeedbackCardProps>()
   const [loading, setLoading] = useState<boolean>(true)
-  const supabase = createClient()
+  const { getFeedbackAndComments } = useFeedback()
+  const { user } = useUser()
 
   useEffect(() => {
     const fetchFeedback = async () => {
       setLoading(true)
       try {
-        const { data, error } = await supabase
-          .from("feedback")
-          .select("*")
-          .eq("id", params.id)
-          .single()
-
-        if (error) {
-          console.error("Error fetching feedback:", error)
-        } else {
-          setFeedback(data)
-        }
-
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-
-        if (user?.id) {
-          setUserId(user?.id)
-        }
-
-        const { data: comments, error: commentError } = await supabase
-          .from("comments")
-          .select("*")
-          .eq("feedback_id", params.id)
-
-        if (commentError) {
-          console.error("Error fetching comments: ", commentError)
-        } else {
-          setFeedback({
-            ...data,
-            comments: comments.length,
-          })
-        }
+        const singleFeedback: SingleFeedbackCardProps =
+          await getFeedbackAndComments(params.id)
+        setFeedback(singleFeedback)
       } catch (error) {
         console.error("Error fetching feedback or user:", error)
       } finally {
@@ -61,7 +32,7 @@ export default function Page({ params }: { params: { id: string } }) {
     }
 
     fetchFeedback()
-  }, [params.id, supabase])
+  }, [params.id])
 
   return (
     <div className='p-4 md:w-[730px]'>
@@ -70,7 +41,7 @@ export default function Page({ params }: { params: { id: string } }) {
           <BackButton />
         </div>
         <div>
-          {feedback?.user_id === userId && (
+          {feedback?.user_id === user.id && (
             <Link href={`/feedback/edit/${feedback?.id}`}>
               <div className='flex items-center rounded-btn py-2 px-4 space-x-1 text-white bg-[#4661E6] hover:bg-[#7C91F9] transition-colors cursor-pointer'>
                 <span className='font-semibold text-sm'>Edit Feedback</span>
@@ -95,16 +66,18 @@ export default function Page({ params }: { params: { id: string } }) {
               comments={feedback.comments}
               status={feedback.status}
               upvotes={feedback.upvotes}
-              authUserId={userId}
+              authUserId={user.id}
               upvotedByUser={feedback.upvotedByUser}
             />
           )}
-          <div className=''>
-            <CommentGrid
-              feedbackId={feedback?.id}
-              totalComments={feedback?.comments}
-            />
-          </div>
+          {feedback?.id && feedback?.comments && (
+            <div className=''>
+              <CommentGrid
+                feedbackId={feedback.id}
+                initialComments={feedback.comments}
+              />
+            </div>
+          )}
         </>
       )}
     </div>

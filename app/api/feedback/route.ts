@@ -1,3 +1,4 @@
+import { FeedbackType } from "@/types/feedback"
 import { createClient } from "@/utils/supabase/server"
 
 export async function GET() {
@@ -42,9 +43,9 @@ export async function GET() {
       })
     }
 
-    const processedFeedback = feedback.map((item: any) => ({
+    const processedFeedback = feedback.map((item: FeedbackType) => ({
       ...item,
-      upvotedByUser: item.votes.some((vote: any) => vote.user_id === userId),
+      upvotedByUser: item?.votes?.some((vote) => vote.user_id === userId),
       comments: comments.filter((comment) => comment.feedback_id === item.id)
         .length,
     }))

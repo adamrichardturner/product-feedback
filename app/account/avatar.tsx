@@ -36,7 +36,7 @@ export default function Avatar({
         setAvatarUrl(url)
         updateUserAvatar(url)
       } catch (error) {
-        console.log("Error downloading image: ", error)
+        console.error("Error downloading image: ", error)
       }
     }
 

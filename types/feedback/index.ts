@@ -1,4 +1,5 @@
 import { CategoriesType } from "../categories"
+import { CommentType } from "../comments"
 
 export interface NewFeedbackType {
   title: string
@@ -23,6 +24,7 @@ export interface FeedbackType {
   comments: number
   status: string
   upvotes: number
+  votes?: { user_id: string }[]
   detail: string
   upvotedByUser: boolean
 }
@@ -34,6 +36,19 @@ export interface FeedbackCardProps {
   detail: string
   category_id: CategoriesType
   comments: number
+  status: string
+  upvotes: number
+  authUserId?: string
+  upvotedByUser: boolean
+}
+
+export interface SingleFeedbackCardProps {
+  id: string
+  user_id: string
+  title: string
+  detail: string
+  category_id: CategoriesType
+  comments: CommentType[]
   status: string
   upvotes: number
   authUserId?: string

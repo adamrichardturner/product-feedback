@@ -1,7 +1,15 @@
 import axios from "axios"
 
+type UserProfile = {
+  user: {
+    username: string
+    full_name: string
+    avatar_url: string
+  }
+}
+
 export interface CommentType {
-  profiles: any
+  profiles: UserProfile
   replies: CommentType[]
   id: string
   feedback_id: string
@@ -9,11 +17,6 @@ export interface CommentType {
   parent_comment_id?: string | null
   content: string
   inserted_at: string
-  user: {
-    username: string
-    full_name: string
-    avatar_url: string
-  }
 }
 
 export interface NewCommentType {
@@ -23,13 +26,14 @@ export interface NewCommentType {
 }
 
 export const getAllComments = async (
-  feedback_id?: string
+  feedback_id: string
 ): Promise<CommentType[]> => {
   try {
     const response = await axios.get(`/api/feedback/comments`, {
-      params: { feedback_id },
+      params: {
+        feedback_id: feedback_id,
+      },
     })
-    console.log("Response from API:", response.data)
     return response.data
   } catch (error) {
     console.error("Error fetching all comments:", error)
