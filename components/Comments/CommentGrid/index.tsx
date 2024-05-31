@@ -1,9 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
 import {
   getAllComments,
   postComment,
@@ -12,6 +9,10 @@ import {
   NewCommentType,
 } from "@/services/commentService"
 import CommentCard from "../CommentCard"
+import ReplyField from "../ReplyField"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
@@ -31,13 +32,14 @@ type FormInputs = z.infer<typeof commentSchema>
 const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
   const [comments, setComments] = useState<CommentType[]>([])
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null)
+  const [replyToNestedId, setReplyToNestedId] = useState<string | null>(null)
+  const [activeReplyId, setActiveReplyId] = useState<string | null>(null)
 
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    setValue,
     formState: { errors },
   } = useForm<FormInputs>({
     resolver: zodResolver(commentSchema),
@@ -61,60 +63,98 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
     fetchComments()
   }, [feedbackId])
 
-  const onSubmit = async (data: FormInputs) => {
+  const handleCommentSubmit = async (data: FormInputs) => {
     const newComment: NewCommentType = {
       feedback_id: feedbackId,
       content: data.content,
-      parent_comment_id: replyToCommentId,
     }
 
     try {
-      if (replyToCommentId) {
-        await postReply(newComment)
-      } else {
-        await postComment(newComment)
-      }
-
-      // Refresh comments
+      await postComment(newComment)
       const refreshedComments = await getAllComments(feedbackId)
       setComments(refreshedComments)
       reset()
-      setReplyToCommentId(null)
     } catch (error) {
       console.error("Error posting comment:", error)
     }
   }
 
-  const handleReply = (parentCommentId: string) => {
-    setReplyToCommentId(parentCommentId)
-    const username = comments.find((c) => c.id === parentCommentId)?.user
-      ?.username
-    if (username) {
-      setValue("content", `@${username} `)
+  const handleReplySubmit = async (data: FormInputs) => {
+    const parentId = replyToNestedId || replyToCommentId
+    if (!parentId) return
+
+    const newReply: NewCommentType = {
+      feedback_id: feedbackId,
+      content: data.content,
+      parent_comment_id: parentId,
+    }
+
+    try {
+      await postReply(newReply)
+      const refreshedComments = await getAllComments(feedbackId)
+      setComments(refreshedComments)
+      setReplyToCommentId(null)
+      setReplyToNestedId(null)
+      setActiveReplyId(null)
+      reset()
+    } catch (error) {
+      console.error("Error posting reply:", error)
     }
   }
 
-  const totalCommentsCount = countCommentsAndReplies(comments)
+  const handleReply = (parentCommentId: string) => {
+    setReplyToCommentId(parentCommentId)
+    setReplyToNestedId(null)
+    setActiveReplyId(parentCommentId)
+  }
+
+  const handleNestedReply = (parentReplyId: string) => {
+    setReplyToNestedId(parentReplyId)
+    setReplyToCommentId(null)
+    setActiveReplyId(parentReplyId)
+  }
+
+  const handleCancel = () => {
+    setReplyToCommentId(null)
+    setReplyToNestedId(null)
+    setActiveReplyId(null)
+  }
+
+  const renderComments = (
+    comments: CommentType[],
+    parentId: string | null = null
+  ) => {
+    return comments.map((comment) => (
+      <React.Fragment key={comment.id}>
+        <div className={`ml-${parentId ? "8" : "0"}`}>
+          <CommentCard
+            comment={comment}
+            onReply={() => handleReply(comment.id)}
+          />
+        </div>
+        {comment.id === activeReplyId && (
+          <div className='ml-[72px]'>
+            <ReplyField
+              replyToCommentId={comment.id}
+              onSubmit={handleReplySubmit}
+              level={parentId ? "8" : ""}
+            />
+          </div>
+        )}
+        {comment.replies && comment.replies.length > 0 && (
+          <div>{renderComments(comment.replies, comment.id)}</div>
+        )}
+      </React.Fragment>
+    ))
+  }
 
   return (
     <div className='comment-grid'>
-      <h3 className='font-bold text-lg mb-4'>{totalCommentsCount} Comments</h3>
-      <div className='comments-list'>
-        {comments.map((comment) => {
-          return (
-            <CommentCard
-              key={comment.id}
-              comment={comment}
-              onReply={handleReply}
-            />
-          )
-        })}
-      </div>
+      <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
+      <div className='comments-list'>{renderComments(comments)}</div>
       <div className='add-comment mt-6'>
-        <h4 className='font-bold text-md mb-2'>
-          {replyToCommentId ? "Add Reply" : "Add Comment"}
-        </h4>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <h4 className='font-bold text-md mb-2'>Add Comment</h4>
+        <form onSubmit={handleSubmit(handleCommentSubmit)}>
           <div className='flex flex-col w-full gap-2'>
             <Textarea
               {...register("content")}
@@ -124,7 +164,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
             />
             {errors.content && (
               <p className='text-red-500 text-left text-sm'>
-                {errors.content.message}
+                {String(errors.content.message)}
               </p>
             )}
             <div className='flex w-full pt-4 items-center justify-between'>
@@ -137,7 +177,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
                 type='submit'
                 className='bg-[#AD1FEA] hover:bg-[#C75AF6] text-white w-[142px]'
               >
-                {replyToCommentId ? "Post Reply" : "Post Comment"}
+                Post Comment
               </Button>
             </div>
           </div>
@@ -145,22 +185,6 @@ const CommentGrid: React.FC<CommentGridProps> = ({ feedbackId }) => {
       </div>
     </div>
   )
-}
-
-const countCommentsAndReplies = (comments: CommentType[]): number => {
-  let count = 0
-
-  const countNestedComments = (commentList: CommentType[]) => {
-    commentList.forEach((comment) => {
-      count += 1
-      if (comment.replies && comment.replies.length > 0) {
-        countNestedComments(comment.replies)
-      }
-    })
-  }
-
-  countNestedComments(comments)
-  return count
 }
 
 export default CommentGrid
