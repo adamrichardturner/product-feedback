@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 function RoadmapWidget() {
   return (
     <div className='bg-white flex-1 lg:flex-none rounded-btn p-6 text-txt-secondary'>
@@ -5,9 +7,11 @@ function RoadmapWidget() {
         <h2 className='text-txt-primary font-bold text-[18px] tracking-[-0.25px]'>
           Roadmap
         </h2>
-        <span className='text-btn-secondary-background underline text-sm cursor-pointer'>
-          View
-        </span>
+        <Link href='/roadmap'>
+          <span className='text-btn-secondary-background underline text-sm cursor-pointer'>
+            View
+          </span>
+        </Link>
       </div>
       <div className='flex pt-5 justify-between'>
         <div className='flex space-x-3 items-center'>

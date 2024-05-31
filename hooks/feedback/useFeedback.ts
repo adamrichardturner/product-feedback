@@ -3,8 +3,12 @@
 import { useFeedbackStore } from "@/stores/FeedbackState/useFeedbackStore"
 import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
 import { useCallback, useEffect } from "react"
-import { getAllFeedback, getSingleFeedback } from "@/services/feedbackService"
-import { FeedbackType } from "@/types/feedback"
+import {
+  getAllFeedback,
+  getSingleFeedback,
+  editFeedback,
+} from "@/services/feedbackService"
+import { FeedbackType, UpdatedFeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 import { getAllComments } from "@/services/commentService"
 
@@ -68,6 +72,27 @@ const useFeedback = () => {
     setSelectedFeedback(newFilter)
   }, [])
 
+  const filterFeedbackByStatus = useCallback(
+    (feedbackData: FeedbackType[], selectedStatus: string) => {
+      return feedbackData.filter(
+        (feedback) => feedback.status === selectedStatus
+      )
+    },
+    [feedbackData]
+  )
+
+  const updateFeedbackData = useCallback(
+    async (updatedFeedback: UpdatedFeedbackType) => {
+      try {
+        const response = await editFeedback(updatedFeedback)
+        return response
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    []
+  )
+
   return {
     feedbackData,
     feedbackCount,
@@ -77,6 +102,8 @@ const useFeedback = () => {
     getAllFeedbackData,
     getFeedbackAndComments,
     setFeedbackFilter,
+    filterFeedbackByStatus,
+    updateFeedbackData,
   }
 }
 

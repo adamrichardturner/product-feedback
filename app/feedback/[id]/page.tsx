@@ -15,12 +15,13 @@ export default function Page({ params }: { params: { id: string } }) {
   const [feedback, setFeedback] = useState<SingleFeedbackCardProps>()
   const [loading, setLoading] = useState<boolean>(true)
   const { getFeedbackAndComments } = useFeedback()
-  const { user } = useUser()
+  const { user, updateUserAuth } = useUser()
 
   useEffect(() => {
     const fetchFeedback = async () => {
       setLoading(true)
       try {
+        await updateUserAuth()
         const singleFeedback: SingleFeedbackCardProps =
           await getFeedbackAndComments(params.id)
         setFeedback(singleFeedback)
@@ -38,7 +39,7 @@ export default function Page({ params }: { params: { id: string } }) {
     <div className='p-4 md:w-[730px]'>
       <div className='flex items-center justify-between pb-6 pt-[80px]'>
         <div>
-          <BackButton />
+          <BackButton isDark={true} />
         </div>
         <div>
           {feedback?.user_id === user.id && (

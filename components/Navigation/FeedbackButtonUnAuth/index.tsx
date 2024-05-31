@@ -42,7 +42,7 @@ export function FeedbackButtonUnAuth() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className='flex items-center rounded-btn py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
+        <div className='flex items-center rounded-btn h-[44px] py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'>
           <Image src={IconPlus} width={10} height={10} alt='Plus' />
           <span className='font-semibold text-sm'>Add Feedback</span>
         </div>

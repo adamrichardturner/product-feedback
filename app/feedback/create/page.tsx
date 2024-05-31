@@ -14,7 +14,7 @@ export default async function Page() {
   return (
     <section className='min-h-screen px-6 flex flex-col justify-center'>
       <div className='pb-8 md:pb-12'>
-        <BackButton />
+        <BackButton isDark={true} />
       </div>
       <FeedbackForm isAuth={isAuth} />
     </section>

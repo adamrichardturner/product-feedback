@@ -15,7 +15,6 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
 
 interface CommentGridProps {
   feedbackId: string
@@ -137,12 +136,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className='rounded-btn'
-    >
+    <div className='rounded-btn'>
       <div className='bg-white mt-6 p-8 rounded-btn'>
         <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
         <div className='comments-list'>{renderComments(comments)}</div>
@@ -178,7 +172,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
           </div>
         </form>
       </div>
-    </motion.div>
+    </div>
   )
 }
 

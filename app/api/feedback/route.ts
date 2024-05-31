@@ -159,7 +159,6 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    // Check if the request method is PUT
     if (request.method !== "PUT") {
       return new Response(
         JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
@@ -231,7 +230,6 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    // Check if the request method is DELETE
     if (request.method !== "DELETE") {
       return new Response(
         JSON.stringify({ error: `Method ${request.method} Not Allowed` }),

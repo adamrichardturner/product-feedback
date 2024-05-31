@@ -53,7 +53,7 @@ export default function Page({ params }: { params: { id: string } }) {
       {feedback ? (
         <>
           <div className='pb-8 md:pb-12'>
-            <BackButton />
+            <BackButton isDark={true} />
           </div>
           <FeedbackFormEditable feedback={feedback} isAuth={isAuth} />
         </>

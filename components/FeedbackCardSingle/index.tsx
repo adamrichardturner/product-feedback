@@ -6,8 +6,7 @@ import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
 import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
-import { FeedbackCardProps, SingleFeedbackCardProps } from "@/types/feedback"
-import { motion } from "framer-motion"
+import { SingleFeedbackCardProps } from "@/types/feedback"
 
 function FeedbackCardSingle({
   id,
@@ -24,12 +23,7 @@ function FeedbackCardSingle({
   const { setCategory } = useCategories()
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className='h-[152px] w-full rounded-btn bg-white pl-8 pt-7 flex justify-between'
-    >
+    <div className='h-[152px] w-full rounded-btn bg-white pl-8 pt-7 flex justify-between'>
       <div className='bg-white flex space-x-10'>
         {authUserId === "authenticated" ? (
           <UpVoteAuth
@@ -61,7 +55,7 @@ function FeedbackCardSingle({
           {comments.length}
         </span>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
