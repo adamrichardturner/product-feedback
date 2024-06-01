@@ -7,9 +7,14 @@ import Image from "next/image"
 interface CommentCardProps {
   comment: CommentType
   onReply: (parentCommentId: string) => void
+  isAuth: boolean
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply }) => {
+const CommentCard: React.FC<CommentCardProps> = ({
+  comment,
+  onReply,
+  isAuth,
+}) => {
   const handleReplyClick = () => {
     onReply(comment.id)
   }
@@ -30,18 +35,22 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply }) => {
             <div className='avatar-placeholder rounded-full w-10 h-10 bg-gray-300' />
           )}
           <div className='ml-8'>
-            <p className='font-semibold'>{comment.profiles?.full_name}</p>
+            <p className='font-semibold text-txt-primary'>
+              {comment.profiles?.full_name}
+            </p>
             <p className='text-sm text-txt-secondary'>
               @{comment.profiles?.username}
             </p>
           </div>
         </div>
-        <button
-          onClick={handleReplyClick}
-          className='text-[#4661E6] text-xs font-semibold hover:underline'
-        >
-          Reply
-        </button>
+        {isAuth && (
+          <button
+            onClick={handleReplyClick}
+            className='text-[#4661E6] text-xs font-semibold hover:underline'
+          >
+            Reply
+          </button>
+        )}
       </div>
 
       <p className='ml-[72px] mb-2 text-txt-secondary text-[15px]'>

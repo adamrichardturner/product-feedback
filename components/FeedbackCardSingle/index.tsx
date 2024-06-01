@@ -26,24 +26,26 @@ function FeedbackCardSingle({
   const { setCategory } = useCategories()
 
   return (
-    <div className='h-[152px] w-full rounded-btn bg-white pl-8 pt-7 flex justify-between'>
-      <div className='bg-white flex space-x-10'>
-        {isAuth ? (
-          <UpVoteAuth
-            upvotedByUser={upvotedByUser}
-            feedbackId={id}
-            upvotes={upvotes}
-            isVertical={true}
-            onToggleUpvote={onToggleUpvote}
-          />
-        ) : (
-          <UpVoteUnauth upvotes={upvotes} isVertical={true} />
-        )}
-        <article>
-          <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md'>
+    <div className='md:h-[152px] w-full flex-1 flex-grow rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex flex-col md:flex-row justify-between'>
+      <div className='bg-white w-full flex md:space-x-10'>
+        <div className='hidden md:flex'>
+          {isAuth ? (
+            <UpVoteAuth
+              upvotedByUser={upvotedByUser}
+              feedbackId={id}
+              upvotes={upvotes}
+              isVertical={true}
+              onToggleUpvote={onToggleUpvote}
+            />
+          ) : (
+            <UpVoteUnauth upvotes={upvotes} isVertical={true} />
+          )}
+        </div>
+        <article className='w-full'>
+          <h3 className='font-semibold text-[14px] text-txt-primary md:text-md leading-md tracking-md'>
             {title}
           </h3>
-          <p className='pt-1 text-body1 leading-body1 text-txt-secondary'>
+          <p className='pt-1 text-[14px] leading-body1 text-txt-secondary'>
             {detail}
           </p>
           <div
@@ -52,9 +54,36 @@ function FeedbackCardSingle({
           >
             {formatCategory(category)}
           </div>
+          <div className='md:hidden mt-3 flex justify-between w-full'>
+            <div>
+              {isAuth ? (
+                <UpVoteAuth
+                  upvotedByUser={upvotedByUser}
+                  feedbackId={id}
+                  upvotes={upvotes}
+                  isVertical={false}
+                  onToggleUpvote={onToggleUpvote}
+                />
+              ) : (
+                <UpVoteUnauth upvotes={upvotes} isVertical={false} />
+              )}
+            </div>
+
+            <div className='items-center flex space-x-2'>
+              <Image
+                src={SpeechBubble}
+                width={18}
+                height={16}
+                alt='Speech Bubble'
+              />
+              <span className='font-semibold text-txt-primary'>
+                {comments.length}
+              </span>
+            </div>
+          </div>
         </article>
       </div>
-      <div className='flex items-center space-x-2 -mt-7 pr-8'>
+      <div className='hidden md:flex items-center space-x-2'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>
           {comments.length}

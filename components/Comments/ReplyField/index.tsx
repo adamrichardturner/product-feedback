@@ -39,7 +39,9 @@ const ReplyField: FC<ReplyFieldProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mb-8'>
-      <div className={`pl-${level} flex w-full`}>
+      <div
+        className={`pl-${level} flex items-end md:items-start flex-col md:flex-row w-full`}
+      >
         <Textarea
           {...register("content")}
           placeholder='Type your reply here'
@@ -52,7 +54,7 @@ const ReplyField: FC<ReplyFieldProps> = ({
             {errors.content.message}
           </p>
         )}
-        <div className='pl-4 inline-block items-start justify-end'>
+        <div className='pl-4 mt-4 md:mt-0 inline-block items-start justify-end'>
           <div className='flex items-end'>
             <Button
               type='submit'

@@ -9,7 +9,7 @@ interface FeedbackFallbackProps {
 
 const FeedbackFallback = ({ isAuth }: FeedbackFallbackProps) => {
   return (
-    <div className='bg-white py-[110px] px-4 flex flex-col items-center space-y-10 text-center'>
+    <div className='bg-white py-[110px] px-4 flex flex-col items-center space-y-10 text-center rounded-btn'>
       <Image
         src={FallbackGraphic}
         width={130}

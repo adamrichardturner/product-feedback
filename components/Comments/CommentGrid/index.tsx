@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 interface CommentGridProps {
   feedbackId: string
   initialComments: CommentType[]
+  isAuth: boolean
 }
 
 const commentSchema = z.object({
@@ -33,6 +34,7 @@ type FormInputs = z.infer<typeof commentSchema>
 const CommentGrid: React.FC<CommentGridProps> = ({
   feedbackId,
   initialComments,
+  isAuth,
 }) => {
   const [comments, setComments] = useState<CommentType[]>(initialComments)
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null)
@@ -118,6 +120,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
           <CommentCard
             comment={comment}
             onReply={() => handleReply(comment.id)}
+            isAuth={isAuth}
           />
         </div>
         {comment.id === activeReplyId && (
@@ -137,41 +140,47 @@ const CommentGrid: React.FC<CommentGridProps> = ({
 
   return (
     <div className='rounded-btn'>
-      <div className='bg-white mt-6 p-8 rounded-btn'>
-        <h3 className='font-bold text-lg mb-4'>{comments.length} Comments</h3>
+      <div className='bg-white mt-6 p-6 rounded-btn'>
+        <h3 className='font-bold text-[18px] text-txt-primary mb-4'>
+          {comments.length} Comments
+        </h3>
         <div className='comments-list'>{renderComments(comments)}</div>
       </div>
-      <div className='bg-white p-8 mb-[110px] mt-6 rounded-btn'>
-        <h4 className='font-bold text-md mb-2'>Add Comment</h4>
-        <form onSubmit={handleSubmit(handleCommentSubmit)}>
-          <div className='flex flex-col w-full gap-2'>
-            <Textarea
-              {...register("content")}
-              placeholder='Type your comment here'
-              rows={2}
-              maxLength={250}
-            />
-            {errors.content && (
-              <p className='text-red-500 text-left text-sm'>
-                {String(errors.content.message)}
-              </p>
-            )}
-            <div className='flex w-full pt-4 items-center justify-between'>
-              <div className='flex items-center justify-between'>
-                <p className='text-sm text-gray-500'>
-                  {250 - content.length} Characters left
+      {isAuth && (
+        <div className='bg-white p-8 mb-[110px] mt-6 rounded-btn'>
+          <h4 className='font-bold text-md mb-4 text-txt-primary'>
+            Add Comment
+          </h4>
+          <form onSubmit={handleSubmit(handleCommentSubmit)}>
+            <div className='flex flex-col w-full gap-2'>
+              <Textarea
+                {...register("content")}
+                placeholder='Type your comment here'
+                rows={2}
+                maxLength={250}
+              />
+              {errors.content && (
+                <p className='text-red-500 text-left text-sm'>
+                  {String(errors.content.message)}
                 </p>
+              )}
+              <div className='flex w-full pt-4 items-center justify-between'>
+                <div className='flex items-center justify-between'>
+                  <p className='text-sm text-gray-500'>
+                    {250 - content.length} Characters left
+                  </p>
+                </div>
+                <Button
+                  type='submit'
+                  className='bg-[#AD1FEA] hover:bg-[#C75AF6] text-white w-[142px]'
+                >
+                  Post Comment
+                </Button>
               </div>
-              <Button
-                type='submit'
-                className='bg-[#AD1FEA] hover:bg-[#C75AF6] text-white w-[142px]'
-              >
-                Post Comment
-              </Button>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      )}
     </div>
   )
 }

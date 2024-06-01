@@ -7,7 +7,7 @@ import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import useUser from "@/hooks/user/useUser"
+import useVoting from "@/hooks/voting/useVoting"
 
 function FeedbackCard({
   id,
@@ -20,6 +20,7 @@ function FeedbackCard({
   isAuth,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
+  const { toggleUserUpvote } = useVoting()
 
   return (
     <motion.div
@@ -36,6 +37,7 @@ function FeedbackCard({
               feedbackId={id}
               upvotes={upvotes}
               isVertical={true}
+              onToggleUpvote={toggleUserUpvote}
             />
           ) : (
             <UpVoteUnauth upvotes={upvotes} isVertical={true} />
