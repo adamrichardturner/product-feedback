@@ -6,10 +6,13 @@ import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 import { FeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
+import useUser from "@/hooks/user/useUser"
+import FeedbackFallback from "./FeedbackFallback"
 
 const FeedbackGrid = () => {
   const { feedbackData, filterFeedbackByCategory, loading, selectedFilter } =
     useFeedback()
+  const { isAuth } = useUser()
 
   if (loading) {
     return (
@@ -39,37 +42,42 @@ const FeedbackGrid = () => {
     }
   }
 
-  const sortedFeedback = sortFeedback(filteredFeedback, selectedFilter)
+  let sortedFeedback = sortFeedback(filteredFeedback, selectedFilter)
 
   return (
     <div className='space-y-5'>
-      {sortedFeedback.map(
-        ({
-          id,
-          title,
-          user_id,
-          detail,
-          category,
-          comments,
-          status,
-          upvotes,
-          upvotedByUser,
-        }) => {
-          return (
-            <FeedbackCard
-              key={id}
-              id={id}
-              user_id={user_id}
-              title={title}
-              detail={detail}
-              category={category}
-              comments={comments}
-              status={status}
-              upvotes={upvotes}
-              upvotedByUser={upvotedByUser}
-            />
-          )
-        }
+      {sortedFeedback.length > 0 ? (
+        sortedFeedback.map(
+          ({
+            id,
+            title,
+            user_id,
+            detail,
+            category,
+            comments,
+            status,
+            upvotes,
+            upvotedByUser,
+          }) => {
+            return (
+              <FeedbackCard
+                key={id}
+                id={id}
+                user_id={user_id}
+                title={title}
+                detail={detail}
+                category={category}
+                comments={comments}
+                status={status}
+                upvotes={upvotes}
+                upvotedByUser={upvotedByUser}
+                isAuth={isAuth}
+              />
+            )
+          }
+        )
+      ) : (
+        <FeedbackFallback isAuth={isAuth} />
       )}
     </div>
   )

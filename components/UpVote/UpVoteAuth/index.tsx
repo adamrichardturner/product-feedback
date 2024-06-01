@@ -1,6 +1,5 @@
 import UpVoteArrowBlue from "@/assets/shared/icon-arrow-up-blue.svg"
 import UpVoteArrowWhite from "@/assets/shared/icon-arrow-up-white.svg"
-import useVoting from "@/hooks/voting/useVoting"
 import Image from "next/image"
 import React from "react"
 
@@ -9,6 +8,7 @@ interface UpVoteAuthProps {
   upvotes: number
   upvotedByUser: boolean
   isVertical: boolean
+  onToggleUpvote?: (feedbackId: string) => void
 }
 
 const UpVoteAuth: React.FC<UpVoteAuthProps> = ({
@@ -16,12 +16,13 @@ const UpVoteAuth: React.FC<UpVoteAuthProps> = ({
   upvotes,
   upvotedByUser,
   isVertical,
+  onToggleUpvote,
 }) => {
-  const { toggleUserUpvote } = useVoting()
-
   const onToggleUserUpvote = (event: React.PointerEvent<HTMLDivElement>) => {
     event.stopPropagation()
-    toggleUserUpvote(feedbackId)
+    if (onToggleUpvote) {
+      onToggleUpvote(feedbackId)
+    }
   }
 
   return (

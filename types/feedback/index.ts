@@ -44,6 +44,7 @@ export interface FeedbackCardProps {
   upvotes: number
   authUserId?: string
   upvotedByUser: boolean
+  isAuth?: boolean
 }
 
 export interface SingleFeedbackCardProps {
@@ -55,6 +56,6 @@ export interface SingleFeedbackCardProps {
   comments: CommentType[]
   status: string
   upvotes: number
-  authUserId?: string
+  isAuth: boolean
   upvotedByUser: boolean
 }

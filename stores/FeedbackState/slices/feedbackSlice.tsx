@@ -41,7 +41,6 @@ export const createFeedbackSlice: StateCreator<IFeedbackSlice> = (
     set(() => ({ selectedFilter: newFilter })),
   toggleUpvote: async (feedbackId: string) => {
     try {
-      // Call the service to toggle the upvote
       await toggleUpvoteService(feedbackId)
 
       // Update the state

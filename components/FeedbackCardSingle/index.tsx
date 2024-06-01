@@ -8,29 +8,33 @@ import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { SingleFeedbackCardProps } from "@/types/feedback"
 
+interface FeedbackCardSingleProps extends SingleFeedbackCardProps {
+  onToggleUpvote: (feedbackId: string) => void
+}
+
 function FeedbackCardSingle({
   id,
-  user_id,
   title,
   detail,
   category,
   comments,
-  status,
   upvotes,
   upvotedByUser,
-  authUserId,
-}: SingleFeedbackCardProps) {
+  isAuth,
+  onToggleUpvote,
+}: FeedbackCardSingleProps) {
   const { setCategory } = useCategories()
 
   return (
     <div className='h-[152px] w-full rounded-btn bg-white pl-8 pt-7 flex justify-between'>
       <div className='bg-white flex space-x-10'>
-        {authUserId === "authenticated" ? (
+        {isAuth ? (
           <UpVoteAuth
             upvotedByUser={upvotedByUser}
             feedbackId={id}
             upvotes={upvotes}
             isVertical={true}
+            onToggleUpvote={onToggleUpvote}
           />
         ) : (
           <UpVoteUnauth upvotes={upvotes} isVertical={true} />

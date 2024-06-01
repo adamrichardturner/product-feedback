@@ -11,17 +11,15 @@ import useUser from "@/hooks/user/useUser"
 
 function FeedbackCard({
   id,
-  user_id,
   title,
   detail,
   category,
   comments,
-  status,
   upvotedByUser,
   upvotes,
+  isAuth,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
-  const { isAuth } = useUser()
 
   return (
     <motion.div

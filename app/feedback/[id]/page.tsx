@@ -4,18 +4,20 @@ import Image from "next/image"
 import CommentGrid from "@/components/Comments/CommentGrid"
 import { useEffect, useState } from "react"
 import FeedbackCardSingle from "@/components/FeedbackCardSingle"
-import { FeedbackCardProps, SingleFeedbackCardProps } from "@/types/feedback"
+import { SingleFeedbackCardProps } from "@/types/feedback"
 import BackButton from "@/components/BackButton"
 import Link from "next/link"
 import LoadingDots from "@/assets/shared/loading.svg"
 import useFeedback from "@/hooks/feedback/useFeedback"
 import useUser from "@/hooks/user/useUser"
+import useVoting from "@/hooks/voting/useVoting"
 
 export default function Page({ params }: { params: { id: string } }) {
   const [feedback, setFeedback] = useState<SingleFeedbackCardProps>()
   const [loading, setLoading] = useState<boolean>(true)
   const { getFeedbackAndComments } = useFeedback()
-  const { user, updateUserAuth } = useUser()
+  const { user, isAuth, updateUserAuth } = useUser()
+  const { toggleUserUpvote } = useVoting()
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -34,6 +36,20 @@ export default function Page({ params }: { params: { id: string } }) {
 
     fetchFeedback()
   }, [params.id])
+
+  const handleToggleUpvote = (feedbackId: string) => {
+    if (feedback) {
+      const updatedFeedback = {
+        ...feedback,
+        upvotedByUser: !feedback.upvotedByUser,
+        upvotes: feedback.upvotedByUser
+          ? feedback.upvotes - 1
+          : feedback.upvotes + 1,
+      }
+      setFeedback(updatedFeedback)
+      toggleUserUpvote(feedbackId)
+    }
+  }
 
   return (
     <div className='p-4 md:w-[730px]'>
@@ -67,8 +83,9 @@ export default function Page({ params }: { params: { id: string } }) {
               comments={feedback.comments}
               status={feedback.status}
               upvotes={feedback.upvotes}
-              authUserId={user.id}
+              isAuth={isAuth}
               upvotedByUser={feedback.upvotedByUser}
+              onToggleUpvote={handleToggleUpvote}
             />
           )}
           {feedback?.id && feedback?.comments && (
