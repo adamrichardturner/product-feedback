@@ -1,8 +1,6 @@
-"use client"
-
 import { useFeedbackStore } from "@/stores/FeedbackState/useFeedbackStore"
 import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   getAllFeedback,
   getSingleFeedback,
@@ -12,8 +10,14 @@ import { FeedbackType, UpdatedFeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 import { getAllComments } from "@/services/commentService"
 
+type StatusCountType = {
+  planned: number
+  progress: number
+  live: number
+}
+
 const useFeedback = () => {
-  const feedbackData = useFeedbackStore((state) => state.feedbackData)
+  const feedbackData = useFeedbackStore((state) => state.feedbackData) || []
   const loading = useFeedbackStore((state) => state.loading)
   const selectedCategory = useCategoriesStore((state) => state.selectedCategory)
   const addAllFeedback = useFeedbackStore((state) => state.addAllFeedback)
@@ -23,6 +27,11 @@ const useFeedback = () => {
     (state) => state.setSelectedFilter
   )
   const feedbackCount = feedbackData.length
+  const [statusCount, setStatusCount] = useState<StatusCountType>({
+    planned: 0,
+    progress: 0,
+    live: 0,
+  })
 
   const getAllFeedbackData = useCallback(async () => {
     try {
@@ -41,7 +50,7 @@ const useFeedback = () => {
       await getAllFeedbackData()
     }
     fetchUserData()
-  }, [])
+  }, [getAllFeedbackData])
 
   const filterFeedbackByCategory = useCallback(
     (feedbackData: FeedbackType[]) => {
@@ -49,28 +58,28 @@ const useFeedback = () => {
         return feedbackData
       }
       return feedbackData.filter(
-        (feedback) => feedback.category_id === selectedCategory
+        (feedback) => feedback.category === selectedCategory
       )
     },
     [selectedCategory]
   )
 
-  const getFeedbackAndComments = useCallback(
-    async (feedbackId: string) => {
-      const singleFeedback = await getSingleFeedback(feedbackId)
-      const singleComments = await getAllComments(feedbackId)
+  const getFeedbackAndComments = useCallback(async (feedbackId: string) => {
+    const singleFeedback = await getSingleFeedback(feedbackId)
+    const singleComments = await getAllComments(feedbackId)
 
-      return {
-        ...singleFeedback[0],
-        comments: [...singleComments],
-      }
-    },
-    [feedbackData]
-  )
-
-  const setFeedbackFilter = useCallback((newFilter: SelectedFilterType) => {
-    setSelectedFeedback(newFilter)
+    return {
+      ...singleFeedback[0],
+      comments: [...singleComments],
+    }
   }, [])
+
+  const setFeedbackFilter = useCallback(
+    (newFilter: SelectedFilterType) => {
+      setSelectedFeedback(newFilter)
+    },
+    [setSelectedFeedback]
+  )
 
   const filterFeedbackByStatus = useCallback(
     (feedbackData: FeedbackType[], selectedStatus: string) => {
@@ -78,7 +87,7 @@ const useFeedback = () => {
         (feedback) => feedback.status === selectedStatus
       )
     },
-    [feedbackData]
+    []
   )
 
   const updateFeedbackData = useCallback(
@@ -95,9 +104,9 @@ const useFeedback = () => {
 
   return {
     feedbackData,
-    feedbackCount,
     loading,
     selectedFilter,
+    feedbackCount,
     filterFeedbackByCategory,
     getAllFeedbackData,
     getFeedbackAndComments,

@@ -1,6 +1,15 @@
+"use client"
+
 import Link from "next/link"
+import useFeedback from "@/hooks/feedback/useFeedback"
 
 function RoadmapWidget() {
+  const { feedbackData } = useFeedback()
+
+  const getFeedbackStatusCount = (status: string) => {
+    return feedbackData.filter((feedback) => feedback.status === status).length
+  }
+
   return (
     <div className='bg-white flex-1 lg:flex-none rounded-btn p-6 text-txt-secondary'>
       <div className='flex justify-between items-center'>
@@ -18,21 +27,21 @@ function RoadmapWidget() {
           <div className='rounded-full w-2 h-2 bg-[#F49F85]'></div>
           <span className='text-base'>Planned</span>
         </div>
-        <div className='font-bold'>2</div>
+        <div className='font-bold'>{getFeedbackStatusCount("planned")}</div>
       </div>
       <div className='flex pt-2 justify-between'>
         <div className='flex space-x-3 items-center'>
           <div className='rounded-full w-2 h-2 bg-[#AD1FEA]'></div>
           <span className='text-base'>In-Progress</span>
         </div>
-        <div className='font-bold'>3</div>
+        <div className='font-bold'>{getFeedbackStatusCount("progress")}</div>
       </div>
       <div className='flex pt-2 justify-between'>
         <div className='flex space-x-3 items-center'>
           <div className='rounded-full w-2 h-2 bg-[#62BCFA]'></div>
           <span className='text-base'>Live</span>
         </div>
-        <div className='font-bold'>1</div>
+        <div className='font-bold'>{getFeedbackStatusCount("live")}</div>
       </div>
     </div>
   )

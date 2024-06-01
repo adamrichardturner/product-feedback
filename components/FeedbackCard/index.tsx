@@ -14,7 +14,7 @@ function FeedbackCard({
   user_id,
   title,
   detail,
-  category_id,
+  category,
   comments,
   status,
   upvotedByUser,
@@ -65,9 +65,9 @@ function FeedbackCard({
           </p>
           <div
             className='mt-2.5 inline-block text-body3 font-semibold transition-colors py-1.5 px-4 rounded-btn hover:cursor-pointer bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover'
-            onClick={() => setCategory(category_id)}
+            onClick={() => setCategory(category)}
           >
-            {formatCategory(category_id)}
+            {formatCategory(category)}
           </div>
         </article>
       </div>

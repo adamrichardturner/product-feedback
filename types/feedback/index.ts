@@ -5,13 +5,16 @@ export interface NewFeedbackType {
   title: string
   category: string
   detail: string
+  order?: number
 }
 
 export interface UpdatedFeedbackType {
+  id?: string
   title: string
   category: string
   status: string
   detail: string
+  order: number | null
 }
 
 export interface FeedbackType {
@@ -20,13 +23,14 @@ export interface FeedbackType {
   inserted_at: string
   updated_at: string
   title: string
-  category_id: CategoriesType
+  category: CategoriesType
   comments: number
   status: string
   upvotes: number
   votes?: { user_id: string }[]
   detail: string
   upvotedByUser: boolean
+  order: number | null
 }
 
 export interface FeedbackCardProps {
@@ -34,7 +38,7 @@ export interface FeedbackCardProps {
   user_id: string
   title: string
   detail: string
-  category_id: CategoriesType
+  category: CategoriesType
   comments: number
   status: string
   upvotes: number
@@ -47,7 +51,7 @@ export interface SingleFeedbackCardProps {
   user_id: string
   title: string
   detail: string
-  category_id: CategoriesType
+  category: CategoriesType
   comments: CommentType[]
   status: string
   upvotes: number

@@ -63,7 +63,7 @@ export default function Page({ params }: { params: { id: string } }) {
               user_id={feedback.user_id}
               title={feedback.title}
               detail={feedback.detail}
-              category_id={feedback.category_id}
+              category={feedback.category}
               comments={feedback.comments}
               status={feedback.status}
               upvotes={feedback.upvotes}

@@ -49,7 +49,7 @@ const FeedbackGrid = () => {
           title,
           user_id,
           detail,
-          category_id,
+          category,
           comments,
           status,
           upvotes,
@@ -62,7 +62,7 @@ const FeedbackGrid = () => {
               user_id={user_id}
               title={title}
               detail={detail}
-              category_id={category_id}
+              category={category}
               comments={comments}
               status={status}
               upvotes={upvotes}

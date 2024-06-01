@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     const { error, data } = await supabase.from("feedback").insert({
       user_id: user.id,
       title,
-      category_id: category,
+      category,
       detail,
     })
 
@@ -173,14 +173,14 @@ export async function PUT(request: Request) {
     }
 
     const requestData = await request.json()
-    const { id, title, detail, category, status } = requestData
+    const { id, title, detail, category, status, order } = requestData
 
     // Validate required fields
     if (!id || !title || !detail || !category || !status) {
       return new Response(
         JSON.stringify({
           error:
-            "All fields (id, title, detail, category, status) are required",
+            "All fields (id, title, detail, category, status, order) are required",
         }),
         {
           status: 400,
@@ -203,7 +203,7 @@ export async function PUT(request: Request) {
     // Update the feedback in the database
     const { data, error } = await supabase
       .from("feedback")
-      .update({ title, detail, category_id: category, status })
+      .update({ title, detail, category, status, order })
       .eq("id", id)
       .select()
 

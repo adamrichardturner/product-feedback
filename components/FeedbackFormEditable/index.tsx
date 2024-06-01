@@ -40,6 +40,7 @@ const formSchema = z.object({
     .max(72, {
       message: "Feedback detail cannot be more than 72 characters",
     }),
+  order: z.null(),
 })
 
 interface FeedbackFormProps {
@@ -53,9 +54,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
     defaultValues: {
       id: feedback?.id || "",
       title: feedback?.title || "",
-      category: feedback?.category_id || "",
+      category: feedback?.category || "",
       status: feedback?.status || "",
       detail: feedback?.detail || "",
+      order: null,
     },
   })
   const [loading, setLoading] = useState(false)

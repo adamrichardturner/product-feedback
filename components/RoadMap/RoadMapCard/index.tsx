@@ -12,7 +12,7 @@ interface RoadMapCardProps {
   status: string
   title: string
   detail: string
-  category_id: CategoriesType
+  category: CategoriesType
   upvotes: number
   commentCount: number
   upvotedByUser: boolean
@@ -37,7 +37,7 @@ const RoadMapCard = ({
   status,
   title,
   detail,
-  category_id,
+  category,
   upvotes,
   commentCount,
   upvotedByUser,
@@ -68,9 +68,9 @@ const RoadMapCard = ({
         <div className='flex flex-col items-start space-y-4 justify-between'>
           <div
             className='mt-[24px] md:mt-[16px] inline-block text-body3 font-semibold transition-colors py-1.5 px-4 rounded-btn hover:cursor-pointer bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover'
-            onClick={() => setCategory(category_id)}
+            onClick={() => setCategory(category)}
           >
-            {formatCategory(category_id)}
+            {formatCategory(category)}
           </div>
           <div className='flex flex-row justify-between w-full'>
             {isAuth ? (
