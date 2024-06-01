@@ -37,9 +37,10 @@ function FeedbackCard({
               upvotedByUser={upvotedByUser}
               feedbackId={id}
               upvotes={upvotes}
+              isVertical={true}
             />
           ) : (
-            <UpVoteUnauth upvotes={upvotes} />
+            <UpVoteUnauth upvotes={upvotes} isVertical={true} />
           )}
           <div className='flex md:hidden items-center space-x-2'>
             <Image

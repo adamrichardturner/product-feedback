@@ -30,9 +30,10 @@ function FeedbackCardSingle({
             upvotedByUser={upvotedByUser}
             feedbackId={id}
             upvotes={upvotes}
+            isVertical={true}
           />
         ) : (
-          <UpVoteUnauth upvotes={upvotes} />
+          <UpVoteUnauth upvotes={upvotes} isVertical={true} />
         )}
         <article>
           <h3 className='font-semibold text-txt-primary text-md leading-md tracking-md'>

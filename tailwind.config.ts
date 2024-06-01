@@ -56,6 +56,9 @@ const config = {
         ring: "var(--ring)",
         background: "var(--background)",
         foreground: "hsl(var(--foreground))",
+        "status-planned": "var(--status-planned)",
+        "status-progress": "var(--status-progress)",
+        "status-live": "var(--status-live)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
