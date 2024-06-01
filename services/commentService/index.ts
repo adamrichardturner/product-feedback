@@ -1,11 +1,9 @@
 import axios from "axios"
 
 type UserProfile = {
-  user: {
-    username: string
-    full_name: string
-    avatar_url: string
-  }
+  username: string
+  full_name: string
+  avatar_url: string
 }
 
 export interface CommentType {

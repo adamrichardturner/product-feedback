@@ -193,14 +193,12 @@ export async function PUT(request: Request) {
 
     const supabase = createClient()
 
-    // Get the authenticated user
     const { error: userError } = await supabase.auth.getUser()
 
     if (userError) {
       throw new Error(userError.message)
     }
 
-    // Update the feedback in the database
     const { data, error } = await supabase
       .from("feedback")
       .update({ title, detail, category, status, order })
@@ -259,14 +257,12 @@ export async function DELETE(request: Request) {
 
     const supabase = createClient()
 
-    // Get the authenticated user
     const { error: userError } = await supabase.auth.getUser()
 
     if (userError) {
       throw new Error(userError.message)
     }
 
-    // Delete related rows in the votes table first
     const { error: deleteVotesError } = await supabase
       .from("votes")
       .delete()
@@ -276,7 +272,6 @@ export async function DELETE(request: Request) {
       throw new Error(deleteVotesError.message)
     }
 
-    // Delete the feedback in the database
     const { data, error } = await supabase
       .from("feedback")
       .delete()

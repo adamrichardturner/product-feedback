@@ -88,7 +88,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
   return (
     <div className='min-h-screen flex flex-col items-start justify-center'>
-      <BackButton />
+      <BackButton isDark={true} />
       <div className='bg-white rounded-lg p-8 w-full mt-[68px] md:w-[540px]'>
         <div className='flex justify-center mb-6'>
           <Avatar
