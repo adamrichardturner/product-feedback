@@ -13,15 +13,15 @@ const DroppableContainer: React.FC<DroppableContainerProps> = ({
   const { setNodeRef, isOver } = useDroppable({
     id,
     data: {
-      type: id, // Use id directly for type to match "planned", "progress", "live"
+      type: id,
     },
   })
 
   const style = {
-    border: isOver ? "2px solid pink" : "2px solid transparent",
-    padding: "10px",
+    border: isOver ? "2px solid #AD1FEA" : "0px solid transparent",
+    padding: "0px",
     borderRadius: "8px",
-    backgroundColor: isOver ? "rgba(255, 182, 193, 0.2)" : "transparent",
+    backgroundColor: isOver ? "rgba(173, 31, 234, 0.2)" : "transparent",
     transition: "background-color 0.3s ease",
     width: "100%",
     height: "100%",

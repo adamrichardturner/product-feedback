@@ -15,8 +15,11 @@ import SortableItem from "./SortableItem"
 import DroppableContainer from "./DroppableContainer"
 import { FeedbackCardProps } from "@/types/feedback"
 import { DragEndEvent } from "@dnd-kit/core"
+import RoadMapMobileNavigation from "./RoadMapMobileNavigation"
+import { useMediaQuery } from "usehooks-ts"
 
 const RoadMap = () => {
+  const isLargeScreen = useMediaQuery("(min-width: 768px)")
   const {
     planned,
     inProgress,
@@ -27,6 +30,7 @@ const RoadMap = () => {
   } = useRoadMap()
   const [activeId, setActiveId] = useState<UniqueIdentifier>("")
   const [activeCard, setActiveCard] = useState<FeedbackCardProps | null>(null)
+  const [activeTab, setActiveTab] = useState<string>("planned")
 
   if (!planned || !inProgress || !live) {
     return null
@@ -65,147 +69,103 @@ const RoadMap = () => {
     }
   }
 
+  const renderSection = (
+    title: string,
+    items: FeedbackCardProps[],
+    sectionId: string,
+    extraClasses: string = ""
+  ) => (
+    <DroppableContainer id={sectionId}>
+      <section className={`w-full flex-1 ${extraClasses}`}>
+        <div className='w-full'>
+          <h3 className='text-txt-primary text-[18px] font-bold tracking-[-0.25px]'>
+            {title} ({items.length})
+          </h3>
+          <span className='text-txt-secondary text-[16px]'>
+            {sectionId === "planned" && "Ideas prioritized for research"}
+            {sectionId === "progress" && "Currently being developed"}
+            {sectionId === "live" && "Released features"}
+          </span>
+        </div>
+        <SortableContext
+          items={items.map((card) => card.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className='flex flex-wrap flex-col gap-4 md:gap-6 mt-8'>
+            {items.map((card) => (
+              <SortableItem
+                key={card.id}
+                id={card.id}
+                data={{ type: sectionId }}
+                isLargeScreen={isLargeScreen}
+              >
+                <RoadMapCard
+                  feedback_id={card.id}
+                  status={card.status}
+                  title={card.title}
+                  detail={card.detail}
+                  category={card.category}
+                  commentCount={card.comments}
+                  upvotes={card.upvotes}
+                  upvotedByUser={card.upvotedByUser}
+                  isAuth={isAuth}
+                />
+              </SortableItem>
+            ))}
+          </div>
+        </SortableContext>
+      </section>
+    </DroppableContainer>
+  )
+
   return (
-    <DndContext
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-      onDragStart={handleDragStart}
-    >
-      <div className='flex gap-[30px] pt-[48px] w-full h-full flex-grow'>
-        <DroppableContainer id='planned'>
-          <section className='w-full flex-1'>
-            <div className='w-full'>
-              <h3 className='text-txt-primary text-[18px] font-bold tracking-[-0.25px]'>
-                Planned ({planned.length})
-              </h3>
-              <span className='text-txt-secondary text-[16px]'>
-                Ideas prioritized for research
-              </span>
-            </div>
-            <SortableContext
-              items={planned.map((card) => card.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className='flex flex-wrap flex-col gap-6 mt-8'>
-                {planned.map((card) => (
-                  <SortableItem
-                    key={card.id}
-                    id={card.id}
-                    data={{ type: "planned" }}
-                  >
-                    <RoadMapCard
-                      feedback_id={card.id}
-                      status={card.status}
-                      title={card.title}
-                      detail={card.detail}
-                      category={card.category}
-                      commentCount={card.comments}
-                      upvotes={card.upvotes}
-                      upvotedByUser={card.upvotedByUser}
-                      isAuth={isAuth}
-                    />
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </section>
-        </DroppableContainer>
+    <div>
+      <RoadMapMobileNavigation
+        plannedCount={planned.length}
+        progressCount={inProgress.length}
+        liveCount={live.length}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      {isLargeScreen ? (
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
+        >
+          <div className='flex pt-[48px] space-x-4 w-full h-full flex-grow'>
+            {renderSection("Planned", planned, "planned")}
 
-        <DroppableContainer id='progress'>
-          <section className='w-full max-w-[350px] flex-1'>
-            <div>
-              <h3 className='text-txt-primary text-[18px] font-bold tracking-[-0.25px]'>
-                In-Progress ({inProgress.length})
-              </h3>
-              <span className='text-txt-secondary text-[16px]'>
-                Currently being developed
-              </span>
-            </div>
-            <SortableContext
-              items={inProgress.map((card) => card.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className='flex flex-wrap flex-col gap-6 mt-8'>
-                {inProgress.map((card) => (
-                  <SortableItem
-                    key={card.id}
-                    id={card.id}
-                    data={{ type: "progress" }}
-                  >
-                    <RoadMapCard
-                      feedback_id={card.id}
-                      status={card.status}
-                      title={card.title}
-                      detail={card.detail}
-                      category={card.category}
-                      commentCount={card.comments}
-                      upvotes={card.upvotes}
-                      upvotedByUser={card.upvotedByUser}
-                      isAuth={isAuth}
-                    />
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </section>
-        </DroppableContainer>
+            {renderSection("In-Progress", inProgress, "progress")}
 
-        <DroppableContainer id='live'>
-          <section className='w-full max-w-[350px] flex-1'>
-            <div>
-              <h3 className='text-txt-primary text-[18px] font-bold tracking-[-0.25px]'>
-                Live ({live.length})
-              </h3>
-              <span className='text-txt-secondary text-[16px]'>
-                Released features
-              </span>
-            </div>
-            <SortableContext
-              items={live.map((card) => card.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className='flex flex-wrap flex-col gap-6 mt-8'>
-                {live.map((card) => (
-                  <SortableItem
-                    key={card.id}
-                    id={card.id}
-                    data={{ type: "live" }}
-                  >
-                    <RoadMapCard
-                      feedback_id={card.id}
-                      status={card.status}
-                      title={card.title}
-                      detail={card.detail}
-                      category={card.category}
-                      commentCount={card.comments}
-                      upvotes={card.upvotes}
-                      upvotedByUser={card.upvotedByUser}
-                      isAuth={isAuth}
-                    />
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </section>
-        </DroppableContainer>
-      </div>
-
-      <DragOverlay>
-        {activeCard ? (
-          <RoadMapCard
-            feedback_id={activeCard.id}
-            status={activeCard.status}
-            title={activeCard.title}
-            detail={activeCard.detail}
-            category={activeCard.category}
-            commentCount={activeCard.comments}
-            upvotes={activeCard.upvotes}
-            upvotedByUser={activeCard.upvotedByUser}
-            isAuth={isAuth}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+            {renderSection("Live", live, "live")}
+          </div>
+          <DragOverlay>
+            {activeCard ? (
+              <RoadMapCard
+                feedback_id={activeCard.id}
+                status={activeCard.status}
+                title={activeCard.title}
+                detail={activeCard.detail}
+                category={activeCard.category}
+                commentCount={activeCard.comments}
+                upvotes={activeCard.upvotes}
+                upvotedByUser={activeCard.upvotedByUser}
+                isAuth={isAuth}
+              />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      ) : (
+        <div className='flex pt-[48px] px-6 w-full h-full flex-grow md:hidden'>
+          {activeTab === "planned" &&
+            renderSection("Planned", planned, "planned")}
+          {activeTab === "progress" &&
+            renderSection("In-Progress", inProgress, "progress")}
+          {activeTab === "live" && renderSection("Live", live, "live")}
+        </div>
+      )}
+    </div>
   )
 }
 

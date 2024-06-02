@@ -7,9 +7,15 @@ interface SortableItemProps {
   id: UniqueIdentifier
   children: ReactNode
   data: { type: string }
+  isLargeScreen: boolean
 }
 
-const SortableItem = ({ id, children, data }: SortableItemProps) => {
+const SortableItem = ({
+  id,
+  children,
+  data,
+  isLargeScreen,
+}: SortableItemProps) => {
   const {
     attributes,
     listeners,
@@ -20,6 +26,7 @@ const SortableItem = ({ id, children, data }: SortableItemProps) => {
   } = useSortable({
     id,
     data,
+    disabled: !isLargeScreen,
   })
 
   const style = {
