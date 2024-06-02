@@ -1,6 +1,6 @@
 import { useFeedbackStore } from "@/stores/FeedbackState/useFeedbackStore"
 import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import {
   getAllFeedback,
   getSingleFeedback,
@@ -9,12 +9,6 @@ import {
 import { FeedbackType, UpdatedFeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 import { getAllComments } from "@/services/commentService"
-
-type StatusCountType = {
-  planned: number
-  progress: number
-  live: number
-}
 
 const useFeedback = () => {
   const feedbackData = useFeedbackStore((state) => state.feedbackData) || []
@@ -27,11 +21,6 @@ const useFeedback = () => {
     (state) => state.setSelectedFilter
   )
   const feedbackCount = feedbackData.length
-  const [statusCount, setStatusCount] = useState<StatusCountType>({
-    planned: 0,
-    progress: 0,
-    live: 0,
-  })
 
   const getAllFeedbackData = useCallback(async () => {
     try {
