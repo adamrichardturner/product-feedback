@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
+import AuthWidget from "../AuthWidget"
 import BurgerOpen from "@/assets/shared/mobile/icon-hamburger.svg"
 import BurgerClose from "@/assets/shared/mobile/icon-close.svg"
 import CategoryWidget from "../CategoryWidget"
@@ -26,6 +27,9 @@ export function NavSheet() {
         <div className='space-y-6'>
           <CategoryWidget isOpen={isOpen} setIsOpen={setIsOpen} />
           <RoadmapWidget />
+        </div>
+        <div className='w-full flex items-end justify-end mt-6'>
+          <AuthWidget />
         </div>
       </SheetContent>
     </Sheet>

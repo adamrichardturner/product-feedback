@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import useUser from "@/hooks/user/useUser"
-import AvatarFallbackImage from "@/assets/shared/avatarFallback.png"
+import AvatarFallbackImage from "@/assets/shared/avatar.svg"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import {
@@ -55,16 +55,16 @@ export default function AuthWidget() {
         <div className='cursor-pointer'>
           {isAuth ? (
             <Image
-              width={40}
-              height={40}
+              width={30}
+              height={30}
               src={avatar_url || AvatarFallbackImage}
               alt='User Avatar'
               className='avatar image rounded-full'
             />
           ) : (
             <Image
-              width={40}
-              height={40}
+              width={30}
+              height={30}
               src={AvatarFallbackImage}
               alt='Fallback Avatar'
               className='avatar image rounded-full'

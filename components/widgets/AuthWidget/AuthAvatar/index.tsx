@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import useUser from "@/hooks/user/useUser"
-import AvatarFallbackImage from "@/assets/shared/avatarFallback.png"
+import AvatarFallbackImage from "@/assets/shared/avatar.svg"
 
 export default function AuthAvatar({
   uid,

@@ -27,7 +27,7 @@ export default function Login({
 
   return (
     <div className='flex items-center justify-center min-h-screen'>
-      <div className='flex-1 flex flex-col sm:max-w-md rounded-btn justify-center gap-2 w-[540px] py-[52px] px-[42px] h-auto bg-white'>
+      <div className='flex-1 flex flex-col sm:max-w-md rounded-btn justify-center gap-2 w-full md:w-[540px] py-[52px] px-[42px] h-auto bg-white'>
         <h2 className='font-[700] text-xl text-txt-primary tracking-[-0.333px] pb-[40px]'>
           Login to your account
         </h2>
