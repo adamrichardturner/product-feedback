@@ -43,13 +43,20 @@ function FeedbackCard({
             <UpVoteUnauth upvotes={upvotes} isVertical={true} />
           )}
           <div className='flex md:hidden items-center space-x-2'>
-            <Image
-              src={SpeechBubble}
-              width={18}
-              height={16}
-              alt='Speech Bubble'
-            />
-            <span className='font-semibold flex text-txt-primary'>0</span>
+            <Link
+              href={`/feedback/${id}`}
+              className='flex md:hidden items-center space-x-2'
+            >
+              <Image
+                src={SpeechBubble}
+                width={18}
+                height={16}
+                alt='Speech Bubble'
+              />
+              <span className='font-semibold flex text-txt-primary'>
+                {comments}
+              </span>
+            </Link>
           </div>
         </div>
 
