@@ -2,7 +2,7 @@ import IconPlus from "@/assets/shared/icon-plus.svg"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-const FeedbackButtonAuth = () => {
+const FeedbackButton = () => {
   const router = useRouter()
   return (
     <div
@@ -15,4 +15,4 @@ const FeedbackButtonAuth = () => {
   )
 }
 
-export default FeedbackButtonAuth
+export default FeedbackButton

@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import useFeedback from "@/hooks/feedback/useFeedback"
+import { FeedbackType } from "@/types/feedback"
 
-function RoadmapWidget() {
-  const { feedbackData } = useFeedback()
+interface RoadmapWidgetProps {
+  feedbackData: FeedbackType[]
+}
 
+function RoadmapWidget({ feedbackData }: RoadmapWidgetProps) {
   const getFeedbackStatusCount = (status: string) => {
     return feedbackData.filter((feedback) => feedback.status === status).length
   }

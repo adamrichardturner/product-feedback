@@ -2,27 +2,28 @@ import UpVoteArrowBlue from "@/assets/shared/icon-arrow-up-blue.svg"
 import UpVoteArrowWhite from "@/assets/shared/icon-arrow-up-white.svg"
 import Image from "next/image"
 import React from "react"
+import { useUpvote } from "@/hooks/voting/useUpvote"
 
-interface UpVoteAuthProps {
+interface UpVoteProps {
   feedbackId: string
   upvotes: number
   upvotedByUser: boolean
   isVertical: boolean
-  onToggleUpvote?: (feedbackId: string) => void
 }
 
-const UpVoteAuth: React.FC<UpVoteAuthProps> = ({
+const UpVote: React.FC<UpVoteProps> = ({
   feedbackId,
   upvotes,
   upvotedByUser,
   isVertical,
-  onToggleUpvote,
 }) => {
-  const onToggleUserUpvote = (event: React.PointerEvent<HTMLDivElement>) => {
+  const { handleUpvote, isUpdating } = useUpvote()
+
+  const onToggleUserUpvote = async (
+    event: React.PointerEvent<HTMLDivElement>
+  ) => {
     event.stopPropagation()
-    if (onToggleUpvote) {
-      onToggleUpvote(feedbackId)
-    }
+    await handleUpvote(feedbackId, upvotes, upvotedByUser)
   }
 
   return (
@@ -35,7 +36,7 @@ const UpVoteAuth: React.FC<UpVoteAuthProps> = ({
         upvotedByUser
           ? "bg-[#4661E6] text-white"
           : "bg-btn-upvote-background hover:bg-btn-upvote-background-hover text-txt-primary"
-      }`}
+      } ${isUpdating ? "opacity-50" : ""}`}
       onPointerDown={onToggleUserUpvote}
     >
       <Image
@@ -49,4 +50,4 @@ const UpVoteAuth: React.FC<UpVoteAuthProps> = ({
   )
 }
 
-export default UpVoteAuth
+export default UpVote

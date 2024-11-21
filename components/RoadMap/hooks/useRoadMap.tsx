@@ -1,75 +1,73 @@
-import useFeedback from "@/hooks/feedback/useFeedback"
+import useSWR from "swr"
 import { FeedbackCardProps, FeedbackType } from "../../../types/feedback"
-import { useEffect, useState, useCallback } from "react"
-import useUser from "@/hooks/user/useUser"
+import { useCallback } from "react"
 import { arrayMove } from "@dnd-kit/sortable"
 import { UniqueIdentifier } from "@dnd-kit/core"
 
+const fetcher = async (url: string) => {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error("Failed to fetch")
+  }
+  return response.json()
+}
+
 const useRoadMap = () => {
-  const [planned, setPlanned] = useState<FeedbackCardProps[] | null>(null)
-  const [inProgress, setInProgress] = useState<FeedbackCardProps[] | null>(null)
-  const [live, setLive] = useState<FeedbackCardProps[] | null>(null)
-
   const {
-    feedbackData,
-    updateFeedbackData,
-    filterFeedbackByStatus,
-    getAllFeedbackData,
-    loading,
-  } = useFeedback()
+    data: feedbackData,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<FeedbackType[]>("/api/feedback", fetcher)
 
-  const { isAuth, updateUserAuth } = useUser()
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        await updateUserAuth()
-      } catch (error) {
-        console.error("Error")
-      }
-    }
-    const fetchPlanned = filterFeedbackByStatus(feedbackData, "planned")
-    const fetchInProgress = filterFeedbackByStatus(feedbackData, "progress")
-    const fetchLive = filterFeedbackByStatus(feedbackData, "live")
-    setPlanned(fetchPlanned)
-    setInProgress(fetchInProgress)
-    setLive(fetchLive)
-    fetchUser()
-  }, [feedbackData, isAuth, filterFeedbackByStatus, updateUserAuth])
+  const planned =
+    feedbackData?.filter((item: FeedbackType) => item.status === "planned") ||
+    []
+  const inProgress =
+    feedbackData?.filter((item: FeedbackType) => item.status === "progress") ||
+    []
+  const live =
+    feedbackData?.filter((item: FeedbackType) => item.status === "live") || []
 
   const handleStatusChange = useCallback(
     async (id: UniqueIdentifier, newStatus: string) => {
-      const updatedFeedback = feedbackData.find((item) => item.id === id)
-      if (updatedFeedback) {
-        const updatedFeedbackData = {
-          ...updatedFeedback,
-          status: newStatus,
-          order: null,
-        }
+      const updatedFeedback = feedbackData?.find(
+        (item: FeedbackType) => item.id === id
+      )
+      if (!updatedFeedback) return
 
-        try {
-          await updateFeedbackData(updatedFeedbackData)
-          const refreshedFeedbackData =
-            (await getAllFeedbackData()) as unknown as FeedbackType[]
+      try {
+        // Optimistically update the UI
+        mutate(
+          feedbackData?.map((item: FeedbackType) =>
+            item.id === id ? { ...item, status: newStatus, order: null } : item
+          ),
+          false
+        )
 
-          if (!refreshedFeedbackData) return
+        // Make the API call using PUT
+        await fetch(`/api/feedback`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            title: updatedFeedback.title,
+            detail: updatedFeedback.detail,
+            category: updatedFeedback.category,
+            status: newStatus,
+            order: null,
+          }),
+        })
 
-          setPlanned(filterFeedbackByStatus(refreshedFeedbackData, "planned"))
-          setInProgress(
-            filterFeedbackByStatus(refreshedFeedbackData, "progress")
-          )
-          setLive(filterFeedbackByStatus(refreshedFeedbackData, "live"))
-        } catch (error) {
-          console.error(error)
-        }
+        // Revalidate the data
+        await mutate()
+      } catch (error) {
+        console.error(error)
+        // Revert on error
+        await mutate()
       }
     },
-    [
-      feedbackData,
-      updateFeedbackData,
-      getAllFeedbackData,
-      filterFeedbackByStatus,
-    ]
+    [feedbackData, mutate]
   )
 
   const handleOrderChange = useCallback(
@@ -78,45 +76,78 @@ const useRoadMap = () => {
       activeId: UniqueIdentifier,
       overId: UniqueIdentifier
     ) => {
-      const items = feedbackData.filter((item) => item.status === status)
-      const activeIndex = items.findIndex((item) => item.id === activeId)
-      const overIndex = items.findIndex((item) => item.id === overId)
+      const items =
+        feedbackData?.filter((item: FeedbackType) => item.status === status) ||
+        []
+      const activeIndex = items.findIndex(
+        (item: FeedbackType) => item.id === activeId
+      )
+      const overIndex = items.findIndex(
+        (item: FeedbackType) => item.id === overId
+      )
 
       if (activeIndex !== -1 && overIndex !== -1) {
         const newItems = arrayMove(items, activeIndex, overIndex)
-        for (let i = 0; i < newItems.length; i++) {
-          newItems[i].order = i
-          await updateFeedbackData({
-            id: newItems[i].id,
-            title: newItems[i].title,
-            detail: newItems[i].detail,
-            category: newItems[i].category,
-            status: newItems[i].status,
-            order: newItems[i].order,
+        const updatedOrders = newItems.map(
+          (item: FeedbackType, index: number) => ({
+            id: item.id,
+            order: index,
           })
+        )
+
+        try {
+          // Optimistically update the UI
+          mutate(
+            feedbackData?.map((item: FeedbackType) => {
+              const updatedOrder = updatedOrders.find((u) => u.id === item.id)
+              return updatedOrder
+                ? { ...item, order: updatedOrder.order }
+                : item
+            }),
+            false
+          )
+
+          // Update all items in parallel using PUT
+          await Promise.all(
+            updatedOrders.map((item) => {
+              const feedback = feedbackData?.find(
+                (f: FeedbackType) => f.id === item.id
+              )
+              if (!feedback) return Promise.resolve()
+
+              return fetch(`/api/feedback`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  id: item.id,
+                  title: feedback.title,
+                  detail: feedback.detail,
+                  category: feedback.category,
+                  status: feedback.status,
+                  order: item.order,
+                }),
+              })
+            })
+          )
+
+          // Revalidate the data
+          await mutate()
+        } catch (error) {
+          console.error(error)
+          // Revert on error
+          await mutate()
         }
-        const refreshedFeedbackData =
-          (await getAllFeedbackData()) as unknown as FeedbackType[]
-        if (!refreshedFeedbackData) return
-        setPlanned(filterFeedbackByStatus(refreshedFeedbackData, "planned"))
-        setInProgress(filterFeedbackByStatus(refreshedFeedbackData, "progress"))
-        setLive(filterFeedbackByStatus(refreshedFeedbackData, "live"))
       }
     },
-    [
-      feedbackData,
-      updateFeedbackData,
-      getAllFeedbackData,
-      filterFeedbackByStatus,
-    ]
+    [feedbackData, mutate]
   )
 
   return {
     planned,
     inProgress,
     live,
-    loading,
-    isAuth,
+    isLoading,
+    error,
     handleStatusChange,
     handleOrderChange,
   }

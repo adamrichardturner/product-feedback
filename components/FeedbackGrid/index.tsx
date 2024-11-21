@@ -6,15 +6,18 @@ import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 import { FeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
-import useUser from "@/hooks/user/useUser"
 import FeedbackFallback from "./FeedbackFallback"
 
-const FeedbackGrid = () => {
-  const { feedbackData, filterFeedbackByCategory, loading, selectedFilter } =
-    useFeedback()
-  const { isAuth } = useUser()
+const FeedbackGrid = ({
+  feedbackData,
+  isLoading,
+}: {
+  feedbackData: FeedbackType[]
+  isLoading: boolean
+}) => {
+  const { filterFeedbackByCategory, selectedFilter } = useFeedback()
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='w-full h-full flex items-center justify-center'>
         <Image src={LoadingDots} width={60} height={60} alt='Loading Dots' />
@@ -71,13 +74,12 @@ const FeedbackGrid = () => {
                 status={status}
                 upvotes={upvotes}
                 upvotedByUser={upvotedByUser}
-                isAuth={isAuth}
               />
             )
           }
         )
       ) : (
-        <FeedbackFallback isAuth={isAuth} />
+        <FeedbackFallback />
       )}
     </div>
   )

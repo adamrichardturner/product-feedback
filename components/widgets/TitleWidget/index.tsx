@@ -1,10 +1,14 @@
 "use client"
 
 import Link from "next/link"
-
 import { NavSheet } from "./NavSheet"
+import { FeedbackType } from "@/types/feedback"
 
-function TitleWidget() {
+interface TitleWidgetProps {
+  feedbackData: FeedbackType[]
+}
+
+function TitleWidget({ feedbackData }: TitleWidgetProps) {
   return (
     <nav className='w-full flex flex-1 lg:h-[138px] lg:flex-none'>
       <div className='lg:w-full flex-1 lg:flex-none lg:flex-0 w-full bg-radial-gradient flex justify-between items-center md:items-end md:justify-start p-6 md:rounded-btn'>
@@ -20,7 +24,7 @@ function TitleWidget() {
         </Link>
 
         <div className='md:hidden'>
-          <NavSheet />
+          <NavSheet feedbackData={feedbackData} />
         </div>
       </div>
     </nav>

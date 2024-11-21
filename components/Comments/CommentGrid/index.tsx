@@ -1,13 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import {
-  getAllComments,
-  postComment,
-  postReply,
-  CommentType,
-  NewCommentType,
-} from "@/services/commentService"
+import React, { useState } from "react"
+import useSWR, { mutate } from "swr"
+import { CommentType, postComment, postReply } from "@/services/commentService"
 import CommentCard from "../CommentCard"
 import ReplyField from "../ReplyField"
 import { useForm } from "react-hook-form"
@@ -20,6 +15,7 @@ interface CommentGridProps {
   feedbackId: string
   initialComments: CommentType[]
   isAuth: boolean
+  onCommentAdded: (newComment: CommentType) => Promise<void>
 }
 
 const commentSchema = z.object({
@@ -35,10 +31,19 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   feedbackId,
   initialComments,
   isAuth,
+  onCommentAdded,
 }) => {
-  const [comments, setComments] = useState<CommentType[]>(initialComments)
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null)
   const [activeReplyId, setActiveReplyId] = useState<string | null>(null)
+
+  const { data: comments = initialComments, mutate: mutateComments } = useSWR(
+    `/api/feedback/comments?feedback_id=${feedbackId}`,
+    null,
+    {
+      fallbackData: initialComments,
+      revalidateOnFocus: false,
+    }
+  )
 
   const {
     register,
@@ -55,29 +60,16 @@ const CommentGrid: React.FC<CommentGridProps> = ({
 
   const content = watch("content")
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const data = await getAllComments(feedbackId)
-        setComments(data)
-      } catch (error) {
-        console.error("Error fetching comments:", error)
-      }
-    }
-
-    fetchComments()
-  }, [feedbackId])
-
   const handleCommentSubmit = async (data: FormInputs) => {
-    const newComment: NewCommentType = {
-      feedback_id: feedbackId,
-      content: data.content,
-    }
-
     try {
-      await postComment(newComment)
-      const refreshedComments = await getAllComments(feedbackId)
-      setComments(refreshedComments)
+      // Make the API call
+      await postComment({
+        feedback_id: feedbackId,
+        content: data.content,
+      })
+
+      // Revalidate the data
+      await mutateComments()
       reset()
     } catch (error) {
       console.error("Error posting comment:", error)
@@ -87,16 +79,16 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   const handleReplySubmit = async (data: FormInputs) => {
     if (!replyToCommentId) return
 
-    const newReply: NewCommentType = {
-      feedback_id: feedbackId,
-      content: data.content,
-      parent_comment_id: replyToCommentId,
-    }
-
     try {
-      await postReply(newReply)
-      const refreshedComments = await getAllComments(feedbackId)
-      setComments(refreshedComments)
+      // Make the API call
+      await postReply({
+        feedback_id: feedbackId,
+        content: data.content,
+        parent_comment_id: replyToCommentId,
+      })
+
+      // Revalidate the data
+      await mutateComments()
       setReplyToCommentId(null)
       setActiveReplyId(null)
       reset()
@@ -111,31 +103,37 @@ const CommentGrid: React.FC<CommentGridProps> = ({
   }
 
   const renderComments = (
-    comments: CommentType[],
+    comments: CommentType[] = [],
     parentId: string | null = null
   ) => {
-    return comments.map((comment) => (
-      <React.Fragment key={comment.id}>
-        <div className={`ml-${parentId ? "8" : "0"}`}>
-          <CommentCard
-            comment={comment}
-            onReply={() => handleReply(comment.id)}
-            isAuth={isAuth}
-          />
-        </div>
-        {comment.id === activeReplyId && (
-          <div className='ml-[72px]'>
-            <ReplyField
-              replyToCommentId={comment.id}
-              onSubmit={handleReplySubmit}
+    if (!comments) return null
+
+    return comments.map((comment: CommentType) => {
+      if (!comment || !comment.id) return null
+
+      return (
+        <React.Fragment key={comment.id}>
+          <div className={`ml-${parentId ? "8" : "0"}`}>
+            <CommentCard
+              comment={comment}
+              onReply={() => handleReply(comment.id)}
+              isAuth={isAuth}
             />
           </div>
-        )}
-        {comment.replies && comment.replies.length > 0 && (
-          <div>{renderComments(comment.replies, comment.id)}</div>
-        )}
-      </React.Fragment>
-    ))
+          {comment.id === activeReplyId && (
+            <div className='ml-[72px]'>
+              <ReplyField
+                replyToCommentId={comment.id}
+                onSubmit={handleReplySubmit}
+              />
+            </div>
+          )}
+          {comment.replies &&
+            comment.replies.length > 0 &&
+            renderComments(comment.replies, comment.id)}
+        </React.Fragment>
+      )
+    })
   }
 
   return (

@@ -1,16 +1,11 @@
 "use client"
 
-import UpVoteAuth from "../UpVote/UpVoteAuth"
-import { UpVoteUnauth } from "../UpVote/UpVoteUnauth"
+import UpVote from "../UpVote/UpVoteAuth"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
 import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { SingleFeedbackCardProps } from "@/types/feedback"
-
-interface FeedbackCardSingleProps extends SingleFeedbackCardProps {
-  onToggleUpvote: (feedbackId: string) => void
-}
 
 function FeedbackCardSingle({
   id,
@@ -20,26 +15,19 @@ function FeedbackCardSingle({
   comments,
   upvotes,
   upvotedByUser,
-  isAuth,
-  onToggleUpvote,
-}: FeedbackCardSingleProps) {
+}: SingleFeedbackCardProps) {
   const { setCategory } = useCategories()
 
   return (
     <div className='md:h-[152px] w-full flex-1 flex-grow rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex flex-col md:flex-row justify-between'>
       <div className='bg-white w-full flex md:space-x-10'>
         <div className='hidden md:flex'>
-          {isAuth ? (
-            <UpVoteAuth
-              upvotedByUser={upvotedByUser}
-              feedbackId={id}
-              upvotes={upvotes}
-              isVertical={true}
-              onToggleUpvote={onToggleUpvote}
-            />
-          ) : (
-            <UpVoteUnauth upvotes={upvotes} isVertical={true} />
-          )}
+          <UpVote
+            upvotedByUser={upvotedByUser}
+            feedbackId={id}
+            upvotes={upvotes}
+            isVertical={true}
+          />
         </div>
         <article className='w-full'>
           <h3 className='font-semibold text-[14px] text-txt-primary md:text-md leading-md tracking-md'>
@@ -56,17 +44,12 @@ function FeedbackCardSingle({
           </div>
           <div className='md:hidden mt-3 flex justify-between w-full'>
             <div>
-              {isAuth ? (
-                <UpVoteAuth
-                  upvotedByUser={upvotedByUser}
-                  feedbackId={id}
-                  upvotes={upvotes}
-                  isVertical={false}
-                  onToggleUpvote={onToggleUpvote}
-                />
-              ) : (
-                <UpVoteUnauth upvotes={upvotes} isVertical={false} />
-              )}
+              <UpVote
+                upvotedByUser={upvotedByUser}
+                feedbackId={id}
+                upvotes={upvotes}
+                isVertical={false}
+              />
             </div>
 
             <div className='items-center flex space-x-2'>

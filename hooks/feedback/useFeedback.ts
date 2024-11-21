@@ -9,6 +9,7 @@ import {
 import { FeedbackType, UpdatedFeedbackType } from "@/types/feedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 import { getAllComments } from "@/services/commentService"
+import { createClient } from "@/utils/supabase/client"
 
 const useFeedback = () => {
   const feedbackData = useFeedbackStore((state) => state.feedbackData) || []
@@ -21,6 +22,7 @@ const useFeedback = () => {
     (state) => state.setSelectedFilter
   )
   const feedbackCount = feedbackData.length
+  const supabase = createClient()
 
   const getAllFeedbackData = useCallback(async () => {
     try {
@@ -33,13 +35,6 @@ const useFeedback = () => {
       setLoading(false)
     }
   }, [addAllFeedback, setLoading])
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      await getAllFeedbackData()
-    }
-    fetchUserData()
-  }, [getAllFeedbackData])
 
   const filterFeedbackByCategory = useCallback(
     (feedbackData: FeedbackType[]) => {
@@ -91,6 +86,28 @@ const useFeedback = () => {
     []
   )
 
+  const checkAuthAndFetchFeedback = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user && user.aud === "authenticated") {
+        const data = await getAllFeedback()
+        addAllFeedback(data)
+      } else {
+        console.log("User is not authenticated")
+        return null
+      }
+    } catch (error) {
+      console.error(
+        "Error checking authentication or fetching feedback:",
+        error
+      )
+      return null
+    }
+  }
+
   return {
     feedbackData,
     loading,
@@ -102,6 +119,7 @@ const useFeedback = () => {
     setFeedbackFilter,
     filterFeedbackByStatus,
     updateFeedbackData,
+    checkAuthAndFetchFeedback,
   }
 }
 

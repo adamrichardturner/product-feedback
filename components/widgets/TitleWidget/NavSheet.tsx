@@ -1,15 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-
-import AuthWidget from "../AuthWidget"
 import BurgerOpen from "@/assets/shared/mobile/icon-hamburger.svg"
 import BurgerClose from "@/assets/shared/mobile/icon-close.svg"
 import CategoryWidget from "../CategoryWidget"
 import RoadmapWidget from "../RoadmapWidget"
 import { useState } from "react"
 import Image from "next/image"
+import { FeedbackType } from "@/types/feedback"
 
-export function NavSheet() {
+interface NavSheetProps {
+  feedbackData: FeedbackType[]
+}
+
+export function NavSheet({ feedbackData }: NavSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -26,10 +29,7 @@ export function NavSheet() {
       <SheetContent>
         <div className='space-y-6'>
           <CategoryWidget isOpen={isOpen} setIsOpen={setIsOpen} />
-          <RoadmapWidget />
-        </div>
-        <div className='w-full flex items-end justify-end mt-6'>
-          <AuthWidget />
+          <RoadmapWidget feedbackData={feedbackData} />
         </div>
       </SheetContent>
     </Sheet>

@@ -8,7 +8,7 @@ import {
   UniqueIdentifier,
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import useRoadMap from "./hooks/useRoadMap"
 import RoadMapCard from "./RoadMapCard"
 import SortableItem from "./SortableItem"
@@ -20,17 +20,20 @@ import { useMediaQuery } from "usehooks-ts"
 
 const RoadMap = () => {
   const isLargeScreen = useMediaQuery("(min-width: 768px)")
-  const {
-    planned,
-    inProgress,
-    live,
-    isAuth,
-    handleStatusChange,
-    handleOrderChange,
-  } = useRoadMap()
+  const { planned, inProgress, live, handleStatusChange, handleOrderChange } =
+    useRoadMap()
   const [activeId, setActiveId] = useState<UniqueIdentifier>("")
   const [activeCard, setActiveCard] = useState<FeedbackCardProps | null>(null)
   const [activeTab, setActiveTab] = useState<string>("planned")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   if (!planned || !inProgress || !live) {
     return null
@@ -108,7 +111,6 @@ const RoadMap = () => {
                   commentCount={card.comments}
                   upvotes={card.upvotes}
                   upvotedByUser={card.upvotedByUser}
-                  isAuth={isAuth}
                 />
               </SortableItem>
             ))}
@@ -151,7 +153,6 @@ const RoadMap = () => {
                 commentCount={activeCard.comments}
                 upvotes={activeCard.upvotes}
                 upvotedByUser={activeCard.upvotedByUser}
-                isAuth={isAuth}
               />
             ) : null}
           </DragOverlay>

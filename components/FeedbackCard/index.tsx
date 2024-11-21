@@ -1,5 +1,3 @@
-import UpVoteAuth from "../UpVote/UpVoteAuth"
-import { UpVoteUnauth } from "../UpVote/UpVoteUnauth"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
 import useCategories from "@/hooks/categories/useCategories"
@@ -8,6 +6,7 @@ import { FeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import useVoting from "@/hooks/voting/useVoting"
+import UpVote from "../UpVote/UpVoteAuth"
 
 function FeedbackCard({
   id,
@@ -17,7 +16,6 @@ function FeedbackCard({
   comments,
   upvotedByUser,
   upvotes,
-  isAuth,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
   const { toggleUserUpvote } = useVoting()
@@ -31,17 +29,12 @@ function FeedbackCard({
     >
       <div className='bg-white flex flex-1 md:flex-none items-stretch justify-between flex-col-reverse md:flex-row md:space-x-10'>
         <div className='flex items-center md:items-start justify-between flex-1 mt-4 md:mt-0 md:flex-none'>
-          {isAuth ? (
-            <UpVoteAuth
-              upvotedByUser={upvotedByUser}
-              feedbackId={id}
-              upvotes={upvotes}
-              isVertical={true}
-              onToggleUpvote={toggleUserUpvote}
-            />
-          ) : (
-            <UpVoteUnauth upvotes={upvotes} isVertical={true} />
-          )}
+          <UpVote
+            upvotedByUser={upvotedByUser}
+            feedbackId={id}
+            upvotes={upvotes}
+            isVertical={true}
+          />
           <div className='flex md:hidden items-center space-x-2'>
             <Link
               href={`/feedback/${id}`}

@@ -1,12 +1,9 @@
 "use client"
 
-import FeedbackButtonAuth from "@/components/Navigation/FeebackButtonAuth"
+import FeedbackButtonAuth from "@/components/Navigation/FeebackButton"
 import BackButton from "@/components/BackButton"
-import { FeedbackButtonUnAuth } from "@/components/Navigation/FeedbackButtonUnAuth"
-import useUser from "@/hooks/user/useUser"
 
 function RoadMapNavigation() {
-  const { isAuth } = useUser()
   return (
     <div className='w-full bg-btn-back-background md:rounded-btn flex items-center justify-between p-6 md:pl-6 md:py-6 md:pr-[44px]'>
       <div className='flex items-center space-x-8'>
@@ -17,7 +14,9 @@ function RoadMapNavigation() {
           </h3>
         </div>
       </div>
-      <div>{isAuth ? <FeedbackButtonAuth /> : <FeedbackButtonUnAuth />}</div>
+      <div>
+        <FeedbackButtonAuth />
+      </div>
     </div>
   )
 }

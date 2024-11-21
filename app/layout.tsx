@@ -1,6 +1,7 @@
 import { Jost } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
+import { SWRProvider } from "@/components/providers/SWRProvider"
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang='en' className={jost.className} suppressHydrationWarning>
       <body className='bg-background text-foreground overflow-y-scroll'>
         <main className='min-h-screen flex flex-col items-center md:container'>
-          {children}
+          <SWRProvider>{children}</SWRProvider>
         </main>
         <Toaster />
       </body>

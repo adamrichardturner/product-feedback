@@ -1,11 +1,10 @@
 import useCategories from "@/hooks/categories/useCategories"
 import { CategoriesType } from "@/types/categories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
-import UpVoteAuth from "@/components/UpVote/UpVoteAuth"
-import { UpVoteUnauth } from "@/components/UpVote/UpVoteUnauth"
 import Link from "next/link"
 import Image from "next/image"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
+import UpVote from "@/components/UpVote/UpVoteAuth"
 
 interface RoadMapCardProps {
   feedback_id: string
@@ -16,7 +15,6 @@ interface RoadMapCardProps {
   upvotes: number
   commentCount: number
   upvotedByUser: boolean
-  isAuth: boolean
 }
 
 const statusClasses = (status: string) => {
@@ -41,13 +39,12 @@ const RoadMapCard = ({
   upvotes,
   commentCount,
   upvotedByUser,
-  isAuth,
 }: RoadMapCardProps) => {
   const { border, bg } = statusClasses(status)
   const { setCategory } = useCategories()
   return (
     <article
-      className={`${border} flex flex-col p-8 border-t-[6px] md:h-[260px] rounded-[5px] w-full bg-white`}
+      className={`${border} flex flex-col p-8 border-t-[6px] md:h-[280px] lg:h-[260px] rounded-[5px] w-full bg-white`}
     >
       <div className='flex flex-col justify-between h-full'>
         <div>
@@ -73,16 +70,12 @@ const RoadMapCard = ({
             {formatCategory(category)}
           </div>
           <div className='flex flex-row justify-between w-full'>
-            {isAuth ? (
-              <UpVoteAuth
-                feedbackId={feedback_id}
-                upvotes={upvotes}
-                upvotedByUser={upvotedByUser}
-                isVertical={false}
-              />
-            ) : (
-              <UpVoteUnauth upvotes={upvotes} isVertical={false} />
-            )}
+            <UpVote
+              feedbackId={feedback_id}
+              upvotes={upvotes}
+              upvotedByUser={upvotedByUser}
+              isVertical={false}
+            />
             <Link
               href={`/feedback/${feedback_id}`}
               className='flex items-center space-x-2'

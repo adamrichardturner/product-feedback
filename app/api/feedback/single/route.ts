@@ -1,4 +1,4 @@
-import { FeedbackType } from "@/types/feedback"
+import { FeedbackType, Vote } from "@/types/feedback"
 import { createClient } from "@/utils/supabase/server"
 
 export async function GET(request: Request) {
@@ -26,8 +26,14 @@ export async function GET(request: Request) {
 
     const { data: singleFeedback, error: singleFeedbackError } = await supabase
       .from("feedback")
-      .select("*")
+      .select(
+        `
+        *,
+        votes (user_id)
+      `
+      )
       .eq("id", feedback_id)
+      .single()
 
     if (singleFeedbackError) {
       console.error("Error fetching feedback data", singleFeedbackError)
@@ -39,10 +45,13 @@ export async function GET(request: Request) {
       })
     }
 
-    const processedFeedback = singleFeedback.map((item: FeedbackType) => ({
-      ...item,
-      upvotedByUser: item?.votes?.some((vote) => vote.user_id === userId),
-    }))
+    const processedFeedback: FeedbackType = {
+      ...singleFeedback,
+      upvotedByUser: singleFeedback?.votes?.some(
+        (vote: Vote) => vote.user_id === userId
+      ),
+      current_user_id: userId,
+    }
 
     return new Response(JSON.stringify(processedFeedback), {
       status: 200,
@@ -51,7 +60,7 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error(`GET all feedback error: ${error}`)
+    console.error(`GET single feedback error: ${error}`)
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
       headers: {

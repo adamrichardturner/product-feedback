@@ -1,13 +1,8 @@
 import FallbackGraphic from "@/assets/suggestions/illustration-empty.svg"
-import FeedbackButtonAuth from "@/components/Navigation/FeebackButtonAuth"
-import { FeedbackButtonUnAuth } from "@/components/Navigation/FeedbackButtonUnAuth"
+import FeedbackButton from "@/components/Navigation/FeebackButton"
 import Image from "next/image"
 
-interface FeedbackFallbackProps {
-  isAuth: boolean
-}
-
-const FeedbackFallback = ({ isAuth }: FeedbackFallbackProps) => {
+const FeedbackFallback = () => {
   return (
     <div className='bg-white py-[110px] px-4 flex flex-col items-center space-y-10 text-center rounded-btn'>
       <Image
@@ -25,7 +20,9 @@ const FeedbackFallback = ({ isAuth }: FeedbackFallbackProps) => {
           <br /> We love hearing about new ideas to improve our app.
         </p>
       </div>
-      <div>{isAuth ? <FeedbackButtonAuth /> : <FeedbackButtonUnAuth />}</div>
+      <div>
+        <FeedbackButton />
+      </div>
     </div>
   )
 }

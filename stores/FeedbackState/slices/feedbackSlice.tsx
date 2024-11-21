@@ -21,10 +21,7 @@ export interface IFeedbackSlice {
   fetchFeedback: () => void
 }
 
-export const createFeedbackSlice: StateCreator<IFeedbackSlice> = (
-  set,
-  get
-) => ({
+export const createFeedbackSlice: StateCreator<IFeedbackSlice> = (set) => ({
   feedbackData: [],
   loading: false,
   selectedFilter: "mostUpvotes",
