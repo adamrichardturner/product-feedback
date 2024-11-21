@@ -45,19 +45,15 @@ Once logged in, you can:
 
 1. Create a Supabase project at [database.new](https://database.new)
 
-2. Create a Next.js app using the Supabase template:
-
-   ```bash
-   npx create-next-app -e with-supabase
-   ```
+2. Clone this project with the following command: `git clone https://github.com/devadam88/product-feedback-app.git`
 
 3. Navigate to the project directory:
 
    ```bash
-   cd name-of-new-app
+   cd product-feedback-app
    ```
 
-4. Rename `.env.local.example` to `.env.local` and update:
+4. Create a `.env.local` file and update the following with your Supabase project details:
 
    ```
    NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
