@@ -1,6 +1,6 @@
 "use client"
 
-import FeedbackButtonAuth from "@/components/Navigation/FeebackButton"
+import FeedbackButton from "@/components/Navigation/FeebackButton"
 import BackButton from "@/components/BackButton"
 
 function RoadMapNavigation() {
@@ -15,7 +15,7 @@ function RoadMapNavigation() {
         </div>
       </div>
       <div>
-        <FeedbackButtonAuth />
+        <FeedbackButton />
       </div>
     </div>
   )

@@ -45,7 +45,6 @@ const useRoadMap = () => {
           false
         )
 
-        // Make the API call using PUT
         await fetch(`/api/feedback`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -107,7 +106,7 @@ const useRoadMap = () => {
             false
           )
 
-          // Update all items in parallel using PUT
+          // Update all items in parallel
           await Promise.all(
             updatedOrders.map((item) => {
               const feedback = feedbackData?.find(

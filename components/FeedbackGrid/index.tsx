@@ -26,26 +26,7 @@ const FeedbackGrid = ({
   }
 
   const filteredFeedback = filterFeedbackByCategory(feedbackData)
-
-  const sortFeedback = (
-    feedback: FeedbackType[],
-    filter: SelectedFilterType
-  ) => {
-    switch (filter) {
-      case "mostUpvotes":
-        return feedback.sort((a, b) => b.upvotes - a.upvotes)
-      case "leastUpvotes":
-        return feedback.sort((a, b) => a.upvotes - b.upvotes)
-      case "mostComments":
-        return feedback.sort((a, b) => b.comments - a.comments)
-      case "leastComments":
-        return feedback.sort((a, b) => a.comments - b.comments)
-      default:
-        return feedback
-    }
-  }
-
-  let sortedFeedback = sortFeedback(filteredFeedback, selectedFilter)
+  const sortedFeedback = sortFeedback(filteredFeedback, selectedFilter)
 
   return (
     <div className='space-y-5'>
@@ -86,3 +67,18 @@ const FeedbackGrid = ({
 }
 
 export default FeedbackGrid
+
+function sortFeedback(feedback: FeedbackType[], filter: SelectedFilterType) {
+  switch (filter) {
+    case "mostUpvotes":
+      return feedback.sort((a, b) => b.upvotes - a.upvotes)
+    case "leastUpvotes":
+      return feedback.sort((a, b) => a.upvotes - b.upvotes)
+    case "mostComments":
+      return feedback.sort((a, b) => b.comments - a.comments)
+    case "leastComments":
+      return feedback.sort((a, b) => a.comments - b.comments)
+    default:
+      return feedback
+  }
+}

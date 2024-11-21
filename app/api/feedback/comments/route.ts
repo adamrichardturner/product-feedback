@@ -1,7 +1,7 @@
-import { CommentType, UserType } from "@/types/comments"
+import { CommentType, RawComment } from "@/types/comments"
 import { createClient } from "@/utils/supabase/server"
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<Response> {
   try {
     const url = new URL(request.url)
     const feedback_id = url.searchParams.get("feedback_id")
@@ -11,9 +11,7 @@ export async function GET(request: Request) {
         JSON.stringify({ error: "Feedback ID is required" }),
         {
           status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       )
     }
@@ -30,7 +28,11 @@ export async function GET(request: Request) {
         parent_comment_id,
         content,
         inserted_at,
-        profiles:profiles!comments_user_id_fkey (username, full_name, avatar_url)
+        profiles (
+          username,
+          full_name,
+          avatar_url
+        )
       `
       )
       .eq("feedback_id", feedback_id)
@@ -41,30 +43,46 @@ export async function GET(request: Request) {
       throw error
     }
 
-    // Fetch avatar URLs
-    for (const comment of data as CommentType[]) {
-      if (comment.profiles && comment.profiles.avatar_url) {
-        const { data: avatarData } = await supabase.storage
-          .from("avatars")
-          .getPublicUrl(comment.profiles.avatar_url)
-        comment.profiles.avatar_url = avatarData.publicUrl
-      }
+    if (!data) {
+      return new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
     }
 
-    // Transform data to a flat structure with nested replies
-    const comments: CommentType[] = data.map((comment: any) => ({
-      id: comment.id,
-      feedback_id: comment.feedback_id,
-      user_id: comment.user_id,
-      parent_comment_id: comment.parent_comment_id,
-      content: comment.content,
-      inserted_at: comment.inserted_at,
-      profiles: comment.profiles as UserType,
-      replies: [],
-    }))
+    // Transform and type the raw data
+    const comments: CommentType[] = await Promise.all(
+      (data as unknown as RawComment[]).map(async (comment) => {
+        let avatarUrl = comment.profiles?.avatar_url || null
 
+        if (avatarUrl) {
+          const { data: avatarData } = await supabase.storage
+            .from("avatars")
+            .getPublicUrl(avatarUrl)
+          avatarUrl = avatarData?.publicUrl || avatarUrl
+        }
+
+        return {
+          id: comment.id,
+          feedback_id: comment.feedback_id,
+          user_id: comment.user_id,
+          parent_comment_id: comment.parent_comment_id,
+          content: comment.content,
+          inserted_at: comment.inserted_at,
+          profiles: comment.profiles
+            ? {
+                username: comment.profiles.username,
+                full_name: comment.profiles.full_name,
+                avatar_url: avatarUrl,
+              }
+            : null,
+          replies: [],
+        }
+      })
+    )
+
+    // Nest comments
     const commentMap: { [key: string]: CommentType } = {}
-
     comments.forEach((comment) => {
       commentMap[comment.id] = comment
     })
@@ -84,22 +102,18 @@ export async function GET(request: Request) {
 
     return new Response(JSON.stringify(topLevelComments), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
   } catch (error) {
     console.error(`Error fetching comments: ${JSON.stringify(error)}`)
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   try {
     const body = await request.json()
     const { feedback_id, content, parent_comment_id } = body
@@ -111,14 +125,11 @@ export async function POST(request: Request) {
         }),
         {
           status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       )
     }
 
-    // Get the authenticated user
     const supabase = createClient()
 
     const {
@@ -129,13 +140,9 @@ export async function POST(request: Request) {
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "User not authenticated" }), {
         status: 401,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       })
     }
-
-    const user_id = user.id
 
     const { data, error } = await supabase
       .from("comments")
@@ -144,7 +151,7 @@ export async function POST(request: Request) {
           feedback_id,
           content,
           parent_comment_id: parent_comment_id || null,
-          user_id,
+          user_id: user.id,
         },
       ])
       .single()
@@ -156,17 +163,13 @@ export async function POST(request: Request) {
 
     return new Response(JSON.stringify(data), {
       status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
   } catch (error) {
     console.error(`Error posting comment: ${JSON.stringify(error)}`)
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
   }
 }

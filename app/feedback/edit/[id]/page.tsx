@@ -25,8 +25,6 @@ export default function Page({ params }: { params: { id: string } }) {
     fetcher
   )
 
-  const { data: user } = useSWR("/api/auth/user", fetcher)
-
   if (error) return <div>Failed to load feedback</div>
 
   if (isLoading) {

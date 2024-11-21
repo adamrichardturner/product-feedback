@@ -1,6 +1,5 @@
 import RoadMapNavigation from "../../components/RoadMap/RoadMapNavigation/index"
 import RoadMap from "@/components/RoadMap"
-import RoadMapMobileNavigation from "@/components/RoadMap/RoadMapMobileNavigation"
 
 export default async function Index() {
   return (

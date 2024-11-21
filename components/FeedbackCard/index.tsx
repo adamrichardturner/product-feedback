@@ -5,7 +5,6 @@ import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import useVoting from "@/hooks/voting/useVoting"
 import UpVote from "../UpVote"
 
 function FeedbackCard({
@@ -18,8 +17,6 @@ function FeedbackCard({
   upvotes,
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
-  const { toggleUserUpvote } = useVoting()
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -64,7 +61,7 @@ function FeedbackCard({
             {detail}
           </p>
           <div
-            className='mt-2.5 inline-block rounded-btn bg-btn-upvote-background px-4 py-1.5 text-body3 font-semibold text-btn-upvote-active transition-colors hover:cursor-pointer hover:bg-btn-upvote-background-hover'
+            className='pointer-events-none mt-2.5 inline-block rounded-btn bg-btn-upvote-background px-4 py-1.5 text-body3 font-semibold text-btn-upvote-active transition-colors hover:cursor-pointer hover:bg-btn-upvote-background-hover md:pointer-events-auto'
             onClick={() => setCategory(category)}
           >
             {formatCategory(category)}

@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { toast } from "sonner"
+import { useSWRConfig } from "swr"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,15 +20,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { BasicSelect } from "@/components/ui/BasicSelect"
 import IconEditFeedback from "@/assets/shared/icon-edit-feedback.svg"
-import { Textarea } from "../ui/textarea"
-import { BasicSelect } from "../ui/BasicSelect"
-import Image from "next/image"
-import { deleteFeedback, editFeedback } from "@/services/feedbackService"
-import { toast } from "sonner"
 import { FeedbackCardProps } from "@/types/feedback"
-import { AlertDelete } from "../AlertDialog"
-import { createClient } from "@/utils/supabase/client"
+import { AlertDelete } from "@/components/AlertDialog"
 
 const formSchema = z.object({
   id: z.string(),
@@ -51,8 +50,7 @@ interface FeedbackFormProps {
 }
 
 export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
-  const supabase = createClient()
-
+  const { mutate } = useSWRConfig() // Access SWR config for revalidation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,39 +65,81 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  async function editFeedback(values: z.infer<typeof formSchema>) {
+    const response = await fetch("/api/feedback", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to edit feedback")
+    }
+
+    return response.json()
+  }
+
+  async function deleteFeedback(id: string) {
+    const response = await fetch("/api/feedback", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to delete feedback")
+    }
+
+    return response.json()
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (user?.id === feedback?.user_id) {
-      setLoading(true)
-      try {
-        await editFeedback(values)
-        router.push("/")
-        toast("Feedback edited.")
-      } catch (error) {
-        console.error("Error posting feedback:", error)
-        setLoading(false)
-      }
+    setLoading(true)
+    try {
+      const updatedFeedback = await editFeedback(values)
+
+      // Update SWR cache optimistically
+      mutate("/api/feedback", (currentData: any) => {
+        return currentData.map((item: FeedbackCardProps) =>
+          item.id === values.id ? { ...item, ...updatedFeedback } : item
+        )
+      })
+
+      toast("Feedback updated successfully.")
+      router.push("/")
+    } catch (error) {
+      console.error("Error updating feedback:", error)
+      toast.error("Failed to update feedback.")
+      setLoading(false)
     }
   }
 
   async function onDeleteFeedback() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (user?.id === feedback?.user_id) {
-      setLoading(true)
+    if (!feedback?.id) {
+      toast.error("Feedback ID is invalid.")
+      return
     }
+
+    setLoading(true)
     try {
-      if (!feedback?.id) {
-        throw new Error("Feedback ID is null")
-      }
-      await deleteFeedback(feedback?.id)
+      await deleteFeedback(feedback.id)
+
+      // Remove feedback from SWR cache
+      mutate("/api/feedback", (currentData: any) => {
+        return currentData.filter(
+          (item: FeedbackCardProps) => item.id !== feedback.id
+        )
+      })
+
+      toast("Feedback deleted successfully.")
       router.push("/")
-      toast("Feedback deleted!")
     } catch (error) {
-      console.error("Error deleting feedback: ", error)
+      console.error("Error deleting feedback:", error)
+      toast.error("Failed to delete feedback.")
       setLoading(false)
     }
   }
@@ -239,43 +279,16 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
 }
 
 const categoryOptions = [
-  {
-    label: "Feature",
-    value: "feature",
-  },
-  {
-    label: "UI",
-    value: "ui",
-  },
-  {
-    label: "UX",
-    value: "ux",
-  },
-  {
-    label: "Enhancement",
-    value: "enhancement",
-  },
-  {
-    label: "Bug",
-    value: "bug",
-  },
+  { label: "Feature", value: "feature" },
+  { label: "UI", value: "ui" },
+  { label: "UX", value: "ux" },
+  { label: "Enhancement", value: "enhancement" },
+  { label: "Bug", value: "bug" },
 ]
 
 const statusOptions = [
-  {
-    label: "Suggestion",
-    value: "suggestion",
-  },
-  {
-    label: "Planned",
-    value: "planned",
-  },
-  {
-    label: "In-Progress",
-    value: "progress",
-  },
-  {
-    label: "Live",
-    value: "live",
-  },
+  { label: "Suggestion", value: "suggestion" },
+  { label: "Planned", value: "planned" },
+  { label: "In-Progress", value: "progress" },
+  { label: "Live", value: "live" },
 ]

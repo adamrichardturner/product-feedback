@@ -3,8 +3,9 @@
 import Bulb from "@/assets/suggestions/icon-suggestions.svg"
 import Image from "next/image"
 import { SelectDropdownMenu } from "../ui/SelectDropdownMenu"
-import useFeedback from "@/hooks/feedback/useFeedback"
 import FeedbackButton from "./FeebackButton"
+import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
+import { SelectOption } from "../ui/BasicSelect"
 
 interface NavigationProps {
   suggestionsCounts: number
@@ -33,7 +34,7 @@ function Navigation({ suggestionsCounts }: NavigationProps) {
 
 export default Navigation
 
-const options = [
+const options: SelectOption<SelectedFilterType>[] = [
   { value: "mostUpvotes", label: "Most Upvotes" },
   { value: "leastUpvotes", label: "Least Upvotes" },
   { value: "mostComments", label: "Most Comments" },

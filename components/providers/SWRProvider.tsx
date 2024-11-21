@@ -12,9 +12,9 @@ export function SWRProvider({ children }: SWRProviderProps) {
     <SWRConfig
       value={{
         fetcher,
-        revalidateOnFocus: false, // Disable auto revalidation on focus
-        revalidateOnReconnect: true, // Enable revalidation on reconnect
-        shouldRetryOnError: false, // Disable retry on error
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true,
+        shouldRetryOnError: false,
       }}
     >
       {children}

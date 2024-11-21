@@ -9,7 +9,7 @@ export default async function Page() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuth = !!user
+  const isAuth = user?.aud === "authenticated"
 
   return (
     <section className='flex min-h-screen flex-col justify-center px-6'>

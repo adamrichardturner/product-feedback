@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useSWRConfig } from "swr"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,10 +19,9 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import IconNewFeedback from "@/assets/shared/icon-new-feedback.svg"
-import { Textarea } from "../ui/textarea"
-import { BasicSelect } from "../ui/BasicSelect"
+import { Textarea } from "@/components/ui/textarea"
+import { BasicSelect } from "@/components/ui/BasicSelect"
 import Image from "next/image"
-import { postFeedback } from "@/services/feedbackService"
 import { toast } from "sonner"
 
 const formSchema = z.object({
@@ -45,6 +45,7 @@ interface FeedbackFormProps {
 }
 
 export function FeedbackForm({ isAuth }: FeedbackFormProps) {
+  const { mutate } = useSWRConfig() // Access mutate from SWR
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,15 +55,38 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  async function postFeedback(values: z.infer<typeof formSchema>) {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to post feedback")
+    }
+
+    return response.json()
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (isAuth) {
       setLoading(true)
       try {
-        await postFeedback(values)
+        const feedback = await postFeedback(values)
+
+        // Optimistic UI update or revalidate the feedback list
+        mutate("/api/feedback", (currentData: any) => {
+          return [...(currentData || []), feedback]
+        })
+
         router.push("/")
         toast("Feedback created.")
       } catch (error) {
         console.error("Error posting feedback:", error)
+        toast.error("Failed to post feedback.")
         setLoading(false)
       }
     }

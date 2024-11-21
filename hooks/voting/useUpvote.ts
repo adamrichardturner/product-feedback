@@ -1,66 +1,75 @@
-import { useState } from "react"
-import { toggleUpvote } from "@/services/votingService"
+"use client"
+
 import { mutate } from "swr"
+import { FeedbackType } from "@/types/feedback"
 
-export const useUpvote = () => {
-  const [isUpdating, setIsUpdating] = useState(false)
+const toggleUpvote = async (
+  feedbackId: string,
+  currentUpvotes: number,
+  currentUpvotedByUser: boolean
+): Promise<void> => {
+  try {
+    // Calculate new upvote count
+    const newUpvoteCount = currentUpvotedByUser
+      ? currentUpvotes - 1
+      : currentUpvotes + 1
 
-  const handleUpvote = async (
-    feedbackId: string,
-    currentUpvotes: number,
-    currentUpvotedByUser: boolean
-  ) => {
-    if (isUpdating) return
-
-    setIsUpdating(true)
-
-    // Optimistically update the UI for both the list and single view
-    mutate(
+    // Optimistic UI update for the list view
+    mutate<FeedbackType[]>(
       "/api/feedback",
-      (currentData: any) =>
-        currentData?.map((feedback: any) =>
+      (currentData) =>
+        currentData?.map((feedback) =>
           feedback.id === feedbackId
             ? {
                 ...feedback,
-                upvotes: currentUpvotedByUser
-                  ? currentUpvotes - 1
-                  : currentUpvotes + 1,
+                upvotes: newUpvoteCount,
                 upvotedByUser: !currentUpvotedByUser,
               }
             : feedback
-        ),
+        ) || [],
       false
     )
 
-    // Update single feedback view
-    mutate(
+    // Optimistic UI update for the single feedback view
+    mutate<FeedbackType>(
       `/api/feedback/single?feedback_id=${feedbackId}`,
-      (currentData: any) => ({
-        ...currentData,
-        upvotes: currentUpvotedByUser ? currentUpvotes - 1 : currentUpvotes + 1,
+      (currentData) => ({
+        ...currentData!,
+        upvotes: newUpvoteCount,
         upvotedByUser: !currentUpvotedByUser,
       }),
       false
     )
 
-    try {
-      await toggleUpvote(feedbackId)
-      // Revalidate both endpoints after successful update
-      await Promise.all([
-        mutate("/api/feedback"),
-        mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
-      ])
-    } catch (error) {
-      // Revert optimistic updates on error
-      await Promise.all([
-        mutate("/api/feedback"),
-        mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
-      ])
-      console.error("Failed to update vote:", error)
-    } finally {
-      setIsUpdating(false)
-    }
-  }
+    // Perform the API call
+    const response = await fetch("/api/feedback/upvote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ feedbackId }),
+    })
 
-  return { handleUpvote, isUpdating }
+    if (!response.ok) {
+      throw new Error("Failed to toggle upvote.")
+    }
+
+    // Revalidate SWR data after successful API call
+    await Promise.all([
+      mutate("/api/feedback"),
+      mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
+    ])
+  } catch (error) {
+    console.error("Error toggling vote:", error)
+
+    // Revert optimistic updates on error
+    await Promise.all([
+      mutate("/api/feedback"),
+      mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
+    ])
+
+    throw new Error("Failed to toggle upvote.")
+  }
 }
+
+export default toggleUpvote

@@ -1,8 +1,10 @@
+"use client"
+
 import UpVoteArrowBlue from "@/assets/shared/icon-arrow-up-blue.svg"
 import UpVoteArrowWhite from "@/assets/shared/icon-arrow-up-white.svg"
+import toggleUpvote from "@/hooks/voting/useUpvote"
 import Image from "next/image"
-import React from "react"
-import { useUpvote } from "@/hooks/voting/useUpvote"
+import React, { useState } from "react"
 
 interface UpVoteProps {
   feedbackId: string
@@ -17,13 +19,23 @@ const UpVote: React.FC<UpVoteProps> = ({
   upvotedByUser,
   isVertical,
 }) => {
-  const { handleUpvote, isUpdating } = useUpvote()
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const onToggleUserUpvote = async (
     event: React.PointerEvent<HTMLDivElement>
   ) => {
     event.stopPropagation()
-    await handleUpvote(feedbackId, upvotes, upvotedByUser)
+
+    if (isUpdating) return // Prevent multiple requests during update
+
+    setIsUpdating(true)
+    try {
+      await toggleUpvote(feedbackId, upvotes, upvotedByUser)
+    } catch (error) {
+      console.error("Failed to toggle upvote:", error)
+    } finally {
+      setIsUpdating(false)
+    }
   }
 
   return (
@@ -36,8 +48,8 @@ const UpVote: React.FC<UpVoteProps> = ({
         upvotedByUser
           ? "bg-[#4661E6] text-white"
           : "bg-btn-upvote-background text-txt-primary hover:bg-btn-upvote-background-hover"
-      } ${isUpdating ? "opacity-50" : ""}`}
-      onPointerDown={onToggleUserUpvote}
+      } ${isUpdating ? "cursor-not-allowed opacity-50" : ""}`}
+      onClick={onToggleUserUpvote}
     >
       <Image
         src={upvotedByUser ? UpVoteArrowWhite : UpVoteArrowBlue}

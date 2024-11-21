@@ -16,7 +16,7 @@ const RoadMapMobileNavigation = ({
   liveCount,
 }: RoadMapMobileNavigationProps) => {
   return (
-    <nav className='flex w-full flex-grow text-center font-[700] text-[#3A4374] md:hidden'>
+    <nav className='flex w-full flex-grow text-center text-[13px] font-[700] text-[#3A4374] md:hidden'>
       <div
         className={`${
           activeTab === "planned"

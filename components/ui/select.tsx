@@ -23,8 +23,8 @@ const Select: React.FC<SelectProps> = ({
 }) => {
   return (
     <SelectPrimitive.Root {...props} onOpenChange={(open) => setIsOpen(open)}>
-      {React.Children.map(children, (child: any) =>
-        React.cloneElement(child, { isOpen })
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child as React.ReactElement, { isOpen })
       )}
     </SelectPrimitive.Root>
   )

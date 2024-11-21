@@ -22,7 +22,6 @@ const RoadMap = () => {
   const isLargeScreen = useMediaQuery("(min-width: 768px)")
   const { planned, inProgress, live, handleStatusChange, handleOrderChange } =
     useRoadMap()
-  const [activeId, setActiveId] = useState<UniqueIdentifier>("")
   const [activeCard, setActiveCard] = useState<FeedbackCardProps | null>(null)
   const [activeTab, setActiveTab] = useState<string>("planned")
   const [mounted, setMounted] = useState(false)
@@ -41,7 +40,6 @@ const RoadMap = () => {
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
-    setActiveId(active.id)
     const card = planned
       .concat(inProgress, live)
       .find((card) => card.id === active.id)
@@ -52,7 +50,6 @@ const RoadMap = () => {
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
-    setActiveId("")
     setActiveCard(null)
 
     if (!over) return

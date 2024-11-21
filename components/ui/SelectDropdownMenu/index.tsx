@@ -14,17 +14,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import useFeedback from "@/hooks/feedback/useFeedback"
 import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
-
-interface SelectOption {
-  value: any
-  label: string
-}
+import { SelectOption } from "../BasicSelect"
 
 interface SelectDropdownMenuProps {
-  options: SelectOption[]
+  options: SelectOption<SelectedFilterType>[]
 }
 
-const formatChoice = (value: string | null, options: SelectOption[]) => {
+const formatChoice = (
+  value: string | null,
+  options: SelectOption<SelectedFilterType>[]
+) => {
   const selectedOption = options.find((option) => option.value === value)
   return selectedOption ? selectedOption.label : ""
 }
