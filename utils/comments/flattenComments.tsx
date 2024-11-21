@@ -1,4 +1,4 @@
-import { CommentType } from "@/services/commentService"
+import { CommentType } from "@/types/comments"
 
 export const flattenComments = (comments: CommentType[]): CommentType[] => {
   const flatComments: CommentType[] = []

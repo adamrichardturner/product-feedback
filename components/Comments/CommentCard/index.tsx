@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react"
-import { CommentType } from "@/services/commentService"
 import Image from "next/image"
+import { CommentType } from "@/types/comments"
 
 interface CommentCardProps {
   comment: CommentType
