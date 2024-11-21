@@ -1,9 +1,8 @@
 "use client"
 
-import UpVote from "../UpVote/UpVoteAuth"
+import UpVote from "../UpVote"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
 import Image from "next/image"
-import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { SingleFeedbackCardProps } from "@/types/feedback"
 
@@ -16,11 +15,9 @@ function FeedbackCardSingle({
   upvotes,
   upvotedByUser,
 }: SingleFeedbackCardProps) {
-  const { setCategory } = useCategories()
-
   return (
-    <div className='md:h-[152px] w-full flex-1 flex-grow rounded-btn bg-white p-6 md:pl-8 md:pt-7 flex flex-col md:flex-row justify-between'>
-      <div className='bg-white w-full flex md:space-x-10'>
+    <div className='flex w-full flex-1 flex-grow flex-col justify-between rounded-btn bg-white p-6 md:h-[152px] md:flex-row md:pl-8 md:pt-7'>
+      <div className='flex w-full bg-white md:space-x-10'>
         <div className='hidden md:flex'>
           <UpVote
             upvotedByUser={upvotedByUser}
@@ -30,19 +27,16 @@ function FeedbackCardSingle({
           />
         </div>
         <article className='w-full'>
-          <h3 className='font-semibold text-[14px] text-txt-primary md:text-md leading-md tracking-md'>
+          <h3 className='text-[14px] font-semibold leading-md tracking-md text-txt-primary md:text-md'>
             {title}
           </h3>
           <p className='pt-1 text-[14px] leading-body1 text-txt-secondary'>
             {detail}
           </p>
-          <div
-            className='mt-2.5 inline-block text-body3 font-semibold transition-colors py-1.5 px-4 rounded-btn hover:cursor-pointer bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover'
-            onClick={() => setCategory(category)}
-          >
+          <div className='mt-2.5 inline-block rounded-btn bg-btn-upvote-background px-4 py-1.5 text-body3 font-semibold text-btn-upvote-active transition-colors'>
             {formatCategory(category)}
           </div>
-          <div className='md:hidden mt-3 flex justify-between w-full'>
+          <div className='mt-3 flex w-full justify-between md:hidden'>
             <div>
               <UpVote
                 upvotedByUser={upvotedByUser}
@@ -52,7 +46,7 @@ function FeedbackCardSingle({
               />
             </div>
 
-            <div className='items-center flex space-x-2'>
+            <div className='flex items-center space-x-2'>
               <Image
                 src={SpeechBubble}
                 width={18}
@@ -66,7 +60,7 @@ function FeedbackCardSingle({
           </div>
         </article>
       </div>
-      <div className='hidden md:flex items-center space-x-2'>
+      <div className='hidden items-center space-x-2 md:flex'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>
           {comments.length}

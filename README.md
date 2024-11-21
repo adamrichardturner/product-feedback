@@ -1,73 +1,78 @@
-# Product feedback app
+# Product Feedback App
 
-This is my solution to the Product Feedback app project on Frontend Mentor.
+A full-stack CRUD web application built with Next.js Route Handlers, Server & Client Components, and Supabase for persistent storage.
 
-I completed it as a full stack CRUD web app, using Next's Route Handlers, Server & Client Components with Supabase for persistent storage.
+## Features
 
-### The challenge
-
-Users should be able to:
-
-- View the optimal layout for the app depending on their device's screen size
-- See hover states for all interactive elements on the page
-- Create, read, update, and delete product feedback requests
-- Receive form validations when trying to create/edit feedback requests
-- Sort suggestions by most/least upvotes and most/least comments
+- Create, read, update, and delete product feedback
+- Form validation for creating/editing feedback
+- Sort suggestions by upvotes and comment count
 - Filter suggestions by category
-- Add comments and replies to a product feedback request
-- Upvote product feedback requests
+- Add comments and replies to feedback
+- Upvote feedback items
+- Drag and drop roadmap management
+- Responsive design for all screen sizes
+- Real-time updates using SWR
+- User authentication
 
 ### Screenshot
 
 ![](./screenshot.png)
 
-### Links
+### Live Demo
 
-- Live Site URL: [https://feedback.adamrichardturner.dev](https://feedback.adamrichardturner.dev)
+Live Site URL: [https://feedback.adamrichardturner.dev](https://feedback.adamrichardturner.dev)
 
-You can login to a demo account where you can post, edit and delete feedback, as well as add comments & modify the Roadmap.
-
-Click the avatar in the top right on desktop or open the burger menu / mobile navigation and tap the avatar there.
+You can login to a demo account to test all features:
 
 - User Email: demo@demo.com
 - Password: demo
 
+Once logged in, you can:
+
+- Post, edit and delete feedback
+- Add comments and replies
+- Modify the Roadmap using drag and drop
+- Upvote feedback items
+
 ### Built with
 
-- Next.js / React
+- Next.js 14 / React
 - Supabase / PostgreSQL
-- Tailwind
-- Shadcn
+- Tailwind CSS
+- Shadcn/ui
+- SWR for data fetching
+- DND Kit for drag and drop
 
-## Clone and run locally
+## Getting Started
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+1. Create a Supabase project at [database.new](https://database.new)
 
-2. Create a Next.js app using the Supabase Starter template npx command
+2. Create a Next.js app using the Supabase template:
 
    ```bash
    npx create-next-app -e with-supabase
    ```
 
-3. Use `cd` to change into the app's directory
+3. Navigate to the project directory:
 
    ```bash
    cd name-of-new-app
    ```
 
-4. Rename `.env.local.example` to `.env.local` and update the following:
+4. Rename `.env.local.example` to `.env.local` and update:
 
    ```
    NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
    NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
    ```
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+   Both values can be found in your [Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
 
-5. You can now run the Next.js local development server:
+5. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+   The app will be running on [localhost:3000](http://localhost:3000/).

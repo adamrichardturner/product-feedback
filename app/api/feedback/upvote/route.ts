@@ -26,7 +26,9 @@ export async function POST(request: Request) {
 
     if (userError || !user) {
       return new Response(
-        JSON.stringify({ error: "You need to be logged in to post feedback" }),
+        JSON.stringify({
+          error: "You need to be logged in to post feedback",
+        }),
         {
           status: 401,
           headers: {
@@ -49,7 +51,10 @@ export async function POST(request: Request) {
     }
 
     return new Response(
-      JSON.stringify({ message: "Vote toggled successfully", details: data }),
+      JSON.stringify({
+        message: "Vote toggled successfully",
+        details: data,
+      }),
       {
         status: 200,
         headers: {

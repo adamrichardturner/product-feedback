@@ -91,7 +91,9 @@ export async function POST(request: Request) {
 
     if (userError || !user) {
       return new Response(
-        JSON.stringify({ error: "You need to be logged in to post feedback" }),
+        JSON.stringify({
+          error: "You need to be logged in to post feedback",
+        }),
         {
           status: 401,
           headers: {
@@ -161,7 +163,9 @@ export async function PUT(request: Request) {
   try {
     if (request.method !== "PUT") {
       return new Response(
-        JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
+        JSON.stringify({
+          error: `Method ${request.method} Not Allowed`,
+        }),
         {
           status: 405,
           headers: {
@@ -230,7 +234,9 @@ export async function DELETE(request: Request) {
   try {
     if (request.method !== "DELETE") {
       return new Response(
-        JSON.stringify({ error: `Method ${request.method} Not Allowed` }),
+        JSON.stringify({
+          error: `Method ${request.method} Not Allowed`,
+        }),
         {
           status: 405,
           headers: {

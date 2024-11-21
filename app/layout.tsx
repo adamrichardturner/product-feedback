@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' className={jost.className} suppressHydrationWarning>
-      <body className='bg-background text-foreground overflow-y-scroll'>
-        <main className='min-h-screen flex flex-col items-center md:container'>
+      <body className='overflow-y-scroll bg-background text-foreground'>
+        <main className='flex min-h-screen flex-col items-center md:container'>
           <SWRProvider>{children}</SWRProvider>
         </main>
         <Toaster />

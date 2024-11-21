@@ -19,7 +19,7 @@ const FeedbackGrid = ({
 
   if (isLoading) {
     return (
-      <div className='w-full h-full flex items-center justify-center'>
+      <div className='flex h-full w-full items-center justify-center'>
         <Image src={LoadingDots} width={60} height={60} alt='Loading Dots' />
       </div>
     )

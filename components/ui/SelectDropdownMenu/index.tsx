@@ -44,7 +44,7 @@ export function SelectDropdownMenu({ options }: SelectDropdownMenuProps) {
   return (
     <DropdownMenu onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <div className='text-[#F2F4FE] opacity-75 text-sm flex items-center space-x-2 cursor-pointer'>
+        <div className='flex cursor-pointer items-center space-x-2 text-xs text-[#F2F4FE] opacity-75 md:text-sm'>
           <span>Sort by : </span>
           <span className='font-semibold'>
             {formatChoice(checkedItem, options)}

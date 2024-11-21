@@ -18,13 +18,13 @@ export default function Login() {
   }
 
   return (
-    <div className='flex items-center justify-center min-h-screen p-4'>
-      <div className='flex-1 flex space-y-8 flex-col sm:max-w-md rounded-btn justify-center gap-2 w-full md:w-[540px] p-6 md:p-10 h-auto bg-white text-center'>
+    <div className='flex min-h-screen items-center justify-center p-4'>
+      <div className='flex h-auto w-full flex-1 flex-col justify-center gap-2 space-y-8 rounded-btn bg-white p-6 text-center sm:max-w-md md:w-[540px] md:p-10'>
         <div>
-          <h2 className='font-[700] text-lg md:text-2xl text-txt-primary tracking-[-0.333px] leading-none'>
+          <h2 className='text-lg font-[700] leading-none tracking-[-0.333px] text-txt-primary md:text-2xl'>
             Product Feedback Dashboard
           </h2>
-          <p className='text-black text-xs md:text-sm leading-none pt-1.5'>
+          <p className='pt-1.5 text-xs leading-none text-black md:text-sm'>
             Made by{" "}
             <a
               href='https://adamrichardturner.dev'
@@ -37,7 +37,7 @@ export default function Login() {
         </div>
 
         <Button
-          className='text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer w-full text-md font-semibold rounded-btn px-4 py-6'
+          className='w-full cursor-pointer rounded-btn bg-[#AD1FEA] px-4 py-6 text-md font-semibold text-white transition-colors hover:bg-[#C75AF6]'
           onClick={onLogin}
         >
           Try Demo

@@ -25,13 +25,16 @@ import { deleteFeedback, editFeedback } from "@/services/feedbackService"
 import { toast } from "sonner"
 import { FeedbackCardProps } from "@/types/feedback"
 import { AlertDelete } from "../AlertDialog"
+import { createClient } from "@/utils/supabase/client"
 
 const formSchema = z.object({
   id: z.string(),
   title: z
     .string()
     .min(8, { message: "Feedback title must be at least 8 characters" })
-    .max(30, { message: "Feedback title cannot be more than 30 characters" }),
+    .max(30, {
+      message: "Feedback title cannot be more than 30 characters",
+    }),
   category: z.string(),
   status: z.string(),
   detail: z
@@ -45,10 +48,11 @@ const formSchema = z.object({
 
 interface FeedbackFormProps {
   feedback: FeedbackCardProps | null
-  isAuth: boolean
 }
 
-export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
+export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
+  const supabase = createClient()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,7 +68,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
   const router = useRouter()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (isAuth) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (user?.id === feedback?.user_id) {
       setLoading(true)
       try {
         await editFeedback(values)
@@ -78,7 +85,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
   }
 
   async function onDeleteFeedback() {
-    if (isAuth) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (user?.id === feedback?.user_id) {
       setLoading(true)
     }
     try {
@@ -102,16 +112,16 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8 relative w-full pt-[44px] pb-6 md:w-[540px] px-6 md:px-[42px] md:py-[52px] rounded-btn shadow-sm bg-white'
+        className='relative w-full space-y-8 rounded-btn bg-white px-6 pb-6 pt-[44px] shadow-sm md:w-[540px] md:px-[42px] md:py-[52px]'
       >
         <Image
           src={IconEditFeedback}
           width={56}
           height={56}
           alt='Plus Button in a Circle'
-          className='absolute -top-5 md:-top-7 md:left-10 w-[40px] h-[40px] md:w-[56px] md:h-[56px]'
+          className='absolute -top-5 h-[40px] w-[40px] md:-top-7 md:left-10 md:h-[56px] md:w-[56px]'
         />
-        <span className='text-txt-primary font-[700] text-[24px] tracking-[-0.333px] mt-0 pt-0'>
+        <span className='mt-0 pt-0 text-[24px] font-[700] tracking-[-0.333px] text-txt-primary'>
           Editing '{feedback?.title}'
         </span>
         <FormField
@@ -119,10 +129,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
           name='title'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='text-txt-primary font-[700] text-[14px] tracking-[-0.194px]'>
+              <FormLabel className='text-[14px] font-[700] tracking-[-0.194px] text-txt-primary'>
                 Feedback Title
               </FormLabel>
-              <FormDescription className='text-[#647196] text-[14px] font-[400]'>
+              <FormDescription className='text-[14px] font-[400] text-[#647196]'>
                 Add a short, descriptive headline
               </FormDescription>
               <FormControl>
@@ -138,10 +148,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
           name='category'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='text-txt-primary font-[700] text-[14px] tracking-[-0.194px]'>
+              <FormLabel className='text-[14px] font-[700] tracking-[-0.194px] text-txt-primary'>
                 Category
               </FormLabel>
-              <FormDescription className='text-[#647196] text-[14px] font-[400]'>
+              <FormDescription className='text-[14px] font-[400] text-[#647196]'>
                 Choose a category for your feedback
               </FormDescription>
               <FormControl>
@@ -161,10 +171,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
           name='status'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='text-txt-primary font-[700] text-[14px] tracking-[-0.194px]'>
+              <FormLabel className='text-[14px] font-[700] tracking-[-0.194px] text-txt-primary'>
                 Update Status
               </FormLabel>
-              <FormDescription className='text-[#647196] text-[14px] font-[400]'>
+              <FormDescription className='text-[14px] font-[400] text-[#647196]'>
                 Change feature state
               </FormDescription>
               <FormControl>
@@ -184,10 +194,10 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
           name='detail'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='text-txt-primary font-[700] text-[14px] tracking-[-0.194px]'>
+              <FormLabel className='text-[14px] font-[700] tracking-[-0.194px] text-txt-primary'>
                 Feedback Detail
               </FormLabel>
-              <FormDescription className='text-[#647196] text-[14px] font-[400]'>
+              <FormDescription className='text-[14px] font-[400] text-[#647196]'>
                 Include any specific comments on what should be improved, added,
                 etc.
               </FormDescription>
@@ -199,24 +209,24 @@ export function FeedbackFormEditable({ feedback, isAuth }: FeedbackFormProps) {
             </FormItem>
           )}
         />
-        <div className='flex flex-col-reverse md:flex-row justify-between md:space-y-0 md:space-x-4'>
+        <div className='flex flex-col-reverse justify-between md:flex-row md:space-x-4 md:space-y-0'>
           <AlertDelete onDeleteFeedback={onDeleteFeedback} />
-          <div className='flex flex-col-reverse md:flex-row space-y-4 md:space-y-0 md:space-x-4'>
+          <div className='flex flex-col-reverse space-y-4 md:flex-row md:space-x-4 md:space-y-0'>
             <div
-              className='flex items-center mt-4 md:mt-0 rounded-btn py-2.5 justify-center text-white bg-[#3A4374] hover:bg-[#656EA3] transition-colors cursor-pointer'
+              className='mt-4 flex cursor-pointer items-center justify-center rounded-btn bg-[#3A4374] py-2.5 text-white transition-colors hover:bg-[#656EA3] md:mt-0'
               onClick={goBack}
             >
-              <span className='font-semibold text-sm px-4'>Cancel</span>
+              <span className='px-4 text-sm font-semibold'>Cancel</span>
             </div>
             <Button type='submit' className='px-0' disabled={loading}>
               <div
-                className={`flex items-center w-full md:w-[144px] justify-center rounded-btn py-2.5 text-white transition-colors cursor-pointer ${
+                className={`flex w-full cursor-pointer items-center justify-center rounded-btn py-2.5 text-white transition-colors md:w-[144px] ${
                   loading
                     ? "bg-[#C75AF6] hover:bg-[#C75AF6]"
                     : "bg-[#AD1FEA] hover:bg-[#C75AF6]"
                 }`}
               >
-                <span className='font-semibold text-sm px-4'>
+                <span className='px-4 text-sm font-semibold'>
                   {loading ? "Saving" : "Save Changes"}
                 </span>
               </div>

@@ -26,7 +26,7 @@ function BackButton({ isDark }: BackButtonProps) {
       <span
         className={`${
           isDark ? "text-txt-secondary" : "text-white"
-        } pl-4 font-[700] text-[14px]`}
+        } pl-4 text-[14px] font-[700]`}
       >
         Go Back
       </span>

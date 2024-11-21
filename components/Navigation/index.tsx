@@ -12,11 +12,11 @@ interface NavigationProps {
 
 function Navigation({ suggestionsCounts }: NavigationProps) {
   return (
-    <div className='h-[72px] w-full bg-btn-back-background md:rounded-btn flex items-center justify-between md:pl-6 md:py-6 pr-6 md:pr-4'>
-      <div className='flex items-center space-x-8'>
-        <div className='hidden md:flex space-x-4'>
+    <div className='flex h-[72px] w-full items-center justify-between bg-btn-back-background pr-6 md:rounded-btn md:py-6 md:pl-6 md:pr-4'>
+      <div className='flex space-x-5 md:items-center md:space-x-8'>
+        <div className='hidden space-x-4 md:flex'>
           <Image src={Bulb} width={24} height={24} alt='Bulb' />
-          <h3 className='font-[700] text-white tracking-[-0.25px] text-md'>
+          <h3 className='text-md font-[700] tracking-[-0.25px] text-white'>
             {suggestionsCounts} Suggestions
           </h3>
         </div>

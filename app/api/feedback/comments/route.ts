@@ -106,7 +106,9 @@ export async function POST(request: Request) {
 
     if (!feedback_id || !content) {
       return new Response(
-        JSON.stringify({ error: "Feedback ID and content are required" }),
+        JSON.stringify({
+          error: "Feedback ID and content are required",
+        }),
         {
           status: 400,
           headers: {

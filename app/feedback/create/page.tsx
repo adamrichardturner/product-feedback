@@ -12,7 +12,7 @@ export default async function Page() {
   const isAuth = !!user
 
   return (
-    <section className='min-h-screen px-6 flex flex-col justify-center'>
+    <section className='flex min-h-screen flex-col justify-center px-6'>
       <div className='pb-8 md:pb-12'>
         <BackButton isDark={true} />
       </div>

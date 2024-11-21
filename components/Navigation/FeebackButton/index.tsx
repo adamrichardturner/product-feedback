@@ -6,11 +6,11 @@ const FeedbackButton = () => {
   const router = useRouter()
   return (
     <div
-      className='flex items-center rounded-btn h-[44px] py-3 px-4 space-x-1 text-white bg-[#AD1FEA] hover:bg-[#C75AF6] transition-colors cursor-pointer'
+      className='flex h-[44px] cursor-pointer items-center space-x-1 rounded-btn bg-[#AD1FEA] px-4 py-3 text-white transition-colors hover:bg-[#C75AF6]'
       onClick={() => router.push("/feedback/create")}
     >
       <Image src={IconPlus} width={10} height={10} alt='Plus' />
-      <span className='font-semibold text-sm'>Add Feedback</span>
+      <span className='text-xs font-semibold md:text-sm'>Add Feedback</span>
     </div>
   )
 }

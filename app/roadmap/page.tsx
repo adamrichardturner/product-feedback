@@ -4,7 +4,7 @@ import RoadMapMobileNavigation from "@/components/RoadMap/RoadMapMobileNavigatio
 
 export default async function Index() {
   return (
-    <div className='w-full flex flex-col justify-start md:pt-[78px] pb-[100px] min-h-screen'>
+    <div className='flex min-h-screen w-full flex-col justify-start pb-[100px] md:pt-[78px]'>
       <header>
         <RoadMapNavigation />
       </header>

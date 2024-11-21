@@ -4,7 +4,7 @@ import Image from "next/image"
 
 const FeedbackFallback = () => {
   return (
-    <div className='bg-white py-[110px] px-4 flex flex-col items-center space-y-10 text-center rounded-btn'>
+    <div className='flex flex-col items-center space-y-10 rounded-btn bg-white px-4 py-[110px] text-center'>
       <Image
         src={FallbackGraphic}
         width={130}
@@ -12,10 +12,10 @@ const FeedbackFallback = () => {
         alt='Inspector with magnifying glass'
       />
       <div className='flex flex-col items-center space-y-2'>
-        <h3 className='text-txt-primary font-[700] text-[24px] tracking-[-0.333px]'>
+        <h3 className='text-[24px] font-[700] tracking-[-0.333px] text-txt-primary'>
           There is no feedback yet.
         </h3>
-        <p className='text-txt-secondary text-[16px] text-center'>
+        <p className='text-center text-[16px] text-txt-secondary'>
           Got a suggestion? Found a bug that needs to be squashed?
           <br /> We love hearing about new ideas to improve our app.
         </p>

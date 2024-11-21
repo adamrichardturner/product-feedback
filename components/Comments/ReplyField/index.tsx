@@ -40,7 +40,7 @@ const ReplyField: FC<ReplyFieldProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mb-8'>
       <div
-        className={`pl-${level} flex items-end md:items-start flex-col md:flex-row w-full`}
+        className={`pl-${level} flex w-full flex-col items-end md:flex-row md:items-start`}
       >
         <Textarea
           {...register("content")}
@@ -50,15 +50,15 @@ const ReplyField: FC<ReplyFieldProps> = ({
           className='flex-grow rounded-[5px]'
         />
         {errors.content && (
-          <p className='text-red-500 text-left text-sm'>
+          <p className='text-left text-sm text-red-500'>
             {errors.content.message}
           </p>
         )}
-        <div className='pl-4 mt-4 md:mt-0 inline-block items-start justify-end'>
+        <div className='mt-4 inline-block items-start justify-end pl-4 md:mt-0'>
           <div className='flex items-end'>
             <Button
               type='submit'
-              className='bg-[#AD1FEA] hover:bg-[#C75AF6] text-white'
+              className='bg-[#AD1FEA] text-white hover:bg-[#C75AF6]'
             >
               {replyToCommentId ? "Post Reply" : "Post Comment"}
             </Button>

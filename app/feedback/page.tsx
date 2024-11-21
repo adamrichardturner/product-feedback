@@ -13,29 +13,30 @@ export default function Index() {
   const { data: feedbackData, error, isLoading } = useSWR("/api/feedback")
 
   if (error) return <div>Failed to load feedback</div>
+
   if (isLoading) {
     return (
-      <div className='p-4 w-full md:w-[730px] mt-[30px] flex items-center justify-center'>
+      <div className='mt-[30px] flex w-full items-center justify-center p-4 md:w-[730px]'>
         <Image src={LoadingDots} width={60} height={60} alt='Loading' />
       </div>
     )
   }
 
   return (
-    <div className='w-full flex flex-col items-end justify-center md:pt-6 min-h-screen'>
-      <div className='min-h-screen flex md:gap-[30px] flex-col lg:flex-row w-full flex-1 max-w-full md:pt-6 pb-[55px] md:pb-[130px]'>
-        <div className='lg:w-[255px] flex lg:flex-col gap-6'>
+    <div className='flex min-h-screen w-full flex-col items-end justify-center md:pt-6'>
+      <div className='flex min-h-screen w-full max-w-full flex-1 flex-col pb-[55px] md:gap-[30px] md:px-4 md:pb-[130px] md:pt-6 lg:flex-row'>
+        <div className='flex gap-6 lg:w-[255px] lg:flex-col'>
           <TitleWidget feedbackData={feedbackData || []} />
-          <div className='hidden md:flex flex-1 lg:flex-none'>
+          <div className='hidden flex-1 md:flex lg:flex-none'>
             <CategoryWidget />
           </div>
-          <div className='hidden md:block flex-1 lg:flex-none'>
+          <div className='hidden flex-1 md:block lg:flex-none'>
             <RoadmapWidget feedbackData={feedbackData || []} />
           </div>
         </div>
         <div className='flex-grow'>
           <Navigation suggestionsCounts={feedbackData?.length || 0} />
-          <main className='px-4 md:px-0 pt-8 flex-grow'>
+          <main className='flex-grow px-4 pt-8 md:px-0'>
             <FeedbackGrid feedbackData={feedbackData} isLoading={isLoading} />
           </main>
         </div>

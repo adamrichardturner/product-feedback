@@ -4,7 +4,7 @@ import { formatCategory } from "@/utils/feedback/formatCategory"
 import Link from "next/link"
 import Image from "next/image"
 import SpeechBubble from "@/assets/shared/icon-comments.svg"
-import UpVote from "@/components/UpVote/UpVoteAuth"
+import UpVote from "@/components/UpVote"
 
 interface RoadMapCardProps {
   feedback_id: string
@@ -22,7 +22,10 @@ const statusClasses = (status: string) => {
     case "planned":
       return { border: "border-status-planned", bg: "bg-status-planned" }
     case "progress":
-      return { border: "border-status-progress", bg: "bg-status-progress" }
+      return {
+        border: "border-status-progress",
+        bg: "bg-status-progress",
+      }
     case "live":
       return { border: "border-status-live", bg: "bg-status-live" }
     default:
@@ -41,35 +44,31 @@ const RoadMapCard = ({
   upvotedByUser,
 }: RoadMapCardProps) => {
   const { border, bg } = statusClasses(status)
-  const { setCategory } = useCategories()
   return (
     <article
-      className={`${border} flex flex-col p-8 border-t-[6px] md:h-[280px] lg:h-[260px] rounded-[5px] w-full bg-white`}
+      className={`${border} flex w-full flex-col rounded-[5px] border-t-[6px] bg-white p-8 md:h-[280px] lg:h-[260px]`}
     >
-      <div className='flex flex-col justify-between h-full'>
+      <div className='flex h-full flex-col justify-between'>
         <div>
-          <span className='text-[16px] text-txt-secondary flex items-center'>
+          <span className='flex items-center text-[16px] text-txt-secondary'>
             <span
-              className={`inline-block w-[8px] h-[8px] rounded-full mr-4 ${bg}`}
+              className={`mr-4 inline-block h-[8px] w-[8px] rounded-full ${bg}`}
             ></span>
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
           <Link href={`/feedback/${feedback_id}`} className='pt-2'>
-            <h3 className='text-txt-primary hover:text-[#4661E6] transition-colors font-bold text-[18px] tracking-[-0.25px]'>
+            <h3 className='text-[18px] font-bold tracking-[-0.25px] text-txt-primary transition-colors hover:text-[#4661E6]'>
               {title}
             </h3>
           </Link>
-          <p className='text-txt-secondary text-[16px]'>{detail}</p>
+          <p className='text-[16px] text-txt-secondary'>{detail}</p>
         </div>
 
-        <div className='flex flex-col items-start space-y-4 justify-between'>
-          <div
-            className='mt-[24px] md:mt-[16px] inline-block text-body3 font-semibold transition-colors py-1.5 px-4 rounded-btn hover:cursor-pointer bg-btn-upvote-background text-btn-upvote-active hover:bg-btn-upvote-background-hover'
-            onClick={() => setCategory(category)}
-          >
+        <div className='flex flex-col items-start justify-between space-y-4'>
+          <div className='mt-[24px] inline-block rounded-btn bg-btn-upvote-background px-4 py-1.5 text-body3 font-semibold text-btn-upvote-active transition-colors md:mt-[16px]'>
             {formatCategory(category)}
           </div>
-          <div className='flex flex-row justify-between w-full'>
+          <div className='flex w-full flex-row justify-between'>
             <UpVote
               feedbackId={feedback_id}
               upvotes={upvotes}

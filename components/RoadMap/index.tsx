@@ -81,10 +81,10 @@ const RoadMap = () => {
     <DroppableContainer id={sectionId}>
       <section className={`w-full flex-1 ${extraClasses}`}>
         <div className='w-full'>
-          <h3 className='text-txt-primary text-[18px] font-bold tracking-[-0.25px]'>
+          <h3 className='text-[18px] font-bold tracking-[-0.25px] text-txt-primary'>
             {title} ({items.length})
           </h3>
-          <span className='text-txt-secondary text-[16px]'>
+          <span className='text-[16px] text-txt-secondary'>
             {sectionId === "planned" && "Ideas prioritized for research"}
             {sectionId === "progress" && "Currently being developed"}
             {sectionId === "live" && "Released features"}
@@ -94,7 +94,7 @@ const RoadMap = () => {
           items={items.map((card) => card.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className='flex flex-wrap flex-col gap-4 md:gap-6 mt-8'>
+          <div className='mt-8 flex flex-col flex-wrap gap-4 md:gap-6'>
             {items.map((card) => (
               <SortableItem
                 key={card.id}
@@ -135,7 +135,7 @@ const RoadMap = () => {
           onDragEnd={handleDragEnd}
           onDragStart={handleDragStart}
         >
-          <div className='flex pt-[48px] space-x-4 w-full h-full flex-grow'>
+          <div className='flex h-full w-full flex-grow space-x-4 pt-[48px]'>
             {renderSection("Planned", planned, "planned")}
 
             {renderSection("In-Progress", inProgress, "progress")}
@@ -158,7 +158,7 @@ const RoadMap = () => {
           </DragOverlay>
         </DndContext>
       ) : (
-        <div className='flex pt-[48px] px-6 w-full h-full flex-grow md:hidden'>
+        <div className='flex h-full w-full flex-grow px-6 pt-[48px] md:hidden'>
           {activeTab === "planned" &&
             renderSection("Planned", planned, "planned")}
           {activeTab === "progress" &&
