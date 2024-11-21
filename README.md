@@ -23,10 +23,7 @@ A full-stack CRUD web application built with Next.js Route Handlers, Server & Cl
 
 Live Site URL: [https://feedback.adamrichardturner.dev](https://feedback.adamrichardturner.dev)
 
-You can login to a demo account to test all features:
-
-- User Email: demo@demo.com
-- Password: demo
+You can login to a demo account to test all features simply by visiting the above site and clicking the `Try Demo` button.
 
 Once logged in, you can:
 
@@ -69,7 +66,9 @@ Once logged in, you can:
 
    Both values can be found in your [Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
 
-5. Start the development server:
+5. Using the `queries.sql` file in the `sql` directory as a guide, create the relevant tables and RPC functions in your Supabase project's SQL editor.
+
+6. Start the development server:
 
    ```bash
    npm run dev

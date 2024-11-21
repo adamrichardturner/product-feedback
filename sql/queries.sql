@@ -40,6 +40,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Create votes table
+CREATE TABLE votes (
+    user_id uuid NOT NULL,
+    feedback_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+    id uuid NOT NULL DEFAULT gen_random_uuid()
+);
+
+-- Create profiles table
+CREATE TABLE profiles (
+    website text,
+    avatar_url text,
+    full_name text,
+    username text,
+    updated_at timestamp with time zone,
+    id uuid NOT NULL
+);
+
+
 -- Trigger to update updated_at on feedback update
 CREATE OR REPLACE FUNCTION update_feedback_timestamp()
 RETURNS TRIGGER AS $$
