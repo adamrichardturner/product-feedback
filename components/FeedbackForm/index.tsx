@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { BasicSelect } from "@/components/ui/BasicSelect"
 import Image from "next/image"
 import { toast } from "sonner"
+import { FeedbackCardProps } from "@/types/feedback"
 
 const formSchema = z.object({
   title: z
@@ -78,8 +79,8 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
         const feedback = await postFeedback(values)
 
         // Optimistic UI update or revalidate the feedback list
-        mutate("/api/feedback", (currentData: any) => {
-          return [...(currentData || []), feedback]
+        mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
+          return [...(currentData ?? []), feedback]
         })
 
         router.push("/")

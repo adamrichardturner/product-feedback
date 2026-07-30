@@ -7,6 +7,7 @@ import FeedbackCardSingle from "@/components/FeedbackCardSingle"
 import BackButton from "@/components/BackButton"
 import LoadingDots from "@/assets/shared/loading.svg"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 
 const fetcher = async (url: string) => {
   const response = await fetch(url)
@@ -16,8 +17,9 @@ const fetcher = async (url: string) => {
   return response.json()
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-  const { id } = params
+export default function Page() {
+  const params = useParams<{ id: string }>()
+  const id = params.id
 
   const {
     data: feedback,

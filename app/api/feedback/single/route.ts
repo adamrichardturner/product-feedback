@@ -2,7 +2,7 @@ import { FeedbackType, Vote } from "@/types/feedback"
 import { createClient } from "@/utils/supabase/server"
 
 export async function GET(request: Request) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const {
     data: { user },

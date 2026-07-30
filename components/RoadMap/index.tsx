@@ -5,10 +5,9 @@ import {
   closestCenter,
   DragOverlay,
   DragStartEvent,
-  UniqueIdentifier,
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { useState, useEffect } from "react"
+import { useState, useSyncExternalStore } from "react"
 import useRoadMap from "./hooks/useRoadMap"
 import RoadMapCard from "./RoadMapCard"
 import SortableItem from "./SortableItem"
@@ -24,11 +23,11 @@ const RoadMap = () => {
     useRoadMap()
   const [activeCard, setActiveCard] = useState<FeedbackCardProps | null>(null)
   const [activeTab, setActiveTab] = useState<string>("planned")
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
 
   if (!mounted) {
     return null

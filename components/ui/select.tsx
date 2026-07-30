@@ -8,8 +8,9 @@ import SelectCheck from "@/assets/shared/icon-check.svg"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-interface SelectProps
-  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
+interface SelectProps extends React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Root
+> {
   children: React.ReactNode
   isOpen: boolean
   setIsOpen: (open: boolean) => void
@@ -23,9 +24,13 @@ const Select: React.FC<SelectProps> = ({
 }) => {
   return (
     <SelectPrimitive.Root {...props} onOpenChange={(open) => setIsOpen(open)}>
-      {React.Children.map(children, (child) =>
-        React.cloneElement(child as React.ReactElement, { isOpen })
-      )}
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement<{ isOpen?: boolean }>(child)) {
+          return child
+        }
+
+        return React.cloneElement(child, { isOpen })
+      })}
     </SelectPrimitive.Root>
   )
 }
