@@ -28,7 +28,6 @@ const ReplyField: FC<ReplyFieldProps> = ({
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ReplyFormInputs>({
     resolver: zodResolver(replySchema),

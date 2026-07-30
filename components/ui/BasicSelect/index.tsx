@@ -27,19 +27,22 @@ export function BasicSelect<T extends FieldValues, K extends Path<T>>({
   options,
   disabled,
 }: SelectFormProps<T, K>) {
-  if (options.length < 1) {
-    return null
-  }
-
   const [firstOption] = options
   const [isOpen, setIsOpen] = useState(false)
   const [selectedOption, setSelectedOption] = useState(firstOption)
+
+  if (options.length < 1 || !firstOption || !selectedOption) {
+    return null
+  }
 
   return (
     <Select
       onValueChange={(value) => {
         const selected = options.find((option) => option.value === value)
-        setSelectedOption(selected!)
+        if (!selected) {
+          return
+        }
+        setSelectedOption(selected)
         field.onChange(value)
       }}
       defaultValue={firstOption.value}

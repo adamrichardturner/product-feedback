@@ -2,11 +2,10 @@ import { FeedbackType } from "@/types/feedback"
 import { createClient } from "@/utils/supabase/server"
 
 export async function GET() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser()
 
   const userId = user?.id
@@ -81,7 +80,7 @@ export async function POST(request: Request) {
     )
   }
 
-  const supabase = createClient()
+  const supabase = await createClient()
 
   try {
     const {
@@ -195,7 +194,7 @@ export async function PUT(request: Request) {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { error: userError } = await supabase.auth.getUser()
 
@@ -261,7 +260,7 @@ export async function DELETE(request: Request) {
       })
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { error: userError } = await supabase.auth.getUser()
 

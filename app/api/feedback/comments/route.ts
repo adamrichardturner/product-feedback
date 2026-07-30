@@ -16,7 +16,7 @@ export async function GET(request: Request): Promise<Response> {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data, error } = await supabase
       .from("comments")
@@ -130,7 +130,7 @@ export async function POST(request: Request): Promise<Response> {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const {
       data: { user },

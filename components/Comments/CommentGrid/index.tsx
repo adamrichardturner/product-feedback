@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import useSWR from "swr"
 import CommentCard from "../CommentCard"
 import ReplyField from "../ReplyField"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Textarea } from "@/components/ui/textarea"
@@ -47,7 +47,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors },
   } = useForm<FormInputs>({
     resolver: zodResolver(commentSchema),
@@ -56,7 +56,7 @@ const CommentGrid: React.FC<CommentGridProps> = ({
     },
   })
 
-  const content = watch("content")
+  const content = useWatch({ control, name: "content", defaultValue: "" })
 
   const postComment = async ({
     feedback_id,

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 
 export async function POST() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: "demo@demo.com",
@@ -14,8 +14,7 @@ export async function POST() {
     return NextResponse.json({ error: error.message }, { status: 401 })
   }
 
-  // Set auth cookie
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const session = data.session
   if (session) {
     cookieStore.set("session", session.access_token, {

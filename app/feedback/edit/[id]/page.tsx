@@ -6,6 +6,7 @@ import BackButton from "@/components/BackButton"
 import Image from "next/image"
 import { FeedbackFormEditable } from "@/components/FeedbackFormEditable"
 import useSWR from "swr"
+import { useParams } from "next/navigation"
 
 const fetcher = async (url: string) => {
   const response = await fetch(url)
@@ -15,7 +16,9 @@ const fetcher = async (url: string) => {
   return response.json()
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
+  const params = useParams<{ id: string }>()
+
   const {
     data: feedback,
     error,

@@ -1,5 +1,5 @@
 import useSWR from "swr"
-import { FeedbackCardProps, FeedbackType } from "../../../types/feedback"
+import { FeedbackType } from "../../../types/feedback"
 import { useCallback } from "react"
 import { arrayMove } from "@dnd-kit/sortable"
 import { UniqueIdentifier } from "@dnd-kit/core"

@@ -1,10 +1,7 @@
 import { StateCreator } from "zustand"
 
 export type SelectedFilterType =
-  | "mostUpvotes"
-  | "leastUpvotes"
-  | "mostComments"
-  | "leastComments"
+  "mostUpvotes" | "leastUpvotes" | "mostComments" | "leastComments"
 
 export interface IFeedbackSlice {
   selectedFilter: SelectedFilterType

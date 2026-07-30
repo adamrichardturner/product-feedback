@@ -1,4 +1,3 @@
-import useCategories from "@/hooks/categories/useCategories"
 import { CategoriesType } from "@/types/categories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import Link from "next/link"

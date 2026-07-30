@@ -1,11 +1,8 @@
 import { createClient } from "@/utils/supabase/server"
-import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
-  const supabase = createClient()
-
-  // Check if we have a session
+  const supabase = await createClient()
 
   const { error } = await supabase.auth.signOut()
 

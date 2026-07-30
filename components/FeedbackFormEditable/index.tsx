@@ -103,8 +103,11 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
       const updatedFeedback = await editFeedback(values)
 
       // Update SWR cache optimistically
-      mutate("/api/feedback", (currentData: any) => {
-        return currentData.map((item: FeedbackCardProps) =>
+      mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
+        if (!currentData) {
+          return currentData
+        }
+        return currentData.map((item) =>
           item.id === values.id ? { ...item, ...updatedFeedback } : item
         )
       })
@@ -129,10 +132,11 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
       await deleteFeedback(feedback.id)
 
       // Remove feedback from SWR cache
-      mutate("/api/feedback", (currentData: any) => {
-        return currentData.filter(
-          (item: FeedbackCardProps) => item.id !== feedback.id
-        )
+      mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
+        if (!currentData) {
+          return currentData
+        }
+        return currentData.filter((item) => item.id !== feedback.id)
       })
 
       toast("Feedback deleted successfully.")
@@ -162,7 +166,7 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
           className='absolute -top-5 h-[40px] w-[40px] md:-top-7 md:left-10 md:h-[56px] md:w-[56px]'
         />
         <span className='mt-0 pt-0 text-[24px] font-[700] tracking-[-0.333px] text-txt-primary'>
-          Editing '{feedback?.title}'
+          {`Editing '${feedback?.title}'`}
         </span>
         <FormField
           control={form.control}
