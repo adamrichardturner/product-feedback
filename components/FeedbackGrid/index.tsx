@@ -5,22 +5,48 @@ import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
 import FeedbackFallback from "./FeedbackFallback"
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect } from "react"
-import { useIntersectionObserver } from "usehooks-ts"
+import { useEffect, useRef } from "react"
 import { FeedbackType } from "@/types/feedback"
 
 const listItemVariants = {
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 18, scale: 0.98 },
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+    scale: 1,
+    transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const },
   },
   exit: {
     opacity: 0,
-    y: -12,
-    transition: { duration: 0.25, ease: [0.4, 0, 1, 1] as const },
+    x: -28,
+    height: 0,
+    marginBottom: 0,
+    transition: { duration: 0.22, ease: "easeIn" as const },
   },
+}
+
+function SkeletonFeedbackCard() {
+  return (
+    <div
+      role='status'
+      aria-live='polite'
+      className='flex min-h-[200px] w-full flex-col gap-4 rounded-btn bg-white p-6 md:min-h-[152px] md:flex-row md:items-center md:justify-between md:gap-6 md:pl-8 md:pt-7'
+    >
+      <div className='flex min-w-0 flex-1 flex-col-reverse justify-between md:flex-row md:items-start md:gap-10'>
+        <div className='mt-4 md:mt-0'>
+          <div className='h-[40px] w-[69px] animate-pulse rounded-btn bg-[#F2F4FF] md:h-[53px] md:w-10' />
+        </div>
+        <div className='min-w-0 flex-1 space-y-2'>
+          <div className='h-4 w-2/3 animate-pulse rounded bg-[#F2F4FF]' />
+          <div className='h-4 w-full animate-pulse rounded bg-[#F2F4FF]' />
+          <div className='h-4 w-1/2 animate-pulse rounded bg-[#F2F4FF]' />
+          <div className='mt-2.5 h-8 w-20 animate-pulse rounded-btn bg-[#F2F4FF]' />
+        </div>
+      </div>
+      <div className='hidden h-4 w-8 animate-pulse rounded bg-[#F2F4FF] md:block' />
+      <span className='sr-only'>Loading feedback…</span>
+    </div>
+  )
 }
 
 interface FeedbackGridProps {
@@ -38,18 +64,38 @@ const FeedbackGrid = ({
   isLoadingMore,
   onLoadMore,
 }: FeedbackGridProps) => {
-  const { ref: loadMoreRef, isIntersecting } = useIntersectionObserver({
-    threshold: 0.1,
-    rootMargin: "200px",
-  })
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (!isIntersecting) {
+    const sentinel = sentinelRef.current
+
+    if (!sentinel) {
       return
     }
 
-    onLoadMore()
-  }, [isIntersecting, onLoadMore])
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+
+        if (!entry?.isIntersecting) {
+          return
+        }
+
+        onLoadMore()
+      },
+      {
+        root: null,
+        rootMargin: "240px 0px",
+        threshold: 0,
+      }
+    )
+
+    observer.observe(sentinel)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [onLoadMore, hasMore, isLoading, isLoadingMore])
 
   if (isLoading) {
     return (
@@ -80,6 +126,7 @@ const FeedbackGrid = ({
             initial='initial'
             animate='animate'
             exit='exit'
+            className='w-full'
           >
             <FeedbackCard
               id={feedback.id}
@@ -96,22 +143,26 @@ const FeedbackGrid = ({
         ))}
       </AnimatePresence>
 
-      <div ref={loadMoreRef} className='flex h-12 items-center justify-center'>
+      <AnimatePresence>
         {isLoadingMore ? (
-          <Image
-            src={LoadingDots}
-            width={40}
-            height={40}
-            alt='Loading more'
-            loading='eager'
-          />
+          <motion.div
+            key='loading-more'
+            className='flex w-full flex-col space-y-5'
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
+            {Array.from({ length: 3 }).map((_, index) => (
+              <SkeletonFeedbackCard key={`more-${index}`} />
+            ))}
+          </motion.div>
         ) : null}
-        {!hasMore && feedbackItems.length > 0 ? (
-          <span className='text-sm text-txt-secondary'>
-            You&apos;ve reached the end
-          </span>
-        ) : null}
-      </div>
+      </AnimatePresence>
+
+      {hasMore ? (
+        <div ref={sentinelRef} className='h-4 w-full' aria-hidden />
+      ) : null}
     </div>
   )
 }
