@@ -1,7 +1,12 @@
 import { proxyToBackend } from "@/lib/backend"
 
-export async function GET() {
-  return proxyToBackend("/api/feedback")
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const search = searchParams.toString()
+
+  return proxyToBackend("/api/feedback", {
+    search: search.length > 0 ? search : undefined,
+  })
 }
 
 export async function POST(request: Request) {

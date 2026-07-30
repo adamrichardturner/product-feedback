@@ -1,13 +1,14 @@
 "use client"
 
 import { NavSheet } from "./NavSheet"
-import { FeedbackType } from "@/types/feedback"
+import { FeedbackStatusCounts, FeedbackType } from "@/types/feedback"
 
 interface TitleWidgetProps {
-  feedbackData: FeedbackType[]
+  feedbackData?: FeedbackType[]
+  statusCounts?: FeedbackStatusCounts
 }
 
-function TitleWidget({ feedbackData }: TitleWidgetProps) {
+function TitleWidget({ feedbackData, statusCounts }: TitleWidgetProps) {
   return (
     <nav className='relative z-[60] flex w-full flex-1 max-md:left-1/2 max-md:w-screen max-md:max-w-[100vw] max-md:-translate-x-1/2 lg:h-[138px] lg:flex-none'>
       <div className='lg:flex-0 flex w-full flex-1 items-center justify-between bg-radial-gradient p-6 md:items-end md:justify-start md:rounded-btn lg:w-full lg:flex-none'>
@@ -24,7 +25,7 @@ function TitleWidget({ feedbackData }: TitleWidgetProps) {
         </div>
 
         <div className='md:hidden'>
-          <NavSheet feedbackData={feedbackData} />
+          <NavSheet feedbackData={feedbackData} statusCounts={statusCounts} />
         </div>
       </div>
     </nav>

@@ -33,6 +33,21 @@ export interface FeedbackType {
   order: number | null
 }
 
+export interface FeedbackStatusCounts {
+  suggestion: number
+  planned: number
+  progress: number
+  live: number
+}
+
+export interface PaginatedFeedbackResponse {
+  data: FeedbackType[]
+  nextCursor: string | null
+  hasMore: boolean
+  total: number
+  statusCounts: FeedbackStatusCounts
+}
+
 export interface FeedbackCardProps {
   id: string
   user_id: string

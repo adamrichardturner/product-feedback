@@ -3,7 +3,6 @@ import Image from "next/image"
 import useCategories from "@/hooks/categories/useCategories"
 import { formatCategory } from "@/utils/feedback/formatCategory"
 import { FeedbackCardProps } from "@/types/feedback"
-import { motion } from "framer-motion"
 import Link from "next/link"
 import UpVote from "../UpVote"
 
@@ -18,12 +17,7 @@ function FeedbackCard({
 }: FeedbackCardProps) {
   const { setCategory } = useCategories()
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className='flex min-h-[200px] w-full flex-col gap-4 rounded-btn bg-white p-6 md:min-h-[152px] md:flex-row md:items-center md:justify-between md:gap-6 md:pl-8 md:pt-7'
-    >
+    <div className='flex min-h-[200px] w-full flex-col gap-4 rounded-btn bg-white p-6 md:min-h-[152px] md:flex-row md:items-center md:justify-between md:gap-6 md:pl-8 md:pt-7'>
       <div className='flex min-w-0 flex-1 flex-col-reverse justify-between md:flex-row md:items-start md:gap-10'>
         <div className='mt-4 flex shrink-0 items-center justify-between md:mt-0 md:block'>
           <UpVote
@@ -72,7 +66,7 @@ function FeedbackCard({
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>{comments}</span>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 

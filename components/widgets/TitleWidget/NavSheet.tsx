@@ -6,13 +6,14 @@ import CategoryWidget from "../CategoryWidget"
 import RoadmapWidget from "../RoadmapWidget"
 import { useState } from "react"
 import Image from "next/image"
-import { FeedbackType } from "@/types/feedback"
+import { FeedbackStatusCounts, FeedbackType } from "@/types/feedback"
 
 interface NavSheetProps {
-  feedbackData: FeedbackType[]
+  feedbackData?: FeedbackType[]
+  statusCounts?: FeedbackStatusCounts
 }
 
-export function NavSheet({ feedbackData }: NavSheetProps) {
+export function NavSheet({ feedbackData, statusCounts }: NavSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -29,7 +30,10 @@ export function NavSheet({ feedbackData }: NavSheetProps) {
       <SheetContent>
         <div className='space-y-6'>
           <CategoryWidget isOpen={isOpen} setIsOpen={setIsOpen} />
-          <RoadmapWidget feedbackData={feedbackData} />
+          <RoadmapWidget
+            feedbackData={feedbackData}
+            statusCounts={statusCounts}
+          />
         </div>
       </SheetContent>
     </Sheet>

@@ -1,7 +1,28 @@
 "use client"
 
 import { mutate } from "swr"
-import { FeedbackType } from "@/types/feedback"
+import { FeedbackType, PaginatedFeedbackResponse } from "@/types/feedback"
+import {
+  isFeedbackListKey,
+  isPaginatedFeedbackListKey,
+} from "@/hooks/feedback/useInfiniteFeedback"
+
+function updateFeedbackVote(
+  feedback: FeedbackType,
+  feedbackId: string,
+  newUpvoteCount: number,
+  newUpvotedByUser: boolean
+): FeedbackType {
+  if (feedback.id !== feedbackId) {
+    return feedback
+  }
+
+  return {
+    ...feedback,
+    upvotes: newUpvoteCount,
+    upvotedByUser: newUpvotedByUser,
+  }
+}
 
 const toggleUpvote = async (
   feedbackId: string,
@@ -9,39 +30,68 @@ const toggleUpvote = async (
   currentUpvotedByUser: boolean
 ): Promise<void> => {
   try {
-    // Calculate new upvote count
     const newUpvoteCount = currentUpvotedByUser
       ? currentUpvotes - 1
       : currentUpvotes + 1
+    const newUpvotedByUser = !currentUpvotedByUser
 
-    // Optimistic UI update for the list view
-    mutate<FeedbackType[]>(
-      "/api/feedback",
-      (currentData) =>
-        currentData?.map((feedback) =>
-          feedback.id === feedbackId
-            ? {
-                ...feedback,
-                upvotes: newUpvoteCount,
-                upvotedByUser: !currentUpvotedByUser,
-              }
-            : feedback
-        ) || [],
+    mutate(
+      isPaginatedFeedbackListKey,
+      (currentData: PaginatedFeedbackResponse[] | undefined) => {
+        if (!currentData) {
+          return currentData
+        }
+
+        return currentData.map((page) => ({
+          ...page,
+          data: page.data.map((feedback) =>
+            updateFeedbackVote(
+              feedback,
+              feedbackId,
+              newUpvoteCount,
+              newUpvotedByUser
+            )
+          ),
+        }))
+      },
       false
     )
 
-    // Optimistic UI update for the single feedback view
-    mutate<FeedbackType>(
+    mutate(
+      (key) => isFeedbackListKey(key) && key === "/api/feedback",
+      (currentData: FeedbackType[] | undefined) => {
+        if (!currentData) {
+          return currentData
+        }
+
+        return currentData.map((feedback) =>
+          updateFeedbackVote(
+            feedback,
+            feedbackId,
+            newUpvoteCount,
+            newUpvotedByUser
+          )
+        )
+      },
+      false
+    )
+
+    mutate(
       `/api/feedback/single?feedback_id=${feedbackId}`,
-      (currentData) => ({
-        ...currentData!,
-        upvotes: newUpvoteCount,
-        upvotedByUser: !currentUpvotedByUser,
-      }),
+      (currentData: FeedbackType | undefined) => {
+        if (!currentData) {
+          return currentData
+        }
+
+        return {
+          ...currentData,
+          upvotes: newUpvoteCount,
+          upvotedByUser: newUpvotedByUser,
+        }
+      },
       false
     )
 
-    // Perform the API call
     const response = await fetch("/api/feedback/upvote", {
       method: "POST",
       headers: {
@@ -54,17 +104,15 @@ const toggleUpvote = async (
       throw new Error("Failed to toggle upvote.")
     }
 
-    // Revalidate SWR data after successful API call
     await Promise.all([
-      mutate("/api/feedback"),
+      mutate(isFeedbackListKey),
       mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
     ])
   } catch (error) {
     console.error("Error toggling vote:", error)
 
-    // Revert optimistic updates on error
     await Promise.all([
-      mutate("/api/feedback"),
+      mutate(isFeedbackListKey),
       mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
     ])
 
