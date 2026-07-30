@@ -45,7 +45,7 @@ const RoadMapCard = ({
   const { border, bg } = statusClasses(status)
   return (
     <article
-      className={`${border} flex w-full flex-col rounded-[5px] border-t-[6px] bg-white p-8 md:h-[280px] lg:h-[260px]`}
+      className={`${border} flex w-full flex-col rounded-[5px] border-t-[6px] bg-white p-8 md:h-[380px] lg:h-[300px]`}
     >
       <div className='flex h-full flex-col justify-between'>
         <div>
@@ -60,7 +60,9 @@ const RoadMapCard = ({
               {title}
             </h3>
           </Link>
-          <p className='text-[16px] text-txt-secondary'>{detail}</p>
+          <p className='line-clamp-3 text-[16px] text-txt-secondary'>
+            {detail}
+          </p>
         </div>
 
         <div className='flex flex-col items-start justify-between space-y-4'>

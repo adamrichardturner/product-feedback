@@ -46,7 +46,6 @@ export function BasicSelect<T extends FieldValues, K extends Path<T>>({
         field.onChange(value)
       }}
       defaultValue={firstOption.value}
-      isOpen={isOpen}
       setIsOpen={setIsOpen}
       disabled={disabled}
     >

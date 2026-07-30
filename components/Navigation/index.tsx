@@ -13,10 +13,16 @@ interface NavigationProps {
 
 function Navigation({ suggestionsCounts }: NavigationProps) {
   return (
-    <div className='flex h-[72px] w-full items-center justify-between bg-btn-back-background pr-6 md:rounded-btn md:py-6 md:pl-6 md:pr-4'>
-      <div className='flex space-x-5 md:items-center md:space-x-8'>
+    <div className='flex h-[72px] w-full items-center justify-between bg-btn-back-background px-6 md:rounded-btn md:py-6 md:pl-6 md:pr-4'>
+      <div className='flex md:items-center md:space-x-8'>
         <div className='hidden space-x-4 md:flex'>
-          <Image src={Bulb} width={24} height={24} alt='Bulb' />
+          <Image
+            src={Bulb}
+            width={24}
+            height={24}
+            alt='Bulb'
+            style={{ width: "auto", height: "auto" }}
+          />
           <h3 className='text-md font-[700] tracking-[-0.25px] text-white'>
             {suggestionsCounts} Suggestions
           </h3>
