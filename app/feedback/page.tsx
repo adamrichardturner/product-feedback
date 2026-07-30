@@ -34,9 +34,9 @@ export default function Index() {
             <RoadmapWidget feedbackData={feedbackData || []} />
           </div>
         </div>
-        <div className='flex-grow'>
+        <div className='min-w-0 flex-1'>
           <Navigation suggestionsCounts={feedbackData?.length || 0} />
-          <main className='flex-grow px-4 pt-8 md:px-0'>
+          <main className='px-4 pt-8 md:px-0'>
             <FeedbackGrid feedbackData={feedbackData} isLoading={isLoading} />
           </main>
         </div>
