@@ -51,7 +51,7 @@ The backend repository is [product-feedback-api](https://github.com/adamrichardt
 3. Create a `.env.local` file:
 
    ```env
-   BACKEND_URL=http://localhost:3002
+   NEXT_BACKEND_URL=http://localhost:3002
    NEXT_PUBLIC_BASE_URL=
    ```
 
@@ -73,7 +73,7 @@ The app will be available at [http://localhost:3000](http://localhost:3000/).
 
 | Variable               | Description                                                                                        |
 | ---------------------- | -------------------------------------------------------------------------------------------------- |
-| `BACKEND_URL`          | Origin of the Express API used by Next.js route handlers (default `http://localhost:3002`)         |
+| `NEXT_BACKEND_URL`     | Origin of the Express API used by Next.js route handlers (default `http://localhost:3002`)         |
 | `NEXT_PUBLIC_BASE_URL` | Optional public base URL for Axios. Leave empty in local development so requests stay same-origin. |
 
 ## How it works in development
