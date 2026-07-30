@@ -56,6 +56,7 @@ const UpVote: React.FC<UpVoteProps> = ({
         width={8}
         height={4}
         alt='Up Vote Arrow'
+        style={{ width: "auto", height: "auto" }}
       />
       <span className='text-body3 font-semibold'>{upvotes}</span>
     </div>

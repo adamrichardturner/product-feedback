@@ -48,7 +48,13 @@ export default function Page() {
   if (feedbackLoading || commentsLoading) {
     return (
       <div className='mt-[30px] flex w-full items-center justify-center p-4 md:w-[730px]'>
-        <Image src={LoadingDots} width={60} height={60} alt='Loading' />
+        <Image
+          src={LoadingDots}
+          width={60}
+          height={60}
+          alt='Loading'
+          loading='eager'
+        />
       </div>
     )
   }

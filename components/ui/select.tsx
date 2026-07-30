@@ -12,25 +12,13 @@ interface SelectProps extends React.ComponentPropsWithoutRef<
   typeof SelectPrimitive.Root
 > {
   children: React.ReactNode
-  isOpen: boolean
   setIsOpen: (open: boolean) => void
 }
 
-const Select: React.FC<SelectProps> = ({
-  children,
-  isOpen,
-  setIsOpen,
-  ...props
-}) => {
+const Select: React.FC<SelectProps> = ({ children, setIsOpen, ...props }) => {
   return (
     <SelectPrimitive.Root {...props} onOpenChange={(open) => setIsOpen(open)}>
-      {React.Children.map(children, (child) => {
-        if (!React.isValidElement<{ isOpen?: boolean }>(child)) {
-          return child
-        }
-
-        return React.cloneElement(child, { isOpen })
-      })}
+      {children}
     </SelectPrimitive.Root>
   )
 }
@@ -60,6 +48,7 @@ const SelectTrigger = React.forwardRef<
         alt='Arrow'
         width={8}
         height={4}
+        style={{ width: "auto", height: "auto" }}
       />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
@@ -78,7 +67,13 @@ const SelectScrollUpButton = React.forwardRef<
     )}
     {...props}
   >
-    <Image src={ArrowUp} alt='Arrow Up' width={16} height={16} />
+    <Image
+      src={ArrowUp}
+      alt='Arrow Up'
+      width={16}
+      height={16}
+      style={{ width: "auto", height: "auto" }}
+    />
   </SelectPrimitive.ScrollUpButton>
 ))
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
@@ -95,7 +90,13 @@ const SelectScrollDownButton = React.forwardRef<
     )}
     {...props}
   >
-    <Image src={ArrowDown} alt='Arrow Down' width={16} height={16} />
+    <Image
+      src={ArrowDown}
+      alt='Arrow Down'
+      width={16}
+      height={16}
+      style={{ width: "auto", height: "auto" }}
+    />
   </SelectPrimitive.ScrollDownButton>
 ))
 SelectScrollDownButton.displayName =
@@ -163,7 +164,13 @@ const SelectItem = React.forwardRef<
   >
     <span className='absolute right-6 flex h-3.5 w-3.5 items-center justify-center'>
       <SelectPrimitive.ItemIndicator>
-        <Image src={SelectCheck} alt='Check' width={11} height={8} />
+        <Image
+          src={SelectCheck}
+          alt='Check'
+          width={11}
+          height={8}
+          style={{ width: "auto", height: "auto" }}
+        />
       </SelectPrimitive.ItemIndicator>
     </span>
 

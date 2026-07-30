@@ -43,18 +43,17 @@ export function SelectDropdownMenu({ options }: SelectDropdownMenuProps) {
   return (
     <DropdownMenu onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <div className='flex cursor-pointer items-center space-x-2 text-xs text-[#F2F4FE] opacity-75 md:text-sm'>
-          <span>Sort by : </span>
-          <span className='font-semibold'>
+        <div className='flex cursor-pointer flex-col items-start text-xs text-[#F2F4FE] opacity-75 md:flex-row md:items-center md:space-x-2 md:text-sm'>
+          <span>Sort by :</span>
+          <span className='flex items-center gap-2 font-semibold text-[#F2F4FE]'>
             {formatChoice(checkedItem, options)}
-          </span>
-          <span>
             <Image
               src={open ? ArrowUp : ArrowDown}
               alt='Arrow'
               className='text-white'
               width={8}
               height={4}
+              style={{ width: "auto", height: "auto" }}
             />
           </span>
         </div>

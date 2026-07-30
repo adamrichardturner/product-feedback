@@ -22,6 +22,7 @@ function BackButton({ isDark }: BackButtonProps) {
         width={8}
         height={4}
         alt='Arrow Left'
+        style={{ width: "auto", height: "auto" }}
       />
       <span
         className={`${

@@ -23,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { BasicSelect } from "@/components/ui/BasicSelect"
 import Image from "next/image"
 import { toast } from "sonner"
-import { FeedbackCardProps } from "@/types/feedback"
 
 const formSchema = z.object({
   title: z
@@ -50,7 +49,9 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: "",
       category: "feature",
+      detail: "",
     },
   })
   const [loading, setLoading] = useState(false)
@@ -76,12 +77,8 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
     if (isAuth) {
       setLoading(true)
       try {
-        const feedback = await postFeedback(values)
-
-        // Optimistic UI update or revalidate the feedback list
-        mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
-          return [...(currentData ?? []), feedback]
-        })
+        await postFeedback(values)
+        await mutate("/api/feedback")
 
         router.push("/")
         toast("Feedback created.")
