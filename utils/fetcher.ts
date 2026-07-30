@@ -5,18 +5,16 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 })
 
-// Global fetcher for SWR
 const fetcher = async (url: string) => {
   try {
     const response = await axiosInstance.get(url)
     return response.data
   } catch (error) {
-    // Handle errors appropriately
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
-        // Handle unauthorized access
         window.location.href = "/"
       }
       throw new Error(error.response?.data?.message || "An error occurred")

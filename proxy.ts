@@ -1,25 +1,25 @@
-import { createClient } from "@/utils/supabase/middleware"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export async function proxy(request: NextRequest) {
-  const { supabase, response } = createClient(request)
+export function proxy(request: NextRequest) {
+  const token = request.cookies.get("token")?.value
+  const { pathname } = request.nextUrl
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (user && request.nextUrl.pathname === "/") {
+  if (token && pathname === "/") {
     return NextResponse.redirect(new URL("/feedback", request.url))
   }
 
-  if (!user && request.nextUrl.pathname.startsWith("/feedback")) {
+  if (!token && pathname.startsWith("/feedback")) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  return response
+  if (!token && pathname.startsWith("/roadmap")) {
+    return NextResponse.redirect(new URL("/", request.url))
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth).*)"],
 }

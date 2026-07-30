@@ -1,15 +1,24 @@
 import axios from "axios"
-import { User, Session } from "@supabase/supabase-js"
 
-interface SupabaseAuthResponse {
-  user: User | null
-  session: Session | null
+interface DemoAuthResponse {
+  message: string
+  user: {
+    id: string
+    email: string
+    aud: string
+  }
 }
 
 export const loginToDemoAccount =
-  async (): Promise<SupabaseAuthResponse | null> => {
+  async (): Promise<DemoAuthResponse | null> => {
     try {
-      const response = await axios.post<SupabaseAuthResponse>("/api/auth/demo")
+      const response = await axios.post<DemoAuthResponse>(
+        "/api/auth/demo",
+        null,
+        {
+          withCredentials: true,
+        }
+      )
       return response.data
     } catch (error) {
       console.error("Error logging into demo account:", error)

@@ -1,15 +1,10 @@
 import BackButton from "@/components/BackButton"
 import { FeedbackForm } from "@/components/FeedbackForm"
-import { createClient } from "@/utils/supabase/server"
+import { cookies } from "next/headers"
 
 export default async function Page() {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const isAuth = user?.aud === "authenticated"
+  const cookieStore = await cookies()
+  const isAuth = Boolean(cookieStore.get("token")?.value)
 
   return (
     <section className='flex min-h-screen flex-col justify-center px-6'>
