@@ -1,30 +1,7 @@
-import { createClient } from "@/utils/supabase/server"
-import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { proxyToBackend } from "@/lib/backend"
 
 export async function POST() {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: "demo@demo.com",
-    password: "demo",
-  })
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 401 })
-  }
-
-  const cookieStore = await cookies()
-  const session = data.session
-  if (session) {
-    cookieStore.set("session", session.access_token, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    })
-  }
-
-  return NextResponse.json({
-    message: "Logged in successfully",
-    user: data.user,
+  return proxyToBackend("/api/auth/demo", {
+    method: "POST",
   })
 }

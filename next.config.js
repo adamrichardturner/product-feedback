@@ -5,9 +5,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "giebrawpxpedkkjqrlrj.supabase.co",
+        hostname: "api.dicebear.com",
         port: "",
-        pathname: "/storage/v1/object/public/avatars/**",
+        pathname: "/**",
       },
     ],
   },

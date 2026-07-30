@@ -9,9 +9,11 @@ export default function Login() {
   const onLogin = async () => {
     try {
       const response = await loginToDemoAccount()
-      if (response?.user && response?.user?.aud === "authenticated") {
+      if (response?.user?.aud === "authenticated") {
         router.push("/feedback")
+        return
       }
+      console.error("Demo login failed")
     } catch (error) {
       console.error(error)
     }
