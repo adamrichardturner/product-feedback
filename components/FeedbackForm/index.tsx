@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { BasicSelect } from "@/components/ui/BasicSelect"
 import Image from "next/image"
 import { toast } from "sonner"
+import { isFeedbackListKey } from "@/hooks/feedback/useInfiniteFeedback"
 
 const formSchema = z.object({
   title: z
@@ -78,7 +79,7 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
       setLoading(true)
       try {
         await postFeedback(values)
-        await mutate("/api/feedback")
+        await mutate(isFeedbackListKey)
 
         router.push("/")
         toast("Feedback created.")

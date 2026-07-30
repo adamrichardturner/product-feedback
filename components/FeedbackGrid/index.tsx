@@ -1,21 +1,55 @@
 "use client"
 
-import useFeedback from "@/hooks/feedback/useFeedback"
 import FeedbackCard from "../FeedbackCard"
 import LoadingDots from "@/assets/shared/loading.svg"
 import Image from "next/image"
-import { FeedbackType } from "@/types/feedback"
-import { SelectedFilterType } from "@/stores/FeedbackState/slices/feedbackSlice"
 import FeedbackFallback from "./FeedbackFallback"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect } from "react"
+import { useIntersectionObserver } from "usehooks-ts"
+import { FeedbackType } from "@/types/feedback"
+
+const listItemVariants = {
+  initial: { opacity: 0, y: 16 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    transition: { duration: 0.25, ease: [0.4, 0, 1, 1] as const },
+  },
+}
+
+interface FeedbackGridProps {
+  feedbackItems: FeedbackType[]
+  hasMore: boolean
+  isLoading: boolean
+  isLoadingMore: boolean
+  onLoadMore: () => void
+}
 
 const FeedbackGrid = ({
-  feedbackData,
+  feedbackItems,
+  hasMore,
   isLoading,
-}: {
-  feedbackData: FeedbackType[]
-  isLoading: boolean
-}) => {
-  const { filterFeedbackByCategory, selectedFilter } = useFeedback()
+  isLoadingMore,
+  onLoadMore,
+}: FeedbackGridProps) => {
+  const { ref: loadMoreRef, isIntersecting } = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: "200px",
+  })
+
+  useEffect(() => {
+    if (!isIntersecting) {
+      return
+    }
+
+    onLoadMore()
+  }, [isIntersecting, onLoadMore])
 
   if (isLoading) {
     return (
@@ -31,51 +65,55 @@ const FeedbackGrid = ({
     )
   }
 
-  const filteredFeedback = filterFeedbackByCategory(feedbackData ?? [])
-  const sortedFeedback = sortFeedback(
-    filteredFeedback.filter((feedback) => Boolean(feedback?.id)),
-    selectedFilter
-  )
+  if (feedbackItems.length === 0) {
+    return <FeedbackFallback />
+  }
 
   return (
     <div className='space-y-5'>
-      {sortedFeedback.length > 0 ? (
-        sortedFeedback.map((feedback) => (
-          <FeedbackCard
+      <AnimatePresence mode='popLayout' initial={false}>
+        {feedbackItems.map((feedback) => (
+          <motion.div
             key={feedback.id}
-            id={feedback.id}
-            user_id={feedback.user_id}
-            title={feedback.title}
-            detail={feedback.detail}
-            category={feedback.category}
-            comments={feedback.comments}
-            status={feedback.status}
-            upvotes={feedback.upvotes}
-            upvotedByUser={feedback.upvotedByUser}
+            layout
+            variants={listItemVariants}
+            initial='initial'
+            animate='animate'
+            exit='exit'
+          >
+            <FeedbackCard
+              id={feedback.id}
+              user_id={feedback.user_id}
+              title={feedback.title}
+              detail={feedback.detail}
+              category={feedback.category}
+              comments={feedback.comments}
+              status={feedback.status}
+              upvotes={feedback.upvotes}
+              upvotedByUser={feedback.upvotedByUser}
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      <div ref={loadMoreRef} className='flex h-12 items-center justify-center'>
+        {isLoadingMore ? (
+          <Image
+            src={LoadingDots}
+            width={40}
+            height={40}
+            alt='Loading more'
+            loading='eager'
           />
-        ))
-      ) : (
-        <FeedbackFallback />
-      )}
+        ) : null}
+        {!hasMore && feedbackItems.length > 0 ? (
+          <span className='text-sm text-txt-secondary'>
+            You&apos;ve reached the end
+          </span>
+        ) : null}
+      </div>
     </div>
   )
 }
 
 export default FeedbackGrid
-
-function sortFeedback(feedback: FeedbackType[], filter: SelectedFilterType) {
-  const sorted = [...feedback]
-
-  switch (filter) {
-    case "mostUpvotes":
-      return sorted.sort((a, b) => b.upvotes - a.upvotes)
-    case "leastUpvotes":
-      return sorted.sort((a, b) => a.upvotes - b.upvotes)
-    case "mostComments":
-      return sorted.sort((a, b) => b.comments - a.comments)
-    case "leastComments":
-      return sorted.sort((a, b) => a.comments - b.comments)
-    default:
-      return sorted
-  }
-}

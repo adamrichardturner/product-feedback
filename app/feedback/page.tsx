@@ -7,12 +7,23 @@ import RoadmapWidget from "@/components/widgets/RoadmapWidget"
 import FeedbackGrid from "@/components/FeedbackGrid"
 import Image from "next/image"
 import LoadingDots from "@/assets/shared/loading.svg"
-import useSWR from "swr"
+import useInfiniteFeedback from "@/hooks/feedback/useInfiniteFeedback"
 
 export default function Index() {
-  const { data: feedbackData, error, isLoading } = useSWR("/api/feedback")
+  const {
+    feedbackItems,
+    total,
+    statusCounts,
+    hasMore,
+    isLoading,
+    isLoadingMore,
+    error,
+    loadMore,
+  } = useInfiniteFeedback()
 
-  if (error) return <div>Failed to load feedback</div>
+  if (error) {
+    return <div>Failed to load feedback</div>
+  }
 
   if (isLoading) {
     return (
@@ -32,18 +43,24 @@ export default function Index() {
     <div className='flex min-h-screen w-full flex-col items-end justify-center md:pt-6'>
       <div className='flex min-h-screen w-full max-w-full flex-1 flex-col pb-[55px] md:gap-[30px] md:px-4 md:pb-[130px] md:pt-6 lg:flex-row'>
         <div className='flex gap-6 lg:w-[255px] lg:flex-col'>
-          <TitleWidget feedbackData={feedbackData || []} />
+          <TitleWidget statusCounts={statusCounts} />
           <div className='hidden flex-1 md:flex lg:flex-none'>
             <CategoryWidget />
           </div>
           <div className='hidden flex-1 md:block lg:flex-none'>
-            <RoadmapWidget feedbackData={feedbackData || []} />
+            <RoadmapWidget statusCounts={statusCounts} />
           </div>
         </div>
         <div className='min-w-0 flex-1'>
-          <Navigation suggestionsCounts={feedbackData?.length || 0} />
+          <Navigation suggestionsCounts={total} />
           <main className='px-4 pt-8 md:px-0'>
-            <FeedbackGrid feedbackData={feedbackData} isLoading={isLoading} />
+            <FeedbackGrid
+              feedbackItems={feedbackItems}
+              hasMore={hasMore}
+              isLoading={isLoading}
+              isLoadingMore={isLoadingMore}
+              onLoadMore={loadMore}
+            />
           </main>
         </div>
       </div>

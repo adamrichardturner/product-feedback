@@ -25,6 +25,7 @@ import { BasicSelect } from "@/components/ui/BasicSelect"
 import IconEditFeedback from "@/assets/shared/icon-edit-feedback.svg"
 import { FeedbackCardProps } from "@/types/feedback"
 import { AlertDelete } from "@/components/AlertDialog"
+import { isFeedbackListKey } from "@/hooks/feedback/useInfiniteFeedback"
 
 const formSchema = z.object({
   id: z.string(),
@@ -100,17 +101,9 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
     try {
-      const updatedFeedback = await editFeedback(values)
+      await editFeedback(values)
 
-      // Update SWR cache optimistically
-      mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
-        if (!currentData) {
-          return currentData
-        }
-        return currentData.map((item) =>
-          item.id === values.id ? { ...item, ...updatedFeedback } : item
-        )
-      })
+      mutate(isFeedbackListKey)
 
       toast("Feedback updated successfully.")
       router.push("/")
@@ -131,13 +124,7 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
     try {
       await deleteFeedback(feedback.id)
 
-      // Remove feedback from SWR cache
-      mutate("/api/feedback", (currentData?: FeedbackCardProps[]) => {
-        if (!currentData) {
-          return currentData
-        }
-        return currentData.filter((item) => item.id !== feedback.id)
-      })
+      mutate(isFeedbackListKey)
 
       toast("Feedback deleted successfully.")
       router.push("/")

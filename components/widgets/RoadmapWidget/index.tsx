@@ -1,14 +1,23 @@
 "use client"
 
 import Link from "next/link"
-import { FeedbackType } from "@/types/feedback"
+import { FeedbackStatusCounts, FeedbackType } from "@/types/feedback"
 
 interface RoadmapWidgetProps {
-  feedbackData: FeedbackType[]
+  feedbackData?: FeedbackType[]
+  statusCounts?: FeedbackStatusCounts
 }
 
-function RoadmapWidget({ feedbackData }: RoadmapWidgetProps) {
-  const getFeedbackStatusCount = (status: string) => {
+function RoadmapWidget({ feedbackData, statusCounts }: RoadmapWidgetProps) {
+  const getFeedbackStatusCount = (status: keyof FeedbackStatusCounts) => {
+    if (statusCounts) {
+      return statusCounts[status]
+    }
+
+    if (!feedbackData) {
+      return 0
+    }
+
     return feedbackData.filter((feedback) => feedback.status === status).length
   }
 
