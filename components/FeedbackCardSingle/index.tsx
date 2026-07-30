@@ -16,9 +16,9 @@ function FeedbackCardSingle({
   upvotedByUser,
 }: SingleFeedbackCardProps) {
   return (
-    <div className='flex w-full flex-1 flex-grow flex-col justify-between rounded-btn bg-white p-6 md:h-[152px] md:flex-row md:pl-8 md:pt-7'>
-      <div className='flex w-full bg-white md:space-x-10'>
-        <div className='hidden md:flex'>
+    <div className='flex w-full flex-1 flex-col justify-between gap-4 rounded-btn bg-white p-6 md:h-auto md:min-h-[152px] md:flex-row md:items-center md:gap-6 md:pl-8 md:pt-7'>
+      <div className='flex min-w-0 flex-1 bg-white md:gap-10'>
+        <div className='hidden shrink-0 md:flex'>
           <UpVote
             upvotedByUser={upvotedByUser}
             feedbackId={id}
@@ -26,27 +26,25 @@ function FeedbackCardSingle({
             isVertical={true}
           />
         </div>
-        <article className='w-full'>
-          <h3 className='text-[14px] font-semibold leading-md tracking-md text-txt-primary md:text-md'>
+        <article className='min-w-0 flex-1'>
+          <h3 className='truncate text-[14px] font-semibold leading-md tracking-md text-txt-primary md:text-md'>
             {title}
           </h3>
-          <p className='pt-1 text-[14px] leading-body1 text-txt-secondary'>
+          <p className='line-clamp-2 pt-1 text-[14px] leading-body1 text-txt-secondary'>
             {detail}
           </p>
           <div className='mt-2.5 inline-block rounded-btn bg-btn-upvote-background px-4 py-1.5 text-body3 font-semibold text-btn-upvote-active transition-colors'>
             {formatCategory(category)}
           </div>
-          <div className='mt-3 flex w-full justify-between md:hidden'>
-            <div>
-              <UpVote
-                upvotedByUser={upvotedByUser}
-                feedbackId={id}
-                upvotes={upvotes}
-                isVertical={false}
-              />
-            </div>
+          <div className='mt-3 flex w-full items-center justify-between md:hidden'>
+            <UpVote
+              upvotedByUser={upvotedByUser}
+              feedbackId={id}
+              upvotes={upvotes}
+              isVertical={false}
+            />
 
-            <div className='flex items-center space-x-2'>
+            <div className='flex shrink-0 items-center gap-2'>
               <Image
                 src={SpeechBubble}
                 width={18}
@@ -60,7 +58,7 @@ function FeedbackCardSingle({
           </div>
         </article>
       </div>
-      <div className='hidden items-center space-x-2 md:flex'>
+      <div className='hidden shrink-0 items-center gap-2 md:flex'>
         <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
         <span className='font-semibold text-txt-primary'>
           {comments.length}

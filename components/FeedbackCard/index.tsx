@@ -22,42 +22,38 @@ function FeedbackCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className='flex min-h-[200px] items-center justify-between space-y-4 overflow-hidden rounded-btn bg-white p-6 md:min-h-[152px] md:flex-row md:space-y-0 md:pl-8 md:pt-7'
+      className='flex min-h-[200px] w-full flex-col gap-4 rounded-btn bg-white p-6 md:min-h-[152px] md:flex-row md:items-center md:justify-between md:gap-6 md:pl-8 md:pt-7'
     >
-      <div className='flex flex-1 flex-col-reverse items-stretch justify-between bg-white md:flex-none md:flex-row md:space-x-10'>
-        <div className='mt-4 flex flex-1 items-center justify-between md:mt-0 md:flex-none md:items-start'>
+      <div className='flex min-w-0 flex-1 flex-col-reverse justify-between md:flex-row md:items-start md:gap-10'>
+        <div className='mt-4 flex shrink-0 items-center justify-between md:mt-0 md:block'>
           <UpVote
             upvotedByUser={upvotedByUser}
             feedbackId={id}
             upvotes={upvotes}
             isVertical={true}
           />
-          <div className='flex items-center space-x-2 md:hidden'>
-            <Link
-              href={`/feedback/${id}`}
-              className='flex items-center space-x-2 md:hidden'
-            >
-              <Image
-                src={SpeechBubble}
-                width={18}
-                height={16}
-                alt='Speech Bubble'
-              />
-              <span className='flex font-semibold text-txt-primary'>
-                {comments}
-              </span>
-            </Link>
-          </div>
+          <Link
+            href={`/feedback/${id}`}
+            className='flex shrink-0 items-center gap-2 md:hidden'
+          >
+            <Image
+              src={SpeechBubble}
+              width={18}
+              height={16}
+              alt='Speech Bubble'
+            />
+            <span className='font-semibold text-txt-primary'>{comments}</span>
+          </Link>
         </div>
 
-        <article className='max-w-full overflow-hidden'>
+        <article className='min-w-0 flex-1'>
           <Link href={`/feedback/${id}`}>
-            <h3 className='cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-md font-semibold leading-md tracking-md text-txt-primary transition-colors hover:text-[#4661E6]'>
+            <h3 className='cursor-pointer truncate text-md font-semibold leading-md tracking-md text-txt-primary transition-colors hover:text-[#4661E6]'>
               {title}
             </h3>
           </Link>
 
-          <p className='w-full overflow-hidden text-ellipsis pt-1 text-body1 leading-body1 text-txt-secondary'>
+          <p className='line-clamp-2 w-full pt-1 text-body1 leading-body1 text-txt-secondary'>
             {detail}
           </p>
           <div
@@ -69,20 +65,13 @@ function FeedbackCard({
         </article>
       </div>
 
-      <div className='-mt-7 hidden items-center space-x-2 md:flex'>
-        <Link
-          href={`/feedback/${id}`}
-          className='items-center space-x-2 md:flex'
-        >
-          <Image
-            src={SpeechBubble}
-            width={18}
-            height={16}
-            alt='Speech Bubble'
-          />
-          <span className='font-semibold text-txt-primary'>{comments}</span>
-        </Link>
-      </div>
+      <Link
+        href={`/feedback/${id}`}
+        className='hidden shrink-0 items-center gap-2 md:flex'
+      >
+        <Image src={SpeechBubble} width={18} height={16} alt='Speech Bubble' />
+        <span className='font-semibold text-txt-primary'>{comments}</span>
+      </Link>
     </motion.div>
   )
 }
