@@ -10,34 +10,6 @@ import {
 
 export const FEEDBACK_PAGE_SIZE = 8
 
-export function isFeedbackListKey(key: unknown): key is string {
-  if (typeof key !== "string") {
-    return false
-  }
-
-  if (!key.startsWith("/api/feedback")) {
-    return false
-  }
-
-  if (key.includes("/single")) {
-    return false
-  }
-
-  if (key.includes("/comments")) {
-    return false
-  }
-
-  if (key.includes("/upvote")) {
-    return false
-  }
-
-  return true
-}
-
-export function isPaginatedFeedbackListKey(key: unknown): key is string {
-  return isFeedbackListKey(key) && key.includes("limit=")
-}
-
 function buildFeedbackListKey({
   pageIndex,
   previousPageData,

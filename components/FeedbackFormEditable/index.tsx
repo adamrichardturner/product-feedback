@@ -7,7 +7,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { toast } from "sonner"
-import { useSWRConfig } from "swr"
+import useFeedbackCache from "@/hooks/feedback/useFeedbackCache"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +25,6 @@ import { BasicSelect } from "@/components/ui/BasicSelect"
 import IconEditFeedback from "@/assets/shared/icon-edit-feedback.svg"
 import { FeedbackCardProps } from "@/types/feedback"
 import { AlertDelete } from "@/components/AlertDialog"
-import { isFeedbackListKey } from "@/hooks/feedback/useInfiniteFeedback"
 
 const formSchema = z.object({
   id: z.string(),
@@ -51,7 +50,7 @@ interface FeedbackFormProps {
 }
 
 export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
-  const { mutate } = useSWRConfig() // Access SWR config for revalidation
+  const { revalidateFeedback } = useFeedbackCache()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -103,7 +102,7 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
     try {
       await editFeedback(values)
 
-      mutate(isFeedbackListKey)
+      await revalidateFeedback()
 
       toast("Feedback updated successfully.")
       router.push("/")
@@ -124,7 +123,7 @@ export function FeedbackFormEditable({ feedback }: FeedbackFormProps) {
     try {
       await deleteFeedback(feedback.id)
 
-      mutate(isFeedbackListKey)
+      await revalidateFeedback()
 
       toast("Feedback deleted successfully.")
       router.push("/")
