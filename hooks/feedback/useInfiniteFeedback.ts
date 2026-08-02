@@ -1,5 +1,5 @@
 import useSWRInfinite from "swr/infinite"
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import useFeedback from "@/hooks/feedback/useFeedback"
 import { useCategoriesStore } from "@/stores/CategoriesState/useCategoriesStore"
 import {
@@ -42,9 +42,25 @@ function buildFeedbackListKey({
   return `/api/feedback?${params.toString()}`
 }
 
+interface FeedbackCounts {
+  total: number
+  statusCounts: FeedbackStatusCounts
+}
+
+const EMPTY_COUNTS: FeedbackCounts = {
+  total: 0,
+  statusCounts: { suggestion: 0, planned: 0, progress: 0, live: 0 },
+}
+
 export default function useInfiniteFeedback() {
   const { selectedFilter } = useFeedback()
   const selectedCategory = useCategoriesStore((state) => state.selectedCategory)
+  /**
+   * Changing filters clears the pages while the new ones load. Retaining the
+   * last known counts keeps the surrounding widgets steady instead of briefly
+   * dropping them all to zero.
+   */
+  const lastCountsRef = useRef<FeedbackCounts>(EMPTY_COUNTS)
 
   const { data, error, isLoading, isValidating, size, setSize, mutate } =
     useSWRInfinite<PaginatedFeedbackResponse>(
@@ -81,13 +97,16 @@ export default function useInfiniteFeedback() {
     return items
   }, [data])
 
-  const total = data?.[0]?.total ?? 0
-  const statusCounts: FeedbackStatusCounts = data?.[0]?.statusCounts ?? {
-    suggestion: 0,
-    planned: 0,
-    progress: 0,
-    live: 0,
+  const firstPage = data?.[0]
+
+  if (firstPage) {
+    lastCountsRef.current = {
+      total: firstPage.total,
+      statusCounts: firstPage.statusCounts,
+    }
   }
+
+  const { total, statusCounts } = lastCountsRef.current
   const hasMore = data?.[data.length - 1]?.hasMore ?? false
   const isLoadingMore =
     isValidating && size > 0 && typeof data?.[size - 1] === "undefined"

@@ -99,7 +99,11 @@ const FeedbackGrid = ({
 
   if (isLoading) {
     return (
-      <div className='flex h-full w-full items-center justify-center'>
+      <div
+        role='status'
+        aria-live='polite'
+        className='flex min-h-[400px] w-full items-center justify-center'
+      >
         <Image
           src={LoadingDots}
           width={60}
