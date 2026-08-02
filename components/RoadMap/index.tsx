@@ -2,10 +2,12 @@
 
 import {
   DndContext,
-  closestCenter,
   DragOverlay,
   DragStartEvent,
+  pointerWithin,
+  rectIntersection,
 } from "@dnd-kit/core"
+import type { CollisionDetection, Over } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useState, useSyncExternalStore } from "react"
 import useRoadMap from "./hooks/useRoadMap"
@@ -13,15 +15,50 @@ import RoadMapCard from "./RoadMapCard"
 import SortableItem from "./SortableItem"
 import DroppableContainer from "./DroppableContainer"
 import { FeedbackCardProps } from "@/types/feedback"
-import { DragEndEvent } from "@dnd-kit/core"
+import { DragEndEvent, DragOverEvent } from "@dnd-kit/core"
 import RoadMapMobileNavigation from "./RoadMapMobileNavigation"
 import { useMediaQuery } from "usehooks-ts"
+
+/**
+ * Prefer whatever sits under the pointer so a column stays highlighted across
+ * its whole drop area. Centre based detection handed the drop to a neighbouring
+ * column as soon as the cursor moved away from the top of the current one.
+ */
+const collisionDetection: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args)
+
+  if (pointerCollisions.length > 0) {
+    return pointerCollisions
+  }
+
+  return rectIntersection(args)
+}
+
+/** Both columns and the cards inside them carry their column id as `type`. */
+function resolveContainerId(over: Over | null): string | null {
+  if (!over) {
+    return null
+  }
+
+  const data: unknown = over.data.current
+
+  if (typeof data !== "object" || data === null) {
+    return null
+  }
+
+  if (!("type" in data)) {
+    return null
+  }
+
+  return typeof data.type === "string" ? data.type : null
+}
 
 const RoadMap = () => {
   const isLargeScreen = useMediaQuery("(min-width: 768px)")
   const { planned, inProgress, live, handleStatusChange, handleOrderChange } =
     useRoadMap()
   const [activeCard, setActiveCard] = useState<FeedbackCardProps | null>(null)
+  const [overContainerId, setOverContainerId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string>("planned")
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -47,50 +84,71 @@ const RoadMap = () => {
     }
   }
 
+  const handleDragOver = (event: DragOverEvent) => {
+    setOverContainerId(resolveContainerId(event.over))
+  }
+
+  const handleDragCancel = () => {
+    setActiveCard(null)
+    setOverContainerId(null)
+  }
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
     setActiveCard(null)
+    setOverContainerId(null)
 
-    if (!over) return
+    if (!over) {
+      return
+    }
 
-    const activeCard = planned
+    const draggedCard = planned
       .concat(inProgress, live)
       .find((card) => card.id === active.id)
 
-    if (activeCard) {
-      // If dropped in a different section
-      if (over.data.current && over.data.current.type !== activeCard.status) {
-        await handleStatusChange(active.id, over.data.current.type)
-      } else if (active.id !== over.id) {
-        // Handle reordering within the same section
-        await handleOrderChange(activeCard.status, active.id, over.id)
-      }
+    if (!draggedCard) {
+      return
     }
+
+    const targetContainerId = resolveContainerId(over)
+
+    if (targetContainerId && targetContainerId !== draggedCard.status) {
+      await handleStatusChange(active.id, targetContainerId)
+      return
+    }
+
+    if (active.id === over.id) {
+      return
+    }
+
+    await handleOrderChange(draggedCard.status, active.id, over.id)
   }
 
   const renderSection = (
     title: string,
     items: FeedbackCardProps[],
-    sectionId: string,
-    extraClasses: string = ""
+    sectionId: string
   ) => (
-    <DroppableContainer id={sectionId}>
-      <section className={`w-full flex-1 ${extraClasses}`}>
-        <div className='w-full'>
-          <h3 className='text-[18px] font-bold tracking-[-0.25px] text-txt-primary'>
-            {title} ({items.length})
-          </h3>
-          <span className='text-[16px] text-txt-secondary'>
-            {sectionId === "planned" && "Ideas prioritized for research"}
-            {sectionId === "progress" && "Currently being developed"}
-            {sectionId === "live" && "Released features"}
-          </span>
-        </div>
+    <section className='flex w-full flex-1 flex-col'>
+      <div className='mb-6 w-full'>
+        <h3 className='text-[18px] font-bold tracking-[-0.25px] text-txt-primary'>
+          {title} ({items.length})
+        </h3>
+        <span className='text-[16px] text-txt-secondary'>
+          {sectionId === "planned" && "Ideas prioritized for research"}
+          {sectionId === "progress" && "Currently being developed"}
+          {sectionId === "live" && "Released features"}
+        </span>
+      </div>
+      <DroppableContainer
+        id={sectionId}
+        isActive={overContainerId === sectionId}
+      >
         <SortableContext
           items={items.map((card) => card.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className='mt-8 flex flex-col flex-wrap gap-4 md:gap-6'>
+          <div className='flex flex-col flex-wrap gap-4 md:gap-6'>
             {items.map((card) => (
               <SortableItem
                 key={card.id}
@@ -112,8 +170,8 @@ const RoadMap = () => {
             ))}
           </div>
         </SortableContext>
-      </section>
-    </DroppableContainer>
+      </DroppableContainer>
+    </section>
   )
 
   return (
@@ -127,9 +185,11 @@ const RoadMap = () => {
       />
       {isLargeScreen ? (
         <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+          collisionDetection={collisionDetection}
           onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragCancel={handleDragCancel}
+          onDragEnd={handleDragEnd}
         >
           <div className='flex h-full w-full flex-grow space-x-4 pt-[48px]'>
             {renderSection("Planned", planned, "planned")}
