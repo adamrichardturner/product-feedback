@@ -8,20 +8,20 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef } from "react"
 import { FeedbackType } from "@/types/feedback"
 
+/**
+ * Entry only fades and lifts. Animating size, scale or position would make
+ * every sibling reflow as pages append, which is what caused the list to jerk.
+ */
 const listItemVariants = {
-  initial: { opacity: 0, y: 18, scale: 0.98 },
+  initial: { opacity: 0, y: 8 },
   animate: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] as const },
   },
   exit: {
     opacity: 0,
-    x: -28,
-    height: 0,
-    marginBottom: 0,
-    transition: { duration: 0.22, ease: "easeIn" as const },
+    transition: { duration: 0.15, ease: "linear" as const },
   },
 }
 
@@ -95,11 +95,15 @@ const FeedbackGrid = ({
     return () => {
       observer.disconnect()
     }
-  }, [onLoadMore, hasMore, isLoading, isLoadingMore])
+  }, [onLoadMore, hasMore])
 
   if (isLoading) {
     return (
-      <div className='flex h-full w-full items-center justify-center'>
+      <div
+        role='status'
+        aria-live='polite'
+        className='flex min-h-[400px] w-full items-center justify-center'
+      >
         <Image
           src={LoadingDots}
           width={60}
@@ -117,11 +121,10 @@ const FeedbackGrid = ({
 
   return (
     <div className='space-y-5'>
-      <AnimatePresence mode='popLayout' initial={false}>
+      <AnimatePresence initial={false}>
         {feedbackItems.map((feedback) => (
           <motion.div
             key={feedback.id}
-            layout
             variants={listItemVariants}
             initial='initial'
             animate='animate'
@@ -143,22 +146,13 @@ const FeedbackGrid = ({
         ))}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isLoadingMore ? (
-          <motion.div
-            key='loading-more'
-            className='flex w-full flex-col space-y-5'
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {Array.from({ length: 3 }).map((_, index) => (
-              <SkeletonFeedbackCard key={`more-${index}`} />
-            ))}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {isLoadingMore ? (
+        <div className='flex w-full flex-col space-y-5'>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <SkeletonFeedbackCard key={`more-${index}`} />
+          ))}
+        </div>
+      ) : null}
 
       {hasMore ? (
         <div ref={sentinelRef} className='h-4 w-full' aria-hidden />

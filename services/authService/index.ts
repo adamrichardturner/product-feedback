@@ -1,4 +1,4 @@
-import axios from "axios"
+import { api, isAxiosError } from "@/services/api"
 
 interface DemoAuthResponse {
   message: string
@@ -12,15 +12,13 @@ interface DemoAuthResponse {
 export const loginToDemoAccount =
   async (): Promise<DemoAuthResponse | null> => {
     try {
-      const response = await axios.post<DemoAuthResponse>(
-        "/api/auth/demo",
-        null,
-        {
-          withCredentials: true,
-        }
-      )
+      const response = await api.post<DemoAuthResponse>("/api/auth/demo")
       return response.data
     } catch (error) {
+      if (isAxiosError(error)) {
+        console.error("Error logging into demo account:", error.message)
+        return null
+      }
       console.error("Error logging into demo account:", error)
       return null
     }

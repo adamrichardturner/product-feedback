@@ -3,33 +3,31 @@ import { useDroppable } from "@dnd-kit/core"
 
 interface DroppableContainerProps {
   id: string
+  isActive: boolean
   children: ReactNode
 }
 
 const DroppableContainer: React.FC<DroppableContainerProps> = ({
   id,
+  isActive,
   children,
 }) => {
-  const { setNodeRef, isOver } = useDroppable({
+  const { setNodeRef } = useDroppable({
     id,
     data: {
       type: id,
     },
   })
 
-  const style = {
-    border: isOver ? "2px solid #AD1FEA" : "0px solid transparent",
-    padding: "0px",
-    borderRadius: "8px",
-    backgroundColor: isOver ? "rgba(173, 31, 234, 0.2)" : "transparent",
-    transition: "background-color 0.3s ease",
-    width: "100%",
-    height: "100%",
-    minHeight: "600px",
-  }
-
   return (
-    <div ref={setNodeRef} style={style}>
+    <div
+      ref={setNodeRef}
+      className={`flex min-h-[400px] w-full flex-1 flex-col rounded-btn border-2 p-2 transition-colors duration-200 ${
+        isActive
+          ? "border-[#AD1FEA] bg-[#AD1FEA]/10"
+          : "border-transparent bg-transparent"
+      }`}
+    >
       {children}
     </div>
   )

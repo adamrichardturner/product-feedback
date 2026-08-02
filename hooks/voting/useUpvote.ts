@@ -1,123 +1,66 @@
 "use client"
 
-import { mutate } from "swr"
-import { FeedbackType, PaginatedFeedbackResponse } from "@/types/feedback"
-import {
-  isFeedbackListKey,
-  isPaginatedFeedbackListKey,
-} from "@/hooks/feedback/useInfiniteFeedback"
+import { useCallback, useRef, useState } from "react"
+import { toast } from "sonner"
+import useFeedbackCache from "@/hooks/feedback/useFeedbackCache"
+import { applyVoteToCachedValue, FeedbackVote } from "@/lib/feedbackCache"
 
-function updateFeedbackVote(
-  feedback: FeedbackType,
-  feedbackId: string,
-  newUpvoteCount: number,
-  newUpvotedByUser: boolean
-): FeedbackType {
-  if (feedback.id !== feedbackId) {
-    return feedback
-  }
-
-  return {
-    ...feedback,
-    upvotes: newUpvoteCount,
-    upvotedByUser: newUpvotedByUser,
-  }
+interface ToggleUpvoteInput {
+  feedbackId: string
+  upvotes: number
+  upvotedByUser: boolean
 }
 
-const toggleUpvote = async (
-  feedbackId: string,
-  currentUpvotes: number,
-  currentUpvotedByUser: boolean
-): Promise<void> => {
-  try {
-    const newUpvoteCount = currentUpvotedByUser
-      ? currentUpvotes - 1
-      : currentUpvotes + 1
-    const newUpvotedByUser = !currentUpvotedByUser
+export default function useUpvote() {
+  const { getFeedbackKeys, snapshotFeedback, restoreFeedback, updateFeedback } =
+    useFeedbackCache()
+  const [isPending, setIsPending] = useState(false)
+  const inFlightRef = useRef(false)
 
-    mutate(
-      isPaginatedFeedbackListKey,
-      (currentData: PaginatedFeedbackResponse[] | undefined) => {
-        if (!currentData) {
-          return currentData
+  const toggleUpvote = useCallback(
+    async ({ feedbackId, upvotes, upvotedByUser }: ToggleUpvoteInput) => {
+      if (inFlightRef.current) {
+        return
+      }
+
+      const vote: FeedbackVote = {
+        feedbackId,
+        upvotes: upvotedByUser ? upvotes - 1 : upvotes + 1,
+        upvotedByUser: !upvotedByUser,
+      }
+
+      const keys = getFeedbackKeys()
+      const snapshots = snapshotFeedback(keys)
+
+      inFlightRef.current = true
+      setIsPending(true)
+
+      await updateFeedback(keys, (current) =>
+        applyVoteToCachedValue(current, vote)
+      )
+
+      try {
+        const response = await fetch("/api/feedback/upvote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ feedbackId }),
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to toggle upvote.")
         }
+      } catch (error) {
+        console.error("Error toggling vote:", error)
 
-        return currentData.map((page) => ({
-          ...page,
-          data: page.data.map((feedback) =>
-            updateFeedbackVote(
-              feedback,
-              feedbackId,
-              newUpvoteCount,
-              newUpvotedByUser
-            )
-          ),
-        }))
-      },
-      false
-    )
+        await restoreFeedback(snapshots)
+        toast.error("Could not save your vote. Please try again.")
+      } finally {
+        inFlightRef.current = false
+        setIsPending(false)
+      }
+    },
+    [getFeedbackKeys, restoreFeedback, snapshotFeedback, updateFeedback]
+  )
 
-    mutate(
-      (key) => isFeedbackListKey(key) && key === "/api/feedback",
-      (currentData: FeedbackType[] | undefined) => {
-        if (!currentData) {
-          return currentData
-        }
-
-        return currentData.map((feedback) =>
-          updateFeedbackVote(
-            feedback,
-            feedbackId,
-            newUpvoteCount,
-            newUpvotedByUser
-          )
-        )
-      },
-      false
-    )
-
-    mutate(
-      `/api/feedback/single?feedback_id=${feedbackId}`,
-      (currentData: FeedbackType | undefined) => {
-        if (!currentData) {
-          return currentData
-        }
-
-        return {
-          ...currentData,
-          upvotes: newUpvoteCount,
-          upvotedByUser: newUpvotedByUser,
-        }
-      },
-      false
-    )
-
-    const response = await fetch("/api/feedback/upvote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ feedbackId }),
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to toggle upvote.")
-    }
-
-    await Promise.all([
-      mutate(isFeedbackListKey),
-      mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
-    ])
-  } catch (error) {
-    console.error("Error toggling vote:", error)
-
-    await Promise.all([
-      mutate(isFeedbackListKey),
-      mutate(`/api/feedback/single?feedback_id=${feedbackId}`),
-    ])
-
-    throw new Error("Failed to toggle upvote.")
-  }
+  return { toggleUpvote, isPending }
 }
-
-export default toggleUpvote

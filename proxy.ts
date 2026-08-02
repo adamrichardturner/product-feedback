@@ -1,23 +1,50 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import {
+  applySetCookies,
+  clearAuthCookie,
+  isAuthPath,
+  isProtectedPath,
+  redirectToApp,
+  redirectToAuth,
+  refreshAuthToken,
+} from "@/lib/auth"
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value
   const { pathname } = request.nextUrl
+  const onAuthPath = isAuthPath(pathname)
+  const onProtectedPath = isProtectedPath(pathname)
 
-  if (token && pathname === "/") {
-    return NextResponse.redirect(new URL("/feedback", request.url))
+  if (!token) {
+    if (onProtectedPath) {
+      return redirectToAuth(request)
+    }
+
+    return NextResponse.next()
   }
 
-  if (!token && pathname.startsWith("/feedback")) {
-    return NextResponse.redirect(new URL("/", request.url))
+  const refreshResult = await refreshAuthToken(token)
+
+  if (!refreshResult.ok) {
+    if (onProtectedPath) {
+      return redirectToAuth(request)
+    }
+
+    const response = NextResponse.next()
+    clearAuthCookie(response)
+    return response
   }
 
-  if (!token && pathname.startsWith("/roadmap")) {
-    return NextResponse.redirect(new URL("/", request.url))
+  if (onAuthPath) {
+    const response = redirectToApp(request)
+    applySetCookies(response, refreshResult.setCookies)
+    return response
   }
 
-  return NextResponse.next()
+  const response = NextResponse.next()
+  applySetCookies(response, refreshResult.setCookies)
+  return response
 }
 
 export const config = {

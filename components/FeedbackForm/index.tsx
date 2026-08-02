@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useSWRConfig } from "swr"
+import useFeedbackCache from "@/hooks/feedback/useFeedbackCache"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -23,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { BasicSelect } from "@/components/ui/BasicSelect"
 import Image from "next/image"
 import { toast } from "sonner"
-import { isFeedbackListKey } from "@/hooks/feedback/useInfiniteFeedback"
 
 const formSchema = z.object({
   title: z
@@ -46,7 +45,7 @@ interface FeedbackFormProps {
 }
 
 export function FeedbackForm({ isAuth }: FeedbackFormProps) {
-  const { mutate } = useSWRConfig() // Access mutate from SWR
+  const { revalidateFeedback } = useFeedbackCache()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,7 +78,7 @@ export function FeedbackForm({ isAuth }: FeedbackFormProps) {
       setLoading(true)
       try {
         await postFeedback(values)
-        await mutate(isFeedbackListKey)
+        await revalidateFeedback()
 
         router.push("/")
         toast("Feedback created.")

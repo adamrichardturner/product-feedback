@@ -1,23 +1,16 @@
-import axios from "axios"
-
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
-})
+import { api, isAxiosError } from "@/services/api"
 
 const fetcher = async (url: string) => {
   try {
-    const response = await axiosInstance.get(url)
+    const response = await api.get(url)
     return response.data
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 401) {
-        window.location.href = "/"
-      }
-      throw new Error(error.response?.data?.message || "An error occurred")
+    if (isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message ??
+          error.response?.data?.error ??
+          "An error occurred"
+      )
     }
     throw error
   }

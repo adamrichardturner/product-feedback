@@ -5,8 +5,6 @@ import Navigation from "@/components/Navigation"
 import CategoryWidget from "@/components/widgets/CategoryWidget"
 import RoadmapWidget from "@/components/widgets/RoadmapWidget"
 import FeedbackGrid from "@/components/FeedbackGrid"
-import Image from "next/image"
-import LoadingDots from "@/assets/shared/loading.svg"
 import useInfiniteFeedback from "@/hooks/feedback/useInfiniteFeedback"
 
 export default function Index() {
@@ -20,24 +18,6 @@ export default function Index() {
     error,
     loadMore,
   } = useInfiniteFeedback()
-
-  if (error) {
-    return <div>Failed to load feedback</div>
-  }
-
-  if (isLoading) {
-    return (
-      <div className='mt-[30px] flex w-full items-center justify-center p-4 md:w-[730px]'>
-        <Image
-          src={LoadingDots}
-          width={60}
-          height={60}
-          alt='Loading'
-          loading='eager'
-        />
-      </div>
-    )
-  }
 
   return (
     <div className='flex min-h-screen w-full flex-col items-end justify-center md:pt-6'>
@@ -54,13 +34,19 @@ export default function Index() {
         <div className='min-w-0 flex-1'>
           <Navigation suggestionsCounts={total} />
           <main className='px-4 pt-8 md:px-0'>
-            <FeedbackGrid
-              feedbackItems={feedbackItems}
-              hasMore={hasMore}
-              isLoading={isLoading}
-              isLoadingMore={isLoadingMore}
-              onLoadMore={loadMore}
-            />
+            {error ? (
+              <div className='flex min-h-[400px] w-full items-center justify-center text-txt-secondary'>
+                Failed to load feedback
+              </div>
+            ) : (
+              <FeedbackGrid
+                feedbackItems={feedbackItems}
+                hasMore={hasMore}
+                isLoading={isLoading}
+                isLoadingMore={isLoadingMore}
+                onLoadMore={loadMore}
+              />
+            )}
           </main>
         </div>
       </div>
