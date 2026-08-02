@@ -3,48 +3,62 @@ import type { NextRequest } from "next/server"
 import {
   applySetCookies,
   clearAuthCookie,
+  hasTokenCookie,
   isAuthPath,
   isProtectedPath,
+  readValidToken,
   redirectToApp,
   redirectToAuth,
   refreshAuthToken,
+  shouldRefreshToken,
 } from "@/lib/auth"
 
-export async function proxy(request: NextRequest) {
-  const token = request.cookies.get("token")?.value
-  const { pathname } = request.nextUrl
-  const onAuthPath = isAuthPath(pathname)
-  const onProtectedPath = isProtectedPath(pathname)
+function handleSignedOut(request: NextRequest, pathname: string): NextResponse {
+  if (isProtectedPath(pathname)) {
+    return redirectToAuth(request)
+  }
 
-  if (!token) {
-    if (onProtectedPath) {
-      return redirectToAuth(request)
-    }
-
+  if (!hasTokenCookie(request)) {
     return NextResponse.next()
   }
 
-  const refreshResult = await refreshAuthToken(token)
-
-  if (!refreshResult.ok) {
-    if (onProtectedPath) {
-      return redirectToAuth(request)
-    }
-
-    const response = NextResponse.next()
-    clearAuthCookie(response)
-    return response
-  }
-
-  if (onAuthPath) {
-    const response = redirectToApp(request)
-    applySetCookies(response, refreshResult.setCookies)
-    return response
-  }
-
   const response = NextResponse.next()
-  applySetCookies(response, refreshResult.setCookies)
+  clearAuthCookie(response)
   return response
+}
+
+/** A failed refresh must not end the session, the token is still valid. */
+async function continueWithRefreshedSession(
+  request: NextRequest,
+  token: string
+): Promise<NextResponse> {
+  const response = NextResponse.next()
+  const refresh = await refreshAuthToken(request, token)
+
+  if (refresh.ok) {
+    applySetCookies(response, refresh.setCookies)
+  }
+
+  return response
+}
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const token = readValidToken(request)
+
+  if (token === null) {
+    return handleSignedOut(request, pathname)
+  }
+
+  if (isAuthPath(pathname)) {
+    return redirectToApp(request)
+  }
+
+  if (!shouldRefreshToken(token)) {
+    return NextResponse.next()
+  }
+
+  return continueWithRefreshedSession(request, token)
 }
 
 export const config = {
